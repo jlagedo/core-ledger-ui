@@ -2,6 +2,9 @@ import {ChangeDetectionStrategy, Component, inject, OnInit} from '@angular/core'
 import {CommonModule} from '@angular/common';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {OnlyNumbers} from '../../../directives/only-numbers';
+import {AccountService} from '../../../services/account';
+import {AccountType} from '../../../models/account_type.model';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-account-form',
@@ -12,6 +15,7 @@ import {OnlyNumbers} from '../../../directives/only-numbers';
 })
 export class AccountForm implements OnInit  {
   private formBuilder = inject(FormBuilder);
+  private accountService = inject(AccountService);
 
   accountForm = this.formBuilder.group({
     accountNumber: ['', [Validators.required, Validators.maxLength(10)]],
@@ -19,6 +23,9 @@ export class AccountForm implements OnInit  {
     normalBalance: ['', Validators.required],
     type: ['', Validators.required]
   });
+
+  accountTypes = toSignal(this.accountService.getAccountTypes()
+  , {initialValue: []});
 
   ngOnInit(): void {
     console.log('ngOnInit');

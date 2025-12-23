@@ -50,18 +50,30 @@
         <div class="row mb-3">
           <div class="col-3">
             <label for="accountType" class="form-label">Type</label>
-            <select class="form-select"
-                    id="accountType"
-                    formControlName="type"
-                    [class.is-invalid]="isInvalid('type')"
-            >
-              <option value="">Select type</option>
-              <option value="1">Assets</option>
-              <option value="2">Liabilities</option>
-              <option value="3">Equity</option>
-              <option value="4">Revenue</option>
-              <option value="5">Expenses</option>
-            </select>
+
+
+
+            @defer (when accountTypes().length > 0) {
+              <select class="form-select"
+                      id="accountType"
+                      formControlName="type"
+                      [class.is-invalid]="isInvalid('type')"
+              >
+                @for (t of accountTypes(); track t.id) {
+                  <option [value]="t.id">{{ t.name }}</option>
+                }
+              </select>
+            } @placeholder {
+              <select class="form-select" disabled>
+                <option>Loading...</option>
+              </select>
+            } @error {
+              <select class="form-select" disabled>
+                <option>Error loading account types</option>
+              </select>
+            }
+
+
             @if (isInvalid('type')) {
               <div class="invalid-feedback">
                 @if (hasError('type', 'required')) {
