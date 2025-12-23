@@ -14,7 +14,7 @@ export class AccountForm implements OnInit  {
   private formBuilder = inject(FormBuilder);
 
   accountForm = this.formBuilder.group({
-    accountNumber: ['', [Validators.required, Validators.max(99) ]],
+    accountNumber: ['', [Validators.required, Validators.maxLength(10)]],
     description: ['', Validators.required],
     normalBalance: ['', Validators.required],
     type: ['', Validators.required]
@@ -26,6 +26,12 @@ export class AccountForm implements OnInit  {
 
   onSubmit() {
     console.log(this.accountForm.value);
+  }
+
+  clearForm() {
+    this.accountForm.reset();
+    this.accountForm.markAsUntouched();
+    this.accountForm.markAsPristine();
   }
 
   getControl(name: string) {
