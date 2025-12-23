@@ -62,7 +62,7 @@
                         @for (account of filteredAccounts(); track account.id) {
                         <tr>
                             <th scope="row" class="fw-normal">{{ account.code }}</th>
-                            <td>{{ account.name }}</td>
+                            <td>{{ account.description }}</td>
                             <td>
                                 <span class="badge bg-secondary">{{ account.type }}</span>
                             </td>
@@ -74,14 +74,15 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group btn-group-sm" role="group"
-                                    [attr.aria-label]="'Actions for ' + account.name">
+                                    [attr.aria-label]="'Actions for ' + account.description">
                                     <a [routerLink]="['/chart-of-accounts', account.id]"
                                         class="btn btn-outline-secondary"
-                                        [attr.aria-label]="'View ' + account.name + ' details'">
+                                        [attr.aria-label]="'View ' + account.description + ' details'">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <a [routerLink]="['/chart-of-accounts', account.id, 'edit']"
-                                        class="btn btn-outline-primary" [attr.aria-label]="'Edit ' + account.name">
+                                        class="btn btn-outline-primary"
+                                        [attr.aria-label]="'Edit ' + account.description">
                                         <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                 </div>

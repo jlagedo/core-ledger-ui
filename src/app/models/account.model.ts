@@ -4,7 +4,7 @@ export type NormalBalance = 'DEBIT' | 'CREDIT';
 export interface Account {
     id: string;
     code: string;
-    name: string;
+    description: string;
     type: AccountType;
     isActive: boolean;
     normalBalance: NormalBalance;

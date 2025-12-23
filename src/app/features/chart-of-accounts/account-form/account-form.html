@@ -9,40 +9,29 @@
         <div class="row mb-3">
           <div class="col-3">
             <label for="accountNumber" class="form-label">Number</label>
-            <input type="text"
-                   id="accountNumber"
-                   class="form-control"
-                   formControlName="accountNumber"
-                   inputmode="numeric"
-                   pattern="[0-9]*"
-                   appOnlyNumbers
-                   [class.is-invalid]="isInvalid('accountNumber')"
-            >
+            <input type="text" id="accountNumber" class="form-control" formControlName="accountNumber"
+              inputmode="numeric" pattern="[0-9]*" appOnlyNumbers [class.is-invalid]="isInvalid('accountNumber')">
             @if (isInvalid('accountNumber')) {
-              <div class="invalid-feedback">
-                @if (hasError('accountNumber', 'required')) {
-                  Account number is required
-                }
-                @if (hasError('accountNumber', 'maxlength')) {
-                  Account number must be at most 10 characters long
-                }
-              </div>
+            <div class="invalid-feedback">
+              @if (hasError('accountNumber', 'required')) {
+              Account number is required
+              }
+              @if (hasError('accountNumber', 'maxlength')) {
+              Account number must be at most 10 characters long
+              }
+            </div>
             }
           </div>
           <div class="col-9">
             <label for="accountDesc" class="form-label">Description</label>
-            <input type="text"
-                   id="accountDesc"
-                   class="form-control"
-                   formControlName="description"
-                   [class.is-invalid]="isInvalid('description')"
-            >
+            <input type="text" id="accountDesc" class="form-control" formControlName="description"
+              [class.is-invalid]="isInvalid('description')">
             @if (isInvalid('description')) {
-              <div class="invalid-feedback">
-                @if (hasError('description', 'required')) {
-                  Description is required
-                }
-              </div>
+            <div class="invalid-feedback">
+              @if (hasError('description', 'required')) {
+              Description is required
+              }
+            </div>
             }
           </div>
         </div>
@@ -54,72 +43,57 @@
 
 
             @defer (when accountTypes().length > 0) {
-              <select class="form-select"
-                      id="accountType"
-                      formControlName="type"
-                      [class.is-invalid]="isInvalid('type')"
-              >
-                @for (t of accountTypes(); track t.id) {
-                  <option [value]="t.id">{{ t.name }}</option>
-                }
-              </select>
+            <select class="form-select" id="accountType" formControlName="type" [class.is-invalid]="isInvalid('type')">
+              @for (t of accountTypes(); track t.id) {
+              <option [value]="t.id">{{ t.description }}</option>
+              }
+            </select>
             } @placeholder {
-              <select class="form-select" disabled>
-                <option>Loading...</option>
-              </select>
+            <select class="form-select" disabled>
+              <option>Loading...</option>
+            </select>
             } @error {
-              <select class="form-select" disabled>
-                <option>Error loading account types</option>
-              </select>
+            <select class="form-select" disabled>
+              <option>Error loading account types</option>
+            </select>
             }
 
 
             @if (isInvalid('type')) {
-              <div class="invalid-feedback">
-                @if (hasError('type', 'required')) {
-                  Account type is required
-                }
-              </div>
+            <div class="invalid-feedback">
+              @if (hasError('type', 'required')) {
+              Account type is required
+              }
+            </div>
             }
           </div>
 
           <div class="col-9">
             <label class="form-label d-block mb-3">Normal Balance</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input"
-                     type="radio"
-                     name="normalBalance"
-                     id="normalBalanceDebit"
-                     formControlName="normalBalance"
-                     value="1"
-                     [class.is-invalid]="isInvalid('normalBalance')"
-              >
+              <input class="form-check-input" type="radio" name="normalBalance" id="normalBalanceDebit"
+                formControlName="normalBalance" value="1" [class.is-invalid]="isInvalid('normalBalance')">
               <label class="form-check-label" for="normalBalanceDebit">Debit</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input"
-                     type="radio"
-                     name="normalBalance"
-                     id="normalBalanceCredit"
-                     formControlName="normalBalance"
-                     value="2"
-                     [class.is-invalid]="isInvalid('normalBalance')"
-              >
+              <input class="form-check-input" type="radio" name="normalBalance" id="normalBalanceCredit"
+                formControlName="normalBalance" value="2" [class.is-invalid]="isInvalid('normalBalance')">
               <label class="form-check-label" for="normalBalanceCredit">Credit</label>
             </div>
             @if (isInvalid('normalBalance')) {
-              <div class="invalid-feedback d-block">
-                @if (hasError('normalBalance', 'required')) {
-                  Normal balance is required
-                }
-              </div>
+            <div class="invalid-feedback d-block">
+              @if (hasError('normalBalance', 'required')) {
+              Normal balance is required
+              }
+            </div>
             }
           </div>
 
         </div>
 
         <div class="d-flex gap-2">
-          <button type="submit" class="btn btn-primary" [disabled]="accountForm.invalid || accountForm.pending">Submit</button>
+          <button type="submit" class="btn btn-primary"
+            [disabled]="accountForm.invalid || accountForm.pending">Submit</button>
           <button type="button" class="btn btn-secondary" (click)="clearForm()">Clear</button>
         </div>
       </form>

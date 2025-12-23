@@ -14,9 +14,9 @@ export class ChartOfAccounts {
   protected readonly searchQuery = signal('');
 
   private readonly accounts = signal<Account[]>([
-    { id: '1', code: '1001', name: 'Cash', type: 'ASSET', isActive: true, normalBalance: 'DEBIT' },
-    { id: '2', code: '2001', name: 'Accounts Payable', type: 'LIABILITY', isActive: true, normalBalance: 'CREDIT' },
-    { id: '3', code: '4001', name: 'Revenue', type: 'INCOME', isActive: false, normalBalance: 'CREDIT' },
+    { id: '1', code: '1001', description: 'Cash', type: 'ASSET', isActive: true, normalBalance: 'DEBIT' },
+    { id: '2', code: '2001', description: 'Accounts Payable', type: 'LIABILITY', isActive: true, normalBalance: 'CREDIT' },
+    { id: '3', code: '4001', description: 'Revenue', type: 'INCOME', isActive: false, normalBalance: 'CREDIT' },
   ]);
 
   protected readonly filteredAccounts = computed(() => {
@@ -27,7 +27,7 @@ export class ChartOfAccounts {
     return this.accounts().filter(
       (account) =>
         account.code.toLowerCase().includes(query) ||
-        account.name.toLowerCase().includes(query) ||
+        account.description.toLowerCase().includes(query) ||
         account.type.toLowerCase().includes(query)
     );
   });
