@@ -1,298 +1,51 @@
-<main class="container-xl py-4" aria-labelledby="page-title">
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a routerLink="/dashboard" class="text-decoration-none">Dashboard</a></li>
-            <li class="breadcrumb-item"><a routerLink="/chart-of-accounts" class="text-decoration-none">Chart of
-                    Accounts</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Create New Account</li>
-        </ol>
-    </nav>
-
-    <!-- Header -->
-    <header class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h1 id="page-title" class="h3 mb-2">Create New Account</h1>
-                    <p class="mb-0">Add a new account to your financial ledger</p>
-                </div>
-                <div class="badge fs-6 px-3 py-2">
-                    <i class="bi bi-circle-fill me-1"></i> Draft
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Progress Bar -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body py-3">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-semibold">Progress</span>
-                        <span class="small">{{ progress() }}% Complete</span>
-                    </div>
-                    <div class="progress" style="height: 8px;">
-                        <div class="progress-bar" role="progressbar" [style.width.%]="progress()"
-                            [attr.aria-valuenow]="progress()" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container mt-3">
+  <div class="card col-lg-6 mx-auto">
+    <div class="card-header">
+      <h5 class="card-title">Create Account</h5>
     </div>
+    <div class="card-body">
 
-    <!-- Form -->
-    <section class="row justify-content-center">
-        <div class="col-lg-8">
-            <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" novalidate class="needs-validation"
-                [class.was-validated]="submitted()">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <div class="badge rounded-circle p-2 me-3">
-                                <i class="bi bi-info-fill"></i>
-                            </div>
-                            <div>
-                                <h2 class="h5 mb-0">Account Information</h2>
-                                <p class="small mb-0">Basic details for account identification</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body p-4">
-                        <fieldset>
-                            <!-- Account Code -->
-                            <div class="mb-4">
-                                <div class="form-floating mb-3">
-                                    <input type="text" id="code" class="form-control" formControlName="code"
-                                        placeholder="Account Code" aria-describedby="codeHelp codeError"
-                                        [class.is-invalid]="accountForm.get('code')?.invalid && (accountForm.get('code')?.touched || submitted())"
-                                        [class.is-valid]="accountForm.get('code')?.valid && accountForm.get('code')?.touched"
-                                        required pattern="\d{4}">
-                                    <label for="code" class="fw-semibold">
-                                        Account Code <span>*</span>
-                                    </label>
-                                    <button type="button"
-                                        class="btn btn-link p-0 position-absolute top-0 end-0 mt-2 me-3"
-                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="Unique 4-digit code for account identification" style="z-index: 10;">
-                                        <i class="bi bi-question-circle"></i>
-                                    </button>
-                                </div>
-                                <div class="position-relative">
-                                    <div id="codeHelp" class="form-text">
-                                        <small>
-                                            <i class="bi bi-info-circle me-1"></i>
-                                            Enter a unique 4-digit numeric code (e.g., 1001)
-                                        </small>
-                                    </div>
-                                    @if (accountForm.get('code')?.invalid && (accountForm.get('code')?.touched ||
-                                    submitted())) {
-                                    <div id="codeError" class="invalid-feedback d-block">
-                                        <i class="bi bi-exclamation-triangle me-1"></i>
-                                        @if (accountForm.get('code')?.hasError('required')) {
-                                        <span>Account code is required</span>
-                                        }
-                                        @if (accountForm.get('code')?.hasError('pattern')) {
-                                        <span>Must be a 4-digit number</span>
-                                        }
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Account Name -->
-                            <div class="mb-4">
-                                <div class="form-floating mb-3">
-                                    <input type="text" id="name" class="form-control" formControlName="name"
-                                        placeholder="Account Name" aria-describedby="nameHelp nameError"
-                                        [class.is-invalid]="accountForm.get('name')?.invalid && (accountForm.get('name')?.touched || submitted())"
-                                        [class.is-valid]="accountForm.get('name')?.valid && accountForm.get('name')?.touched"
-                                        required maxlength="100">
-                                    <label for="name" class="fw-semibold">
-                                        Account Name <span>*</span>
-                                    </label>
-                                    <button type="button"
-                                        class="btn btn-link p-0 position-absolute top-0 end-0 mt-2 me-3"
-                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="Descriptive name for the account" style="z-index: 10;">
-                                        <i class="bi bi-question-circle"></i>
-                                    </button>
-                                </div>
-                                <div class="position-relative">
-                                    <div id="nameHelp" class="form-text">
-                                        <small>
-                                            <i class="bi bi-info-circle me-1"></i>
-                                            Maximum 100 characters. Use a clear, descriptive name.
-                                        </small>
-                                    </div>
-                                    @if (accountForm.get('name')?.invalid && (accountForm.get('name')?.touched ||
-                                    submitted())) {
-                                    <div id="nameError" class="invalid-feedback d-block">
-                                        <i class="bi bi-exclamation-triangle me-1"></i>
-                                        @if (accountForm.get('name')?.hasError('required')) {
-                                        <span>Account name is required</span>
-                                        }
-                                        @if (accountForm.get('name')?.hasError('maxlength')) {
-                                        <span>Name cannot exceed 100 characters</span>
-                                        }
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Account Type -->
-                            <div class="mb-4">
-                                <div class="form-floating mb-3">
-                                    <select id="type" class="form-select" formControlName="type"
-                                        aria-describedby="typeHelp typeError"
-                                        [class.is-invalid]="accountForm.get('type')?.invalid && (accountForm.get('type')?.touched || submitted())"
-                                        [class.is-valid]="accountForm.get('type')?.valid && accountForm.get('type')?.touched"
-                                        required>
-                                        @for (type of accountTypes; track type.value) {
-                                        <option [value]="type.value">{{ type.label }}</option>
-                                        }
-                                    </select>
-                                    <label for="type" class="fw-semibold">
-                                        Account Type <span>*</span>
-                                    </label>
-                                    <button type="button"
-                                        class="btn btn-link p-0 position-absolute top-0 end-0 mt-2 me-4"
-                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="Classification of the account in the financial structure"
-                                        style="z-index: 10;">
-                                        <i class="bi bi-question-circle"></i>
-                                    </button>
-                                </div>
-                                <div class="position-relative">
-                                    <div id="typeHelp" class="form-text">
-                                        <small>
-                                            <i class="bi bi-info-circle me-1"></i>
-                                            Select the appropriate account classification
-                                        </small>
-                                    </div>
-                                    @if (accountForm.get('type')?.invalid && (accountForm.get('type')?.touched ||
-                                    submitted())) {
-                                    <div id="typeError" class="invalid-feedback d-block">
-                                        <i class="bi bi-exclamation-triangle me-1"></i>
-                                        Account type is required
-                                    </div>
-                                    }
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                </div>
-
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <div class="badge rounded-circle p-2 me-3">
-                                <i class="bi bi-gear-fill"></i>
-                            </div>
-                            <div>
-                                <h2 class="h5 mb-0">Account Status</h2>
-                                <p class="small mb-0">Control account activity and visibility</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body p-4">
-                        <fieldset>
-                            <legend class="visually-hidden">Account Status</legend>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="card h-100 border-2">
-                                        <div class="card-body text-center p-3">
-                                            <input type="radio" id="statusActive"
-                                                class="form-check-input position-absolute top-0 end-0 m-3"
-                                                formControlName="status" value="ACTIVE" required>
-                                            <div class="mb-2">
-                                                <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
-                                            </div>
-                                            <label for="statusActive" class="form-check-label fw-semibold mb-2">
-                                                Active
-                                            </label>
-                                            <p class="small mb-0">
-                                                Account can be used in transactions
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card h-100 border-2">
-                                        <div class="card-body text-center p-3">
-                                            <input type="radio" id="statusInactive"
-                                                class="form-check-input position-absolute top-0 end-0 m-3"
-                                                formControlName="status" value="INACTIVE" required>
-                                            <div class="mb-2">
-                                                <i class="bi bi-pause-circle" style="font-size: 2rem;"></i>
-                                            </div>
-                                            <label for="statusInactive" class="form-check-label fw-semibold mb-2">
-                                                Inactive
-                                            </label>
-                                            <p class="small mb-0">
-                                                Account disabled for transactions
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @if (accountForm.get('status')?.invalid && (accountForm.get('status')?.touched ||
-                            submitted())) {
-                            <div id="statusError" class="invalid-feedback d-block mt-3">
-                                <i class="bi bi-exclamation-triangle me-1"></i>
-                                Account status is required
-                            </div>
-                            }
-                        </fieldset>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="card">
-                    <div class="card-body p-4">
-                        <div class="row align-items-center">
-                            <div class="col-md-6">
-                                <button type="button" class="btn w-100 w-md-auto" (click)="cancel()"
-                                    aria-label="Cancel form and return to previous page">
-                                    <i class="bi bi-x-circle me-2"></i>
-                                    Cancel
-                                </button>
-                            </div>
-                            <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                                <button type="submit" class="btn px-5"
-                                    [disabled]="accountForm.invalid || !accountForm.dirty || isSubmitting()"
-                                    aria-label="Create new account with provided details">
-                                    @if (!isSubmitting()) {
-                                    <i class="bi bi-check-circle me-2"></i>
-                                    Create Account
-                                    }
-                                    @if (isSubmitting()) {
-                                    <span class="spinner-border spinner-border-sm me-2" role="status"
-                                        aria-hidden="true"></span>
-                                    Creating...
-                                    }
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Form submission status -->
-                        @if (!accountForm.dirty) {
-                        <div class="alert mt-4 mb-0" role="alert">
-                            <i class="bi bi-info-circle me-2"></i>
-                            <small>Please fill in all required fields to create an account.</small>
-                        </div>
-                        }
-
-                        @if (accountForm.dirty && accountForm.invalid) {
-                        <div class="alert mt-4 mb-0" role="alert">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            <small>Please correct the errors before submitting.</small>
-                        </div>
-                        }
-                    </div>
-                </div>
-            </form>
+      <form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
+        <div class="row mb-3">
+          <div class="col-3">
+            <label for="accountNumber" class="form-label">Number</label>
+            <input type="number" id="accountNumber" class="form-control" formControlName="accountNumber">
+          </div>
+          <div class="col-9">
+            <label for="accountDesc" class="form-label">Description</label>
+            <input type="text" id="accountDesc" class="form-control" formControlName="description">
+          </div>
         </div>
-    </section>
-</main>
+
+        <div class="row mb-3">
+          <div class="col-3">
+            <label for="accountType" class="form-label">Type</label>
+            <select class="form-select" id="accountType" formControlName="type">
+              <option value="1">Assets</option>
+              <option value="2">Liabilities</option>
+              <option value="3">Equity</option>
+              <option value="4">Revenue</option>
+              <option value="5">Expenses</option>
+            </select>
+          </div>
+
+          <div class="col-9">
+            <label class="form-label d-block mb-3">Normal Balance</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="normalBalance" id="normalBalanceDebit"
+                     formControlName="normalBalance" value="1">
+              <label class="form-check-label" for="normalBalanceDebit">Debit</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="normalBalance" id="normalBalanceCredit"
+                     formControlName="normalBalance" value="2">
+              <label class="form-check-label" for="normalBalanceCredit">Credit</label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>

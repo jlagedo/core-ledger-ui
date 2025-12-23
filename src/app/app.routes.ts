@@ -1,20 +1,30 @@
 import { Routes } from '@angular/router';
-import { Dashboard } from './features/dashboard/dashboard';
-import { ChartOfAccounts } from './features/chart-of-accounts/chart-of-accounts';
-import { AccountForm } from './features/chart-of-accounts/account-form/account-form';
-import { JournalEntries } from './features/journal-entries/journal-entries';
-import { PostingPeriods } from './features/posting-periods/posting-periods';
-import { BalancesReports } from './features/balances-reports/balances-reports';
-import { Administration } from './features/administration/administration';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-    { path: 'dashboard', component: Dashboard },
-    { path: 'chart-of-accounts', component: ChartOfAccounts },
-    { path: 'chart-of-accounts/new', component: AccountForm },
-    { path: 'journal-entries', component: JournalEntries },
-    { path: 'posting-periods', component: PostingPeriods },
-    { path: 'balances-reports', component: BalancesReports },
-    { path: 'administration', component: Administration },
+    { 
+        path: 'dashboard', 
+        loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard)
+    },
+    { 
+        path: 'chart-of-accounts', 
+        loadChildren: () => import('./features/chart-of-accounts/chart-of-accounts.routes').then(m => m.CHART_OF_ACCOUNTS_ROUTES)
+    },
+    { 
+        path: 'journal-entries', 
+        loadComponent: () => import('./features/journal-entries/journal-entries').then(m => m.JournalEntries)
+    },
+    { 
+        path: 'posting-periods', 
+        loadComponent: () => import('./features/posting-periods/posting-periods').then(m => m.PostingPeriods)
+    },
+    { 
+        path: 'balances-reports', 
+        loadComponent: () => import('./features/balances-reports/balances-reports').then(m => m.BalancesReports)
+    },
+    { 
+        path: 'administration', 
+        loadComponent: () => import('./features/administration/administration').then(m => m.Administration)
+    },
     { path: '**', redirectTo: '/dashboard' }
 ];
