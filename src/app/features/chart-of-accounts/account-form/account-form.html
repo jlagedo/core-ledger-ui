@@ -119,7 +119,7 @@
         </div>
 
         <div class="d-flex gap-2">
-          <button type="submit" class="btn btn-primary" [disabled]="accountForm.invalid">Submit</button>
+          <button type="submit" class="btn btn-primary" [disabled]="accountForm.invalid || accountForm.pending">Submit</button>
           <button type="button" class="btn btn-secondary" (click)="clearForm()">Clear</button>
         </div>
       </form>
