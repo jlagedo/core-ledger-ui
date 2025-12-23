@@ -20,7 +20,7 @@ export class AccountForm implements OnInit {
   accountForm = this.formBuilder.group({
     accountNumber: ['', [Validators.required, Validators.maxLength(10)]],
     description: ['', Validators.required],
-    normalBalance: ['', Validators.required],
+    normalBalance: ['2', Validators.required],
     type: ['', Validators.required]
   });
 
