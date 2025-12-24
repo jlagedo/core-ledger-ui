@@ -13,8 +13,28 @@ export class AccountService {
   private readonly http = inject(HttpClient);
 
   // Account CRUD operations
-  getAccounts(): Observable<PaginatedResponse<Account>> {
-    return this.http.get<PaginatedResponse<Account>>(`${this.apiUrl}/accounts?limit=10`);
+  getAccounts(
+    limit: number = 100,
+    offset: number = 0,
+    sortBy?: string,
+    sortDirection: 'asc' | 'desc' = 'asc',
+    filter?: string
+  ): Observable<PaginatedResponse<Account>> {
+    const params: Record<string, string> = {
+      limit: limit.toString(),
+      offset: offset.toString(),
+      sortDirection,
+    };
+
+    if (sortBy) {
+      params['sortBy'] = sortBy;
+    }
+    if (filter) {
+      params['filter'] = filter;
+    }
+
+    const queryString = new URLSearchParams(params).toString();
+    return this.http.get<PaginatedResponse<Account>>(`${this.apiUrl}/accounts?${queryString}`);
   }
 
   getAccountById(id: number): Observable<Account> {
