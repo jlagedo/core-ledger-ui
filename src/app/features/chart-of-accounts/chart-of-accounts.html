@@ -1,15 +1,96 @@
-<main class="container py-4" aria-labelledby="page-title">
-    <!-- Header -->
-    <header class="row mb-4">
-        <div class="col">
-            <h1 id="page-title" class="h4 mb-0">Accounts</h1>
-        </div>
-    </header>
+<main class="container-fluid py-4">
 
-  <div class="col-4 text-end">
-    <a routerLink="/chart-of-accounts/new" class="btn btn-primary" aria-label="Create new account">
-      <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>New Account
-    </a>
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="mb-0 fw-semibold">Accounts</h3>
+      <small class="text-muted">Manage customer accounts and details</small>
+    </div>
+    <button class="btn btn-primary" routerLink="/chart-of-accounts/new" aria-label="Create new account">
+      <i class="bi bi-plus-lg me-1"></i> New Account
+    </button>
   </div>
 
+  <!-- Card Wrapper -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <!-- Toolbar -->
+      <div class="row g-3 align-items-center mb-3">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="bi bi-search"></i>
+            </span>
+            <input type="text" class="form-control" placeholder="Search accounts...">
+          </div>
+        </div>
+
+        <div class="col-md-8 text-end">
+          <div class="btn-group">
+            <button class="btn btn-outline-secondary">
+              <i class="bi bi-funnel"></i> Filters
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="bi bi-download"></i> Export
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-end">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+            @defer (on immediate) {
+              @for (account of accounts(); track account.id) {
+                <tr>
+                  <td>{{ account.code }}</td>
+                  <td>{{ account.name }}</td>
+                  <td>{{ account.typeDescription }}</td>
+                  <td>
+                <span [class]="account.status === 1 ? 'badge bg-success' : 'badge bg-secondary'">
+                  {{ account.statusDescription }}
+                </span>
+                  </td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-outline-secondary" [attr.aria-label]="'View account ' + account.name">
+                      View
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary" [attr.aria-label]="'Edit account ' + account.name">
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              }
+            } @loading {
+              <tr>
+                <td colspan="5" class="text-center py-5">
+                  <div class="spinner-border text-primary" role="status"></div>
+                  <div class="mt-2 text-muted">Loading accounts…</div>
+                </td>
+              </tr>
+            } @error {
+              <tr>
+                <td colspan="5" class="text-center text-danger py-5">
+                  Failed to load accounts.
+                </td>
+              </tr>
+            }
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
 </main>

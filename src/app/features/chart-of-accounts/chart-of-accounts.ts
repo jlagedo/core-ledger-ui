@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Account } from '../../models/account.model';
+import {AccountService} from '../../services/account';
+import {toSignal} from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chart-of-accounts',
@@ -10,5 +13,11 @@ import { Account } from '../../models/account.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartOfAccounts {
+  accountService = inject(AccountService);
+  accounts = toSignal(this.accountService.getAccounts().pipe(
+    map(response => response.items)
+  ));
+
+
 
 }

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Account, CreateAccount, UpdateAccount } from '../models/account.model';
+import { Account, CreateAccount, UpdateAccount, PaginatedResponse } from '../models/account.model';
 import { AccountType } from '../models/account_type.model';
 import { API_URL } from '../config/api.config';
 
@@ -13,8 +13,8 @@ export class AccountService {
   private readonly http = inject(HttpClient);
 
   // Account CRUD operations
-  getAccounts(): Observable<Account[]> {
-    return this.http.get<Account[]>(`${this.apiUrl}/accounts`);
+  getAccounts(): Observable<PaginatedResponse<Account>> {
+    return this.http.get<PaginatedResponse<Account>>(`${this.apiUrl}/accounts?limit=10`);
   }
 
   getAccountById(id: number): Observable<Account> {

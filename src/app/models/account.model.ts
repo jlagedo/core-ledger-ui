@@ -18,8 +18,15 @@ export interface Account {
     statusDescription: string;
     normalBalance: NormalBalance;
     normalBalanceDescription: string;
-    createdAt: Date;
-    updatedAt: Date | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface PaginatedResponse<T> {
+    items: T[];
+    totalCount: number;
+    limit: number;
+    offset: number;
 }
 
 export interface CreateAccount {
