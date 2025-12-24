@@ -1,4 +1,4 @@
-<main class="container-xl py-4" aria-labelledby="page-title">
+<main class="container py-4" aria-labelledby="page-title">
     <!-- Header -->
     <header class="row mb-4">
         <div class="col">
@@ -6,94 +6,10 @@
         </div>
     </header>
 
-    <!-- Search and New Account Button -->
-    <section class="row mb-3" aria-label="Account actions">
-        <div class="col-lg-8">
-            <div class="input-group">
-                <span class="input-group-text" aria-hidden="true">
-                    <i class="bi bi-search"></i>
-                </span>
-                <input type="search" class="form-control" placeholder="Search accounts..." aria-label="Search accounts"
-                    id="search-accounts" [value]="searchQuery()" (input)="onSearchChange($event)">
-            </div>
-        </div>
-        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-            <a routerLink="/chart-of-accounts/new" class="btn btn-primary" aria-label="Create new account">
-                <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>New Account
-            </a>
-        </div>
-    </section>
+  <div class="col-4 text-end">
+    <a routerLink="/chart-of-accounts/new" class="btn btn-primary" aria-label="Create new account">
+      <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>New Account
+    </a>
+  </div>
 
-    <!-- Accounts Table -->
-    <section class="card" aria-labelledby="accounts-table-title">
-        <div class="card-header border-bottom">
-            <h2 id="accounts-table-title" class="h6 mb-0">Chart of Accounts</h2>
-        </div>
-        <div class="card-body p-0">
-            @if (isLoading()) {
-            <div class="text-center py-5" role="status" aria-label="Loading accounts">
-                <div class="spinner-border text-primary" aria-hidden="true"></div>
-                <p class="mt-2 mb-0 text-muted">Loading accounts...</p>
-            </div>
-            } @else {
-            <div class="table-responsive">
-                <table class="table table-hover mb-0" aria-label="Accounts list">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col" class="fw-semibold">Code</th>
-                            <th scope="col" class="fw-semibold">Name</th>
-                            <th scope="col" class="fw-semibold">Type</th>
-                            <th scope="col" class="fw-semibold">Status</th>
-                            <th scope="col" class="fw-semibold text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (filteredAccounts().length === 0) {
-                        <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">
-                                @if (searchQuery()) {
-                                No accounts match your search.
-                                } @else {
-                                No accounts found.
-                                }
-                            </td>
-                        </tr>
-                        } @else {
-                        @for (account of filteredAccounts(); track account.id) {
-                        <tr>
-                            <th scope="row" class="fw-normal">{{ account.code }}</th>
-                            <td>{{ account.description }}</td>
-                            <td>
-                                <span class="badge bg-secondary">{{ account.type }}</span>
-                            </td>
-                            <td>
-                                <span class="badge" [class.bg-success]="account.isActive"
-                                    [class.bg-danger]="!account.isActive">
-                                    {{ account.isActive ? 'Active' : 'Inactive' }}
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <div class="btn-group btn-group-sm" role="group"
-                                    [attr.aria-label]="'Actions for ' + account.description">
-                                    <a [routerLink]="['/chart-of-accounts', account.id]"
-                                        class="btn btn-outline-secondary"
-                                        [attr.aria-label]="'View ' + account.description + ' details'">
-                                        <i class="bi bi-eye" aria-hidden="true"></i>
-                                    </a>
-                                    <a [routerLink]="['/chart-of-accounts', account.id, 'edit']"
-                                        class="btn btn-outline-primary"
-                                        [attr.aria-label]="'Edit ' + account.description">
-                                        <i class="bi bi-pencil" aria-hidden="true"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        }
-                        }
-                    </tbody>
-                </table>
-            </div>
-            }
-        </div>
-    </section>
 </main>

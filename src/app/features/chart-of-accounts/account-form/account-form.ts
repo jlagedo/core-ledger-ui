@@ -24,8 +24,7 @@ export class AccountForm implements OnInit {
     type: ['', Validators.required]
   });
 
-  accountTypes = toSignal(this.accountService.getAccountTypes()
-    , { initialValue: [] });
+  accountTypes = toSignal(this.accountService.getAccountTypes(), { initialValue: [] });
 
   ngOnInit(): void {
     console.log('ngOnInit');

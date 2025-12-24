@@ -34,7 +34,7 @@ export class AccountService {
 
   // Account Type CRUD operations
   getAccountTypes(): Observable<AccountType[]> {
-    return this.http.get<AccountType[]>(`${this.api_url}/account/types`);
+    return this.http.get<AccountType[]>(`${this.api_url}/accounttypes`);
   }
 
   getAccountTypeById(id: number): Observable<AccountType> {

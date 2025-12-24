@@ -42,6 +42,7 @@
 
             @defer (when accountTypes().length > 0) {
             <select class="form-select" id="accountType" formControlName="type" [class.is-invalid]="isInvalid('type')">
+              <option value="">Select account type</option>
               @for (t of accountTypes(); track t.id) {
               <option [value]="t.id">{{ t.description }}</option>
               }
