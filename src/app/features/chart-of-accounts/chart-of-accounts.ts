@@ -14,10 +14,16 @@ import { map } from 'rxjs/operators';
 })
 export class ChartOfAccounts {
   accountService = inject(AccountService);
-  accounts = toSignal(this.accountService.getAccounts().pipe(
+
+  accounts = toSignal(this.accountService.getAccounts(
+    20,
+    0,
+    'code',
+    'desc',
+    'name=17'
+  ).pipe(
     map(response => response.items)
   ));
-
 
 
 }
