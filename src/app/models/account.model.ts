@@ -15,7 +15,9 @@ export interface Account {
     typeId: number;
     typeDescription: string;
     status: AccountStatus;
+    statusDescription: string;
     normalBalance: NormalBalance;
+    normalBalanceDescription: string;
     createdAt: Date;
     updatedAt: Date | null;
 }
