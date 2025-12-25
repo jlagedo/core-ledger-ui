@@ -12,14 +12,24 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RouterLink} from '@angular/router';
 import {Account, PaginatedResponse} from '../../models/account.model';
 import {AccountService} from '../../services/account';
-import {NgbPagination} from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbDropdown,
+  NgbDropdownItem,
+  NgbDropdownMenu,
+  NgbDropdownToggle,
+  NgbModal,
+  NgbPagination
+} from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule} from '@angular/forms';
 import {SortableDirective, SortEvent} from '../../directives/sortable.directive';
 import {ChartOfAccountsStore} from './chart-of-accounts-store';
+import {DeactivateModal} from './deactivate-modal/deactivate-modal';
+import {ToastsContainer} from '../../layout/toasts-container/toasts-container';
+import {ToastService} from '../../services/toast-service';
 
 @Component({
   selector: 'app-chart-of-accounts',
-  imports: [RouterLink, NgbPagination, FormsModule, SortableDirective],
+  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, ToastsContainer],
   providers: [ChartOfAccountsStore],
   templateUrl: './chart-of-accounts.html',
   styleUrl: './chart-of-accounts.scss',
@@ -29,6 +39,8 @@ export class ChartOfAccounts {
   store = inject(ChartOfAccountsStore);
   accountService = inject(AccountService);
   destroyRef = inject(DestroyRef);
+  modal = inject(NgbModal);
+  toastService = inject(ToastService);
 
   accountsResponse = signal<PaginatedResponse<Account> | null>(null);
 
@@ -103,4 +115,32 @@ export class ChartOfAccounts {
     this.loadAccounts();
   }
 
+  openDeactivateModal(account: Account): void {
+    const modalRef = this.modal.open(DeactivateModal);
+    modalRef.componentInstance.account.set(account);
+
+    modalRef.result.then(
+      (result) => {
+        if (result === 'confirm') {
+          this.accountService.deactivateAccount(account.id)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: () => {
+                this.loadAccounts();
+                modalRef.close();
+                this.toastService.success(`Account "${account.name}" deactivated successfully`);
+              },
+              error: err => {
+                console.error('Failed to deactivate account:', err);
+                const errorMessage = err?.error?.message || err?.message || 'Failed to deactivate account. Please try again.';
+                this.toastService.error(errorMessage);
+              }
+            });
+        }
+      },
+      () => {
+        // Modal dismissed
+      }
+    );
+  }
 }

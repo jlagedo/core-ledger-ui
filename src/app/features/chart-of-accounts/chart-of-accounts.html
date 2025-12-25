@@ -18,7 +18,7 @@
 
         <div class="col-md-8 text-end">
           <div class="btn-group">
-            <button class="btn btn-outline-secondary">
+            <button class="btn btn-outline-secondary" >
               <i class="bi bi-funnel"></i> Filters
             </button>
             <button class="btn btn-outline-secondary">
@@ -33,7 +33,7 @@
 
       <!-- Table -->
       <div class="table-responsive">
-        <table class="table table-hover table-striped table-sm table-bordered">
+        <table class="table table-hover table-striped table-sm table-bordered" >
           <thead>
             <tr>
               <th scope="col" class="text-end" sortable="code" (sort)="onSort($event)">#</th>
@@ -53,7 +53,23 @@
               <td class="text-center">{{ account.typeDescription }}</td>
               <td class="text-center">{{ account.statusDescription }}</td>
               <td class="text-center">{{ account.normalBalanceDescription }}</td>
-              <td class="text-center">-</td>
+              <td class="text-center">
+
+                <div ngbDropdown class="d-inline-block" container="body">
+                  <button class="btn btn-sm" ngbDropdownToggle>
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+
+                  <div ngbDropdownMenu>
+                    <button ngbDropdownItem>View</button>
+                    <button ngbDropdownItem>Edit</button>
+                    <button ngbDropdownItem
+                            (click)="openDeactivateModal(account)"
+                            class="text-danger">Deactivate</button>
+                  </div>
+                </div>
+
+              </td>
             </tr>
             }
             } @loading {
@@ -96,4 +112,6 @@
 
     </div>
   </div>
+
+  <app-toasts-container aria-live="polite" aria-atomic="true"></app-toasts-container>
 </main>
