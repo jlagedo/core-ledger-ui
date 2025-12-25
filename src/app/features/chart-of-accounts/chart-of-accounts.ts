@@ -12,14 +12,21 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RouterLink} from '@angular/router';
 import {Account, PaginatedResponse} from '../../models/account.model';
 import {AccountService} from '../../services/account';
-import {NgbPagination} from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbDropdown,
+  NgbDropdownItem,
+  NgbDropdownMenu,
+  NgbDropdownToggle, NgbModal,
+  NgbPagination
+} from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule} from '@angular/forms';
 import {SortableDirective, SortEvent} from '../../directives/sortable.directive';
 import {ChartOfAccountsStore} from './chart-of-accounts-store';
+import {DeactivateModal} from './deactivate-modal/deactivate-modal';
 
 @Component({
   selector: 'app-chart-of-accounts',
-  imports: [RouterLink, NgbPagination, FormsModule, SortableDirective],
+  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem],
   providers: [ChartOfAccountsStore],
   templateUrl: './chart-of-accounts.html',
   styleUrl: './chart-of-accounts.scss',
@@ -29,6 +36,7 @@ export class ChartOfAccounts {
   store = inject(ChartOfAccountsStore);
   accountService = inject(AccountService);
   destroyRef = inject(DestroyRef);
+  modal = inject(NgbModal);
 
   accountsResponse = signal<PaginatedResponse<Account> | null>(null);
 
@@ -101,6 +109,23 @@ export class ChartOfAccounts {
   onPageSizeChange(newSize: number): void {
     this.store.setPageSize(newSize);
     this.loadAccounts();
+  }
+
+  openDeactivateModal(account: Account): void {
+    const modalRef = this.modal.open(DeactivateModal);
+    modalRef.componentInstance.account.set(account);
+
+    modalRef.result.then(
+      (result) => {
+        if (result === 'confirm') {
+          // Call your deactivation API here
+          console.log('Deactivating account:', account.id);
+        }
+      },
+      () => {
+        // Modal dismissed
+      }
+    );
   }
 
 }

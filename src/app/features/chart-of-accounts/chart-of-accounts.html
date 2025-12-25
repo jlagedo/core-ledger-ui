@@ -53,7 +53,23 @@
               <td class="text-center">{{ account.typeDescription }}</td>
               <td class="text-center">{{ account.statusDescription }}</td>
               <td class="text-center">{{ account.normalBalanceDescription }}</td>
-              <td class="text-center">-</td>
+              <td class="text-center">
+
+                <div ngbDropdown class="d-inline-block" container="body">
+                  <button class="btn btn-sm" ngbDropdownToggle>
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+
+                  <div ngbDropdownMenu>
+                    <button ngbDropdownItem>View</button>
+                    <button ngbDropdownItem>Edit</button>
+                    <button ngbDropdownItem
+                            (click)="openDeactivateModal(account)"
+                            class="text-danger">Deactivate</button>
+                  </div>
+                </div>
+
+              </td>
             </tr>
             }
             } @loading {

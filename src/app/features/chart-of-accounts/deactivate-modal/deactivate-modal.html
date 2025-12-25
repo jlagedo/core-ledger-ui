@@ -1,0 +1,34 @@
+<div class="modal-header">
+  <h5 class="modal-title">Confirm Deactivation</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+<div class="modal-body">
+  <p class="text-danger mb-3">Are you sure you want to deactivate the following account?</p>
+  
+  @if (account(); as acc) {
+    <div class="card">
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-4">Code:</dt>
+          <dd class="col-sm-8">{{ acc.code }}</dd>
+          
+          <dt class="col-sm-4">Name:</dt>
+          <dd class="col-sm-8"><strong>{{ acc.name }}</strong></dd>
+          
+          <dt class="col-sm-4">Type:</dt>
+          <dd class="col-sm-8">{{ acc.typeDescription }}</dd>
+          
+          <dt class="col-sm-4">Status:</dt>
+          <dd class="col-sm-8"><span class="badge bg-success">{{ acc.statusDescription }}</span></dd>
+          
+          <dt class="col-sm-4">Normal Balance:</dt>
+          <dd class="col-sm-8">{{ acc.normalBalanceDescription }}</dd>
+        </dl>
+      </div>
+    </div>
+  }
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
+  <button type="button" class="btn btn-danger" (click)="activeModal.close('confirm')">Deactivate</button>
+</div>
