@@ -16,7 +16,8 @@ import {
   NgbDropdown,
   NgbDropdownItem,
   NgbDropdownMenu,
-  NgbDropdownToggle, NgbModal,
+  NgbDropdownToggle,
+  NgbModal,
   NgbPagination
 } from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule} from '@angular/forms';
@@ -119,6 +120,15 @@ export class ChartOfAccounts {
       (result) => {
         if (result === 'confirm') {
           // Call your deactivation API here
+          this.accountService.deactivateAccount(account.id)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: () => {
+                this.loadAccounts();
+                modalRef.close();
+              },
+              error: err => console.error('Failed to deactivate account:', err)
+            });
           console.log('Deactivating account:', account.id);
         }
       },
