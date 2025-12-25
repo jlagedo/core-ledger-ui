@@ -24,10 +24,12 @@ import {FormsModule} from '@angular/forms';
 import {SortableDirective, SortEvent} from '../../directives/sortable.directive';
 import {ChartOfAccountsStore} from './chart-of-accounts-store';
 import {DeactivateModal} from './deactivate-modal/deactivate-modal';
+import {ToastsContainer} from '../../layout/toasts-container/toasts-container';
+import {ToastService} from '../../services/toast-service';
 
 @Component({
   selector: 'app-chart-of-accounts',
-  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem],
+  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, ToastsContainer],
   providers: [ChartOfAccountsStore],
   templateUrl: './chart-of-accounts.html',
   styleUrl: './chart-of-accounts.scss',
@@ -38,6 +40,7 @@ export class ChartOfAccounts {
   accountService = inject(AccountService);
   destroyRef = inject(DestroyRef);
   modal = inject(NgbModal);
+  toastService = inject(ToastService);
 
   accountsResponse = signal<PaginatedResponse<Account> | null>(null);
 
@@ -119,17 +122,20 @@ export class ChartOfAccounts {
     modalRef.result.then(
       (result) => {
         if (result === 'confirm') {
-          // Call your deactivation API here
           this.accountService.deactivateAccount(account.id)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
               next: () => {
                 this.loadAccounts();
                 modalRef.close();
+                this.toastService.success(`Account "${account.name}" deactivated successfully`);
               },
-              error: err => console.error('Failed to deactivate account:', err)
+              error: err => {
+                console.error('Failed to deactivate account:', err);
+                const errorMessage = err?.error?.message || err?.message || 'Failed to deactivate account. Please try again.';
+                this.toastService.error(errorMessage);
+              }
             });
-          console.log('Deactivating account:', account.id);
         }
       },
       () => {
@@ -137,5 +143,4 @@ export class ChartOfAccounts {
       }
     );
   }
-
 }
