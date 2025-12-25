@@ -1,7 +1,7 @@
-import {inject, Injectable} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
-import {toSignal} from '@angular/core/rxjs-interop';
-import {filter, map, switchMap} from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, switchMap } from 'rxjs';
 
 export interface Breadcrumb {
   label: string;
@@ -18,9 +18,12 @@ export class BreadCrumbService {
   breadcrumbs = toSignal(
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      map(() => this.createBreadcrumbs(this.activatedRoute.root))
+      map(() => {
+        const breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
+        return this.deduplicateBreadcrumbs(breadcrumbs);
+      })
     ),
-    {initialValue: []}
+    { initialValue: [] }
   );
 
   private createBreadcrumbs(
@@ -28,6 +31,10 @@ export class BreadCrumbService {
     url: string = '',
     breadcrumbs: Breadcrumb[] = []
   ): Breadcrumb[] {
+    if (breadcrumbs.length === 0 && url === '') {
+      breadcrumbs.push({ label: 'Home', url: '/dashboard' });
+    }
+
     const children: ActivatedRoute[] = route.children;
 
     if (children.length === 0) {
@@ -45,12 +52,23 @@ export class BreadCrumbService {
 
       const label = child.snapshot.data['breadcrumb'];
       if (label) {
-        breadcrumbs.push({label, url});
+        breadcrumbs.push({ label, url });
       }
 
       return this.createBreadcrumbs(child, url, breadcrumbs);
     }
 
     return breadcrumbs;
+  }
+
+  private deduplicateBreadcrumbs(breadcrumbs: Breadcrumb[]): Breadcrumb[] {
+    const seen = new Set<string>();
+    return breadcrumbs.filter(breadcrumb => {
+      if (seen.has(breadcrumb.url)) {
+        return false;
+      }
+      seen.add(breadcrumb.url);
+      return true;
+    });
   }
 }

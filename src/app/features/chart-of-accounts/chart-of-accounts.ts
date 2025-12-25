@@ -1,10 +1,11 @@
-import {ChangeDetectionStrategy, Component, computed, inject, QueryList, signal, ViewChildren} from '@angular/core';
-import {RouterLink} from '@angular/router';
-import {Account, PaginatedResponse} from '../../models/account.model';
-import {AccountService} from '../../services/account';
-import {NgbPagination} from '@ng-bootstrap/ng-bootstrap';
-import {FormsModule} from '@angular/forms';
-import {SortableDirective, SortEvent} from '../../directives/sortable.directive';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal, viewChildren } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { Account, PaginatedResponse } from '../../models/account.model';
+import { AccountService } from '../../services/account';
+import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
+import { SortableDirective, SortEvent } from '../../directives/sortable.directive';
 
 @Component({
   selector: 'app-chart-of-accounts',
@@ -15,20 +16,23 @@ import {SortableDirective, SortEvent} from '../../directives/sortable.directive'
 })
 export class ChartOfAccounts {
   accountService = inject(AccountService);
+  destroyRef = inject(DestroyRef);
 
   searchTerm = signal('');
   accountsResponse = signal<PaginatedResponse<Account> | null>(null);
   sortColumn = signal('code');
   sortDirection = signal<'asc' | 'desc'>('desc');
 
-  collectionSize = computed( () => this.accountsResponse()?.totalCount ?? 0);
+  collectionSize = computed(() => this.accountsResponse()?.totalCount ?? 0);
   page = signal(1);
   pageSize = signal(15);
 
-  @ViewChildren(SortableDirective) headers!: QueryList<SortableDirective>;
+  headers = viewChildren(SortableDirective);
 
   constructor() {
-    this.loadAccounts();
+    effect(() => {
+      this.loadAccounts();
+    });
   }
 
   onSearch(value: string): void {
@@ -39,7 +43,7 @@ export class ChartOfAccounts {
 
   onSort({ column, direction }: SortEvent): void {
     // Reset other headers
-    for (const header of this.headers) {
+    for (const header of this.headers()) {
       if (header.sortable !== column) {
         header.direction = '';
       }
@@ -53,12 +57,12 @@ export class ChartOfAccounts {
       this.sortColumn.set(column || 'code');
       this.sortDirection.set(direction);
     }
-    
+
     this.page.set(1);
     this.loadAccounts();
   }
 
-  public  loadAccounts(): void {
+  public loadAccounts(): void {
     const search = this.searchTerm();
     const filter = search ? `name=${search}` : undefined;
     const offset = (this.page() - 1) * this.pageSize();
@@ -69,9 +73,12 @@ export class ChartOfAccounts {
       this.sortColumn(),
       this.sortDirection(),
       filter
-    ).subscribe(response => {
-      this.accountsResponse.set(response);
-    });
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: response => this.accountsResponse.set(response),
+        error: err => console.error('Failed to load accounts:', err)
+      });
   }
 
   onPageSizeChange(): void {

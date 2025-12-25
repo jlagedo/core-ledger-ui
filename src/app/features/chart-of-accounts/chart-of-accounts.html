@@ -11,14 +11,8 @@
             <span class="input-group-text">
               <i class="bi bi-search"></i>
             </span>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Search accounts..."
-              #searchInput
-              [value]="searchTerm()"
-              (keydown.enter)="onSearch(searchInput.value)"
-              aria-label="Search accounts by description">
+            <input type="text" class="form-control" placeholder="Search accounts..." #searchInput [value]="searchTerm()"
+              (keydown.enter)="onSearch(searchInput.value)" aria-label="Search accounts by description">
           </div>
         </div>
 
@@ -41,40 +35,40 @@
       <div class="table-responsive">
         <table class="table table-hover table-striped table-sm table-bordered">
           <thead>
-          <tr>
-            <th scope="col" class="text-end" sortable="code" (sort)="onSort($event)">#</th>
-            <th scope="col" class="text-start" sortable="name" (sort)="onSort($event)">Name</th>
-            <th scope="col" class="text-center" sortable="typeid" (sort)="onSort($event)">Type</th>
-            <th scope="col" class="text-center" sortable="status" (sort)="onSort($event)">Status</th>
-            <th scope="col" class="text-center" sortable="normalbalance" (sort)="onSort($event)">Normal Balance</th>
-            <th scope="col" class="text-center">Actions</th>
-          </tr>
+            <tr>
+              <th scope="col" class="text-end" sortable="code" (sort)="onSort($event)">#</th>
+              <th scope="col" class="text-start" sortable="name" (sort)="onSort($event)">Name</th>
+              <th scope="col" class="text-center" sortable="typeid" (sort)="onSort($event)">Type</th>
+              <th scope="col" class="text-center" sortable="status" (sort)="onSort($event)">Status</th>
+              <th scope="col" class="text-center" sortable="normalbalance" (sort)="onSort($event)">Normal Balance</th>
+              <th scope="col" class="text-center">Actions</th>
+            </tr>
           </thead>
           <tbody class="table-group-divider">
             @defer (on immediate) {
-              @for (account of accountsResponse()?.items; track account.id) {
-                <tr>
-                  <td class="text-end">{{ account.code }}</td>
-                  <td class="text-start">{{ account.name }}</td>
-                  <td class="text-center">{{ account.typeDescription }}</td>
-                  <td class="text-center">{{ account.statusDescription }}</td>
-                  <td class="text-center">{{ account.normalBalanceDescription }}</td>
-                  <td class="text-center">-</td>
-                </tr>
-              }
+            @for (account of accountsResponse()?.items; track account.id) {
+            <tr>
+              <td class="text-end">{{ account.code }}</td>
+              <td class="text-start">{{ account.name }}</td>
+              <td class="text-center">{{ account.typeDescription }}</td>
+              <td class="text-center">{{ account.statusDescription }}</td>
+              <td class="text-center">{{ account.normalBalanceDescription }}</td>
+              <td class="text-center">-</td>
+            </tr>
+            }
             } @loading {
-              <tr>
-                <td colspan="6" class="text-center py-5">
-                  <div class="spinner-border text-primary" role="status"></div>
-                  <div class="mt-2 text-muted">Loading accounts…</div>
-                </td>
-              </tr>
+            <tr>
+              <td colspan="6" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <div class="mt-2 text-muted">Loading accounts…</div>
+              </td>
+            </tr>
             } @error {
-              <tr>
-                <td colspan="6" class="text-center text-danger py-5">
-                  Failed to load accounts.
-                </td>
-              </tr>
+            <tr>
+              <td colspan="6" class="text-center text-danger py-5">
+                Failed to load accounts.
+              </td>
+            </tr>
             }
 
           </tbody>
@@ -82,22 +76,15 @@
 
         <div class="d-flex justify-content-between p-2">
 
-          <ngb-pagination
-            [collectionSize]="collectionSize()"
-            [page]="page()"
-            [pageSize]="pageSize()"
-            (pageChange)="page.set($event); loadAccounts()"
-            [maxSize]="5"
-            [rotate]="true"
-            [boundaryLinks]="true"
-          >
+          <ngb-pagination [collectionSize]="collectionSize()" [page]="page()" [pageSize]="pageSize()"
+            (pageChange)="page.set($event); loadAccounts()" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
           </ngb-pagination>
           <span class="d-flex align-items-center text-muted">
             {{ collectionSize() }} total accounts
           </span>
 
-          <select class="form-select" style="width: auto" [ngModel]="pageSize()"
-                  (ngModelChange)="pageSize.set($event); onPageSizeChange()">
+          <select class="form-select page-size-select" [ngModel]="pageSize()"
+            (ngModelChange)="pageSize.set($event); onPageSizeChange()">
             <option [ngValue]="15">15 items per page</option>
             <option [ngValue]="50">50 items per page</option>
             <option [ngValue]="100">100 items per page</option>
