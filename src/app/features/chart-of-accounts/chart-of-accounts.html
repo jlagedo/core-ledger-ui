@@ -1,15 +1,4 @@
-<main class="container-fluid py-4">
-
-  <!-- Page Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h3 class="mb-0 fw-semibold">Accounts</h3>
-      <small class="text-muted">Manage customer accounts and details</small>
-    </div>
-    <button class="btn btn-primary" routerLink="/chart-of-accounts/new" aria-label="Create new account">
-      <i class="bi bi-plus-lg me-1"></i> New Account
-    </button>
-  </div>
+<main class="container-fluid">
 
   <!-- Card Wrapper -->
   <div class="card shadow-sm">
@@ -22,7 +11,14 @@
             <span class="input-group-text">
               <i class="bi bi-search"></i>
             </span>
-            <input type="text" class="form-control" placeholder="Search accounts...">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search accounts..."
+              #searchInput
+              [value]="searchTerm()"
+              (keydown.enter)="onSearch(searchInput.value)"
+              aria-label="Search accounts by description">
           </div>
         </div>
 
@@ -34,54 +30,48 @@
             <button class="btn btn-outline-secondary">
               <i class="bi bi-download"></i> Export
             </button>
+            <button class="btn btn-primary" routerLink="/chart-of-accounts/new" aria-label="Create new account">
+              <i class="bi bi-plus-lg me-1"></i> New Account
+            </button>
           </div>
         </div>
       </div>
 
       <!-- Table -->
       <div class="table-responsive">
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped table-sm table-bordered">
           <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Type</th>
-            <th scope="col">Status</th>
-            <th scope="col" class="text-end">Actions</th>
+            <th scope="col" class="text-end" sortable="code" (sort)="onSort($event)">#</th>
+            <th scope="col" class="text-start" sortable="name" (sort)="onSort($event)">Name</th>
+            <th scope="col" class="text-center" sortable="typeid" (sort)="onSort($event)">Type</th>
+            <th scope="col" class="text-center" sortable="status" (sort)="onSort($event)">Status</th>
+            <th scope="col" class="text-center" sortable="normalbalance" (sort)="onSort($event)">Normal Balance</th>
+            <th scope="col" class="text-center">Actions</th>
           </tr>
           </thead>
-          <tbody>
+          <tbody class="table-group-divider">
             @defer (on immediate) {
-              @for (account of accounts(); track account.id) {
+              @for (account of accountsResponse()?.items; track account.id) {
                 <tr>
-                  <td>{{ account.code }}</td>
-                  <td>{{ account.name }}</td>
-                  <td>{{ account.typeDescription }}</td>
-                  <td>
-                <span [class]="account.status === 1 ? 'badge bg-success' : 'badge bg-secondary'">
-                  {{ account.statusDescription }}
-                </span>
-                  </td>
-                  <td class="text-end">
-                    <button class="btn btn-sm btn-outline-secondary" [attr.aria-label]="'View account ' + account.name">
-                      View
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary" [attr.aria-label]="'Edit account ' + account.name">
-                      Edit
-                    </button>
-                  </td>
+                  <td class="text-end">{{ account.code }}</td>
+                  <td class="text-start">{{ account.name }}</td>
+                  <td class="text-center">{{ account.typeDescription }}</td>
+                  <td class="text-center">{{ account.statusDescription }}</td>
+                  <td class="text-center">{{ account.normalBalanceDescription }}</td>
+                  <td class="text-center">-</td>
                 </tr>
               }
             } @loading {
               <tr>
-                <td colspan="5" class="text-center py-5">
+                <td colspan="6" class="text-center py-5">
                   <div class="spinner-border text-primary" role="status"></div>
                   <div class="mt-2 text-muted">Loading accounts…</div>
                 </td>
               </tr>
             } @error {
               <tr>
-                <td colspan="5" class="text-center text-danger py-5">
+                <td colspan="6" class="text-center text-danger py-5">
                   Failed to load accounts.
                 </td>
               </tr>
@@ -89,6 +79,32 @@
 
           </tbody>
         </table>
+
+        <div class="d-flex justify-content-between p-2">
+
+          <ngb-pagination
+            [collectionSize]="collectionSize()"
+            [page]="page()"
+            [pageSize]="pageSize()"
+            (pageChange)="page.set($event); loadAccounts()"
+            [maxSize]="5"
+            [rotate]="true"
+            [boundaryLinks]="true"
+          >
+          </ngb-pagination>
+          <span class="d-flex align-items-center text-muted">
+            {{ collectionSize() }} total accounts
+          </span>
+
+          <select class="form-select" style="width: auto" [ngModel]="pageSize()"
+                  (ngModelChange)="pageSize.set($event); onPageSizeChange()">
+            <option [ngValue]="15">15 items per page</option>
+            <option [ngValue]="50">50 items per page</option>
+            <option [ngValue]="100">100 items per page</option>
+          </select>
+        </div>
+
+
       </div>
 
     </div>

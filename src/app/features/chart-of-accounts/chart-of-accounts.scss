@@ -1,0 +1,29 @@
+th[sortable] {
+  position: relative;
+  user-select: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 0.5em;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    opacity: 0.3;
+  }
+
+  &.asc::after {
+    border-bottom: 4px solid currentColor;
+    opacity: 1;
+  }
+
+  &.desc::after {
+    border-top: 4px solid currentColor;
+    opacity: 1;
+  }
+}
