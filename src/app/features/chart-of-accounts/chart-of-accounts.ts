@@ -24,12 +24,11 @@ import {FormsModule} from '@angular/forms';
 import {SortableDirective, SortEvent} from '../../directives/sortable.directive';
 import {ChartOfAccountsStore} from './chart-of-accounts-store';
 import {DeactivateModal} from './deactivate-modal/deactivate-modal';
-import {ToastsContainer} from '../../layout/toasts-container/toasts-container';
 import {ToastService} from '../../services/toast-service';
 
 @Component({
   selector: 'app-chart-of-accounts',
-  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, ToastsContainer],
+  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem],
   providers: [ChartOfAccountsStore],
   templateUrl: './chart-of-accounts.html',
   styleUrl: './chart-of-accounts.scss',

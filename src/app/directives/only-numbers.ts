@@ -6,7 +6,7 @@ import {Directive, HostListener} from '@angular/core';
 export class OnlyNumbers {
 
   private readonly allowedKeys = [
-    'Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'
+    'Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Enter'
   ];
 
   @HostListener('keydown', ['$event'])

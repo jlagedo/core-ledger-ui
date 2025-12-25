@@ -5,12 +5,20 @@
     </div>
     <div class="card-body">
 
+
       <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" novalidate>
         <div class="row mb-3">
           <div class="col-3">
             <label for="accountNumber" class="form-label">Number</label>
-            <input type="text" id="accountNumber" class="form-control" formControlName="accountNumber"
-              inputmode="numeric" pattern="[0-9]*" appOnlyNumbers [class.is-invalid]="isInvalid('accountNumber')">
+            <input type="text"
+                   id="accountNumber"
+                   class="form-control"
+                   formControlName="accountNumber"
+                   inputmode="numeric"
+                   pattern="[0-9]*"
+                   appOnlyNumbers
+                   autofocus
+                   [class.is-invalid]="isInvalid('accountNumber')">
             @if (isInvalid('accountNumber')) {
             <div class="invalid-feedback">
               @if (hasError('accountNumber', 'required')) {
@@ -92,12 +100,72 @@
 
         </div>
 
-        <div class="d-flex gap-2">
-          <button type="submit" class="btn btn-primary"
-            [disabled]="accountForm.invalid || accountForm.pending">Submit</button>
-          <button type="button" class="btn btn-secondary" (click)="clearForm()">Clear</button>
+        <!-- Loading Status Message -->
+        @if (submitStatus() === 'loading') {
+        <div class="alert alert-info d-flex align-items-center mb-3" role="status">
+          <div class="spinner-border spinner-border-sm me-2 text-primary" aria-hidden="true"></div>
+          <div>
+            Creating account...
+          </div>
+        </div>
+        }
+
+        <div class="d-flex gap-2 align-items-center mb-3">
+          <button type="submit" class="btn btn-primary position-relative"
+            [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            }
+            Submit
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelback()">
+            Cancel and Go Back
+          </button>
+          <button type="button" class="btn btn-outline-secondary"
+            [disabled]="isSubmitting()"
+            (click)="clearForm()">Clear</button>
         </div>
       </form>
+
+      <!-- ARIA Live Region for Screen Reader Announcements -->
+      <div class="visually-hidden" role="status" aria-live="polite" aria-atomic="true">
+        @if (submitStatus() === 'loading') {
+          Creating account, please wait...
+        }
+        @if (submitStatus() === 'success') {
+          Account created successfully. Redirecting to Chart of Accounts...
+        }
+        @if (submitStatus() === 'error') {
+          Error: {{ errorMessage() }}
+        }
+      </div>
+
+      <!-- Success Message -->
+      @if (submitStatus() === 'success') {
+        <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
+          <i class="bi bi-check-circle-fill fs-4 me-2" aria-hidden="true"></i>
+          <div>
+            <strong>Success!</strong> Account created successfully. Redirecting to Chart of Accounts...
+          </div>
+        </div>
+      }
+
+      <!-- Error Message -->
+      @if (submitStatus() === 'error') {
+        <div class="alert alert-danger d-flex align-items-start mb-3" role="alert">
+          <i class="bi bi-exclamation-triangle-fill fs-4 me-2 flex-shrink-0" aria-hidden="true"></i>
+          <div class="flex-grow-1">
+            <strong>Error!</strong> {{ errorMessage() }}
+            <div class="mt-2">
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="retrySubmit()">
+                <i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
     </div>
   </div>
 </div>
