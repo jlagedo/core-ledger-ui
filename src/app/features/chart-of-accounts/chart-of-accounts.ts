@@ -1,31 +1,38 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal, viewChildren } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
-import { Account, PaginatedResponse } from '../../models/account.model';
-import { AccountService } from '../../services/account';
-import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
-import { SortableDirective, SortEvent } from '../../directives/sortable.directive';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+  viewChildren
+} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {RouterLink} from '@angular/router';
+import {Account, PaginatedResponse} from '../../models/account.model';
+import {AccountService} from '../../services/account';
+import {NgbPagination} from '@ng-bootstrap/ng-bootstrap';
+import {FormsModule} from '@angular/forms';
+import {SortableDirective, SortEvent} from '../../directives/sortable.directive';
+import {ChartOfAccountsStore} from './chart-of-accounts-store';
 
 @Component({
   selector: 'app-chart-of-accounts',
   imports: [RouterLink, NgbPagination, FormsModule, SortableDirective],
+  providers: [ChartOfAccountsStore],
   templateUrl: './chart-of-accounts.html',
   styleUrl: './chart-of-accounts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartOfAccounts {
+  store = inject(ChartOfAccountsStore);
   accountService = inject(AccountService);
   destroyRef = inject(DestroyRef);
 
-  searchTerm = signal('');
   accountsResponse = signal<PaginatedResponse<Account> | null>(null);
-  sortColumn = signal('code');
-  sortDirection = signal<'asc' | 'desc'>('desc');
 
   collectionSize = computed(() => this.accountsResponse()?.totalCount ?? 0);
-  page = signal(1);
-  pageSize = signal(15);
 
   headers = viewChildren(SortableDirective);
 
@@ -33,15 +40,28 @@ export class ChartOfAccounts {
     effect(() => {
       this.loadAccounts();
     });
+
+    effect(() => {
+      const headers = this.headers();
+      const sortColumn = this.store.sortColumn();
+      const sortDirection = this.store.sortDirection();
+
+      for (const header of headers) {
+        if (header.sortable === sortColumn) {
+          header.direction = sortDirection;
+        } else {
+          header.direction = '';
+        }
+      }
+    });
   }
 
   onSearch(value: string): void {
-    this.searchTerm.set(value.trim());
-    this.page.set(1);
+    this.store.setSearchTerm(value.trim());
     this.loadAccounts();
   }
 
-  onSort({ column, direction }: SortEvent): void {
+  onSort({column, direction}: SortEvent): void {
     // Reset other headers
     for (const header of this.headers()) {
       if (header.sortable !== column) {
@@ -51,27 +71,24 @@ export class ChartOfAccounts {
 
     // If direction is empty, reset to default sorting
     if (direction === '') {
-      this.sortColumn.set('code');
-      this.sortDirection.set('desc');
+      this.store.resetSort();
     } else {
-      this.sortColumn.set(column || 'code');
-      this.sortDirection.set(direction);
+      this.store.setSort(column || 'code', direction);
     }
 
-    this.page.set(1);
     this.loadAccounts();
   }
 
   public loadAccounts(): void {
-    const search = this.searchTerm();
+    const search = this.store.searchTerm();
     const filter = search ? `name=${search}` : undefined;
-    const offset = (this.page() - 1) * this.pageSize();
+    const offset = (this.store.page() - 1) * this.store.pageSize();
 
     this.accountService.getAccounts(
-      this.pageSize(),
+      this.store.pageSize(),
       offset,
-      this.sortColumn(),
-      this.sortDirection(),
+      this.store.sortColumn(),
+      this.store.sortDirection(),
       filter
     )
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -81,8 +98,8 @@ export class ChartOfAccounts {
       });
   }
 
-  onPageSizeChange(): void {
-    this.page.set(1);
+  onPageSizeChange(newSize: number): void {
+    this.store.setPageSize(newSize);
     this.loadAccounts();
   }
 

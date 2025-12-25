@@ -11,7 +11,7 @@
             <span class="input-group-text">
               <i class="bi bi-search"></i>
             </span>
-            <input type="text" class="form-control" placeholder="Search accounts..." #searchInput [value]="searchTerm()"
+            <input type="text" class="form-control" placeholder="Search accounts..." #searchInput [value]="store.searchTerm()"
               (keydown.enter)="onSearch(searchInput.value)" aria-label="Search accounts by description">
           </div>
         </div>
@@ -76,15 +76,15 @@
 
         <div class="d-flex justify-content-between p-2">
 
-          <ngb-pagination [collectionSize]="collectionSize()" [page]="page()" [pageSize]="pageSize()"
-            (pageChange)="page.set($event); loadAccounts()" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+          <ngb-pagination [collectionSize]="collectionSize()" [page]="store.page()" [pageSize]="store.pageSize()"
+            (pageChange)="store.setPage($event); loadAccounts()" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
           </ngb-pagination>
           <span class="d-flex align-items-center text-muted">
             {{ collectionSize() }} total accounts
           </span>
 
-          <select class="form-select page-size-select" [ngModel]="pageSize()"
-            (ngModelChange)="pageSize.set($event); onPageSizeChange()">
+          <select class="form-select page-size-select" [ngModel]="store.pageSize()"
+            (ngModelChange)="onPageSizeChange($event)">
             <option [ngValue]="15">15 items per page</option>
             <option [ngValue]="50">50 items per page</option>
             <option [ngValue]="100">100 items per page</option>
