@@ -3,6 +3,11 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   {
+    path: 'auth0-demo',
+    data: { breadcrumb: 'Auth0 Demo' },
+    loadComponent: () => import('./components/auth0-demo.component').then(m => m.Auth0DemoComponent)
+  },
+  {
     path: 'dashboard',
     data: { breadcrumb: 'Dashboard' },
     loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard)
