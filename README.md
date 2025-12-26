@@ -2,6 +2,8 @@
 
 A modern, enterprise-grade accounting ledger application built with Angular 21. Core Ledger UI provides comprehensive accounting management features including chart of accounts, journal entries, posting periods, and financial reporting.
 
+https://github.com/user-attachments/assets/aba28667-f775-4824-beaa-c6dc95b71f4c
+
 ## 📋 Table of Contents
 
 - [Features](#features)
