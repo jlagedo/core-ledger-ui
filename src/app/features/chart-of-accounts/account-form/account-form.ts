@@ -3,15 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OnlyNumbers } from '../../../directives/only-numbers';
 import { AccountService } from '../../../services/account';
-import { AccountType } from '../../../models/account_type.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ToastService } from '../../../services/toast-service';
 import { AccountStatus, NormalBalance, CreateAccount } from '../../../models/account.model';
-import {Router, RouterLink} from '@angular/router';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-account-form',
-  imports: [CommonModule, ReactiveFormsModule, OnlyNumbers, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, OnlyNumbers],
   templateUrl: './account-form.html',
   styleUrl: './account-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
