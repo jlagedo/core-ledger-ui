@@ -1,11 +1,10 @@
 import { Component, signal, output, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NgClass } from '@angular/common';
 import { NgbCollapse, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-sidenav',
-  imports: [RouterModule, NgClass, NgbCollapse, NgbTooltip],
+  imports: [RouterModule, NgbCollapse, NgbTooltip],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

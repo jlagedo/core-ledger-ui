@@ -11,6 +11,7 @@ import {
 } from '../models/account.model';
 import { AccountType } from '../models/account_type.model';
 import { API_URL } from '../config/api.config';
+import { LoggerService } from './logger';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ import { API_URL } from '../config/api.config';
 export class AccountService {
   private readonly apiUrl = inject(API_URL);
   private readonly http = inject(HttpClient);
+  private readonly logger = inject(LoggerService);
 
   // Account CRUD operations
   getAccounts(
@@ -59,15 +61,18 @@ export class AccountService {
   deactivateAccount(id: number): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/accounts/${id}/deactivate`, null).pipe(
       catchError((error) => {
-        console.error(`Failed to deactivate account ${id}`);
-        console.error('Status:', error.status);
-        console.error('Error Code:', error.error?.errorCode);
-        console.error('Message:', error.error?.message);
-        console.error('Correlation ID:', error.error?.correlationId);
-        console.error('Trace ID:', error.error?.traceId);
-        if (error.error?.errors) {
-          console.error('Validation Errors:', error.error.errors);
-        }
+        this.logger.error(
+          `Failed to deactivate account ${id}`,
+          {
+            status: error.status,
+            errorCode: error.error?.errorCode,
+            message: error.error?.message,
+            correlationId: error.error?.correlationId,
+            traceId: error.error?.traceId,
+            validationErrors: error.error?.errors,
+          },
+          'AccountService.deactivateAccount'
+        );
         return throwError(() => error);
       })
     );

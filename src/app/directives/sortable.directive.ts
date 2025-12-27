@@ -1,4 +1,4 @@
-import { Directive, EventEmitter, Input, Output } from '@angular/core';
+import { Directive, Input, output } from '@angular/core';
 
 export type SortDirection = 'asc' | 'desc' | '';
 
@@ -23,9 +23,13 @@ export interface SortEvent {
   },
 })
 export class SortableDirective {
+  // Using @Input instead of input() because components programmatically set these values
+  // via viewChildren, which requires mutable properties
   @Input() sortable = '';
   @Input() direction: SortDirection = '';
-  @Output() sort = new EventEmitter<SortEvent>();
+
+  // output() works fine for events
+  sort = output<SortEvent>();
 
   rotate() {
     this.direction = rotate[this.direction];

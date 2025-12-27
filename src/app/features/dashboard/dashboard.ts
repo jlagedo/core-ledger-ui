@@ -2,6 +2,7 @@ import {Component, computed, DestroyRef, effect, inject, signal} from '@angular/
 import {AccountService} from "../../services/account";
 import {AccountsByTypeReportDto} from '../../models/account.model';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {LoggerService} from '../../services/logger';
 
 import {NgxEchartsDirective, provideEchartsCore} from 'ngx-echarts';
 // import echarts core
@@ -25,6 +26,7 @@ echarts.use([PieChart, GridComponent, CanvasRenderer]);
 export class Dashboard {
   accountService = inject(AccountService);
   destroyRef = inject(DestroyRef);
+  logger = inject(LoggerService);
 
   accountsByTypeReport = signal<AccountsByTypeReportDto[]>([]);
 
@@ -94,7 +96,7 @@ export class Dashboard {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: response => this.accountsByTypeReport.set(response),
-        error: err => console.error('Failed to load accounts by type report:', err)
+        error: err => this.logger.logHttpError('load accounts by type report', err, 'Failed to load dashboard data. Please refresh the page.')
       });
 
   }

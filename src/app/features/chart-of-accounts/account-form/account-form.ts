@@ -35,7 +35,7 @@ export class AccountForm implements OnInit {
   errorMessage = signal<string>('');
 
   ngOnInit(): void {
-    console.log('ngOnInit');
+    // Component initialization
   }
 
   onSubmit() {

@@ -24,6 +24,7 @@ import { FormsModule } from '@angular/forms';
 import { SortableDirective, SortEvent } from '../../directives/sortable.directive';
 import { FundsStore } from './funds-store';
 import { ToastService } from '../../services/toast-service';
+import { LoggerService } from '../../services/logger';
 
 @Component({
   selector: 'app-fund-list',
@@ -38,6 +39,7 @@ export class FundList {
   fundService = inject(FundService);
   destroyRef = inject(DestroyRef);
   toastService = inject(ToastService);
+  logger = inject(LoggerService);
 
   fundsResponse = signal<PaginatedResponse<Fund> | null>(null);
 
@@ -80,7 +82,7 @@ export class FundList {
     if (direction === '') {
       this.store.resetSort();
     } else {
-      this.store.setSort(column || 'name', direction);
+      this.store.setSort(column || 'Name', direction);
     }
 
     this.loadFunds();
@@ -101,7 +103,7 @@ export class FundList {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: response => this.fundsResponse.set(response),
-        error: err => console.error('Failed to load funds:', err)
+        error: err => this.logger.logHttpError('load funds', err, 'Failed to load funds. Please try again.')
       });
   }
 

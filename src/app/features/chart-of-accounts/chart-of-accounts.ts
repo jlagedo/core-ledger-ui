@@ -25,6 +25,7 @@ import {SortableDirective, SortEvent} from '../../directives/sortable.directive'
 import {ChartOfAccountsStore} from './chart-of-accounts-store';
 import {DeactivateModal} from './deactivate-modal/deactivate-modal';
 import {ToastService} from '../../services/toast-service';
+import {LoggerService} from '../../services/logger';
 
 @Component({
   selector: 'app-chart-of-accounts',
@@ -40,6 +41,7 @@ export class ChartOfAccounts {
   destroyRef = inject(DestroyRef);
   modal = inject(NgbModal);
   toastService = inject(ToastService);
+  logger = inject(LoggerService);
 
   accountsResponse = signal<PaginatedResponse<Account> | null>(null);
 
@@ -105,7 +107,7 @@ export class ChartOfAccounts {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: response => this.accountsResponse.set(response),
-        error: err => console.error('Failed to load accounts:', err)
+        error: err => this.logger.logHttpError('load accounts', err, 'Failed to load accounts. Please try again.')
       });
   }
 
@@ -130,8 +132,8 @@ export class ChartOfAccounts {
                 this.toastService.success(`Account "${account.name}" deactivated successfully`);
               },
               error: err => {
-                console.error('Failed to deactivate account:', err);
                 const errorMessage = err?.error?.message || err?.message || 'Failed to deactivate account. Please try again.';
+                this.logger.logHttpError('deactivate account', err, errorMessage, false);
                 this.toastService.error(errorMessage);
               }
             });

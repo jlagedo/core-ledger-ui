@@ -1,7 +1,11 @@
-import {Directive, HostListener} from '@angular/core';
+import { Directive } from '@angular/core';
 
 @Directive({
   selector: '[appOnlyNumbers]',
+  host: {
+    '(keydown)': 'onKeyDown($event)',
+    '(paste)': 'onPaste($event)'
+  }
 })
 export class OnlyNumbers {
 
@@ -9,7 +13,6 @@ export class OnlyNumbers {
     'Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Enter'
   ];
 
-  @HostListener('keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
     // Allow navigation/editing keys
     if (this.allowedKeys.includes(event.key)) {
@@ -22,7 +25,6 @@ export class OnlyNumbers {
     }
   }
 
-  @HostListener('paste', ['$event'])
   onPaste(event: ClipboardEvent) {
     const pasted = event.clipboardData?.getData('text') ?? '';
     if (!/^[0-9]+$/.test(pasted)) {
