@@ -1,0 +1,61 @@
+<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height: 100vh;">
+    <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" routerLink="/dashboard">
+        <img src="apple-touch-icon.png"
+             alt="Fluxo Logo"
+             width="32"
+             height="32"
+             class="me-2">
+        <span class="fs-4">Fluxo</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a class="nav-link text-white" routerLink="/dashboard" routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }" aria-current="page">
+                <i class="bi bi-grid-fill me-2"></i>
+                Overview
+            </a>
+        </li>
+        <li>
+            <a class="nav-link text-white" (click)="toggleLedger()" role="button" [attr.aria-expanded]="!isLedgerCollapsed()" aria-controls="ledgerSubmenu">
+                <i class="bi bi-book me-2"></i>
+                Ledger
+            </a>
+            <div [ngbCollapse]="isLedgerCollapsed()" id="ledgerSubmenu">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ms-3">
+                    <li>
+                        <a class="nav-link text-white" routerLink="/chart-of-accounts" routerLinkActive="active" 
+                           [routerLinkActiveOptions]="{ exact: true }">Chart of Accounts</a>
+                    </li>
+                    <li>
+                        <a class="nav-link text-white" routerLink="/chart-of-accounts/new" routerLinkActive="active">New Account</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li>
+            <a class="nav-link text-white" routerLink="/journal-entries" routerLinkActive="active">
+                <i class="bi bi-journal-text me-2"></i>
+                Journal
+            </a>
+        </li>
+        <li>
+            <a class="nav-link text-white" routerLink="/posting-periods" routerLinkActive="active">
+                <i class="bi bi-calendar3 me-2"></i>
+                Periods
+            </a>
+        </li>
+        <li>
+            <a class="nav-link text-white" routerLink="/balances-reports" routerLinkActive="active">
+                <i class="bi bi-graph-up me-2"></i>
+                Reports
+            </a>
+        </li>
+        <li>
+            <a class="nav-link text-white" routerLink="/administration" routerLinkActive="active">
+                <i class="bi bi-gear me-2"></i>
+                Settings
+            </a>
+        </li>
+    </ul>
+</div>
