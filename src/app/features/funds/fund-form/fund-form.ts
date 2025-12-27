@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FundService } from '../../../services/fund';
 import { ToastService } from '../../../services/toast-service';
 import { ValuationFrequency, CreateFund } from '../../../models/fund.model';
@@ -8,7 +9,7 @@ import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-fund-form',
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, NgbDatepickerModule],
     templateUrl: './fund-form.html',
     styleUrl: './fund-form.scss',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,7 +24,7 @@ export class FundForm implements OnInit {
         code: ['', [Validators.required, Validators.maxLength(10), Validators.pattern(/^[A-Z0-9]+$/)]],
         name: ['', [Validators.required, Validators.maxLength(200)]],
         baseCurrency: ['USD', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
-        inceptionDate: ['', Validators.required],
+        inceptionDate: [null as NgbDateStruct | null, Validators.required],
         valuationFrequency: ['1', Validators.required]
     });
 
@@ -31,8 +32,22 @@ export class FundForm implements OnInit {
     submitStatus = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
     errorMessage = signal<string>('');
 
+    private dateToNgbDate(date: Date): NgbDateStruct {
+        return {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate()
+        };
+    }
+
+    private ngbDateToISOString(date: NgbDateStruct): string {
+        const month = String(date.month).padStart(2, '0');
+        const day = String(date.day).padStart(2, '0');
+        return `${date.year}-${month}-${day}`;
+    }
+
     ngOnInit(): void {
-        const today = new Date().toISOString().split('T')[0];
+        const today = this.dateToNgbDate(new Date());
         this.fundForm.patchValue({ inceptionDate: today });
     }
 
@@ -56,7 +71,7 @@ export class FundForm implements OnInit {
             code: formValue.code!.toUpperCase(),
             name: formValue.name!,
             baseCurrency: formValue.baseCurrency!.toUpperCase(),
-            inceptionDate: formValue.inceptionDate!,
+            inceptionDate: this.ngbDateToISOString(formValue.inceptionDate!),
             valuationFrequency: Number(formValue.valuationFrequency) as ValuationFrequency
         };
 
@@ -88,7 +103,7 @@ export class FundForm implements OnInit {
     }
 
     clearForm() {
-        const today = new Date().toISOString().split('T')[0];
+        const today = this.dateToNgbDate(new Date());
         this.fundForm.reset({
             code: '',
             baseCurrency: 'USD',

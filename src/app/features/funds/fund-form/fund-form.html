@@ -62,10 +62,17 @@
 
                     <div class="col-8">
                         <label for="inceptionDate" class="form-label">Inception Date</label>
-                        <input type="date" id="inceptionDate" class="form-control" formControlName="inceptionDate"
-                            [class.is-invalid]="isInvalid('inceptionDate')">
+                        <div class="input-group">
+                            <input type="text" id="inceptionDate" class="form-control" formControlName="inceptionDate"
+                                ngbDatepicker #d="ngbDatepicker" placeholder="yyyy-mm-dd"
+                                [class.is-invalid]="isInvalid('inceptionDate')">
+                            <button class="btn btn-outline-secondary" type="button" (click)="d.toggle()"
+                                [attr.aria-label]="'Toggle calendar'">
+                                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            </button>
+                        </div>
                         @if (isInvalid('inceptionDate')) {
-                        <div class="invalid-feedback">
+                        <div class="invalid-feedback d-block">
                             @if (hasError('inceptionDate', 'required')) {
                             Inception date is required
                             }
