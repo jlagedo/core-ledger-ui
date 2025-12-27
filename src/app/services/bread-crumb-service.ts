@@ -31,10 +31,6 @@ export class BreadCrumbService {
     url: string = '',
     breadcrumbs: Breadcrumb[] = []
   ): Breadcrumb[] {
-    if (breadcrumbs.length === 0 && url === '') {
-      breadcrumbs.push({ label: 'Home', url: '/dashboard' });
-    }
-
     const children: ActivatedRoute[] = route.children;
 
     if (children.length === 0) {

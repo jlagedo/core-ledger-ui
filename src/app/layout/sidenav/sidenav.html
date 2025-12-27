@@ -43,7 +43,8 @@
             <a class="nav-link text-white d-flex align-items-center"
                 [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleFunds()" role="button"
                 [attr.aria-expanded]="!isFundsCollapsed()" aria-controls="fundsSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Funds' : ''" placement="end">
+                [ngbTooltip]="isSidenavCollapsed() ? 'Funds' : ''" placement="end"
+                routerLinkActive="border border-light bg-transparent">
                 <i class="bi bi-briefcase" [class.me-2]="!isSidenavCollapsed()"></i>
                 @if (!isSidenavCollapsed()) {
                 <span class="flex-grow-1">Funds</span>
@@ -84,7 +85,8 @@
             <a class="nav-link text-white d-flex align-items-center"
                 [class.justify-content-center]="isSidenavCollapsed()" (click)="togglePortfolio()" role="button"
                 [attr.aria-expanded]="!isPortfolioCollapsed()" aria-controls="portfolioSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Portfolio' : ''" placement="end">
+                [ngbTooltip]="isSidenavCollapsed() ? 'Portfolio' : ''" placement="end"
+                routerLinkActive="border border-light bg-transparent">
                 <i class="bi bi-folder" [class.me-2]="!isSidenavCollapsed()"></i>
                 @if (!isSidenavCollapsed()) {
                 <span class="flex-grow-1">Portfolio</span>
@@ -136,7 +138,8 @@
             <a class="nav-link text-white d-flex align-items-center"
                 [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleTransactions()"
                 role="button" [attr.aria-expanded]="!isTransactionsCollapsed()" aria-controls="transactionsSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Transactions' : ''" placement="end">
+                [ngbTooltip]="isSidenavCollapsed() ? 'Transactions' : ''" placement="end"
+                routerLinkActive="border border-light bg-transparent">
                 <i class="bi bi-arrow-left-right" [class.me-2]="!isSidenavCollapsed()"></i>
                 @if (!isSidenavCollapsed()) {
                 <span class="flex-grow-1">Transactions</span>
@@ -188,7 +191,8 @@
             <a class="nav-link text-white d-flex align-items-center"
                 [class.justify-content-center]="isSidenavCollapsed()" (click)="togglePricing()" role="button"
                 [attr.aria-expanded]="!isPricingCollapsed()" aria-controls="pricingSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Pricing & Valuation' : ''" placement="end">
+                [ngbTooltip]="isSidenavCollapsed() ? 'Pricing & Valuation' : ''" placement="end"
+                routerLinkActive="border border-light bg-transparent">
                 <i class="bi bi-currency-dollar" [class.me-2]="!isSidenavCollapsed()"></i>
                 @if (!isSidenavCollapsed()) {
                 <span class="flex-grow-1">Pricing & Valuation</span>
@@ -240,7 +244,8 @@
             <a class="nav-link text-white d-flex align-items-center"
                 [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleNav()" role="button"
                 [attr.aria-expanded]="!isNavCollapsed()" aria-controls="navSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'NAV' : ''" placement="end">
+                [ngbTooltip]="isSidenavCollapsed() ? 'NAV' : ''" placement="end"
+                routerLinkActive="border border-light bg-transparent">
                 <i class="bi bi-calculator" [class.me-2]="!isSidenavCollapsed()"></i>
                 @if (!isSidenavCollapsed()) {
                 <span class="flex-grow-1">NAV</span>
@@ -292,7 +297,8 @@
             <a class="nav-link text-white d-flex align-items-center"
                 [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleReports()" role="button"
                 [attr.aria-expanded]="!isReportsCollapsed()" aria-controls="reportsSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Reports' : ''" placement="end">
+                [ngbTooltip]="isSidenavCollapsed() ? 'Reports' : ''" placement="end"
+                routerLinkActive="border border-light bg-transparent">
                 <i class="bi bi-file-earmark-text" [class.me-2]="!isSidenavCollapsed()"></i>
                 @if (!isSidenavCollapsed()) {
                 <span class="flex-grow-1">Reports</span>
@@ -355,7 +361,8 @@
             <a class="nav-link text-white d-flex align-items-center"
                 [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleAdmin()" role="button"
                 [attr.aria-expanded]="!isAdminCollapsed()" aria-controls="adminSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Admin' : ''" placement="end">
+                [ngbTooltip]="isSidenavCollapsed() ? 'Admin' : ''" placement="end"
+                routerLinkActive="border border-light bg-transparent">
                 <i class="bi bi-gear" [class.me-2]="!isSidenavCollapsed()"></i>
                 @if (!isSidenavCollapsed()) {
                 <span class="flex-grow-1">Admin</span>
@@ -422,7 +429,8 @@
             <a class="nav-link text-white d-flex align-items-center"
                 [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleLedger()" role="button"
                 [attr.aria-expanded]="!isLedgerCollapsed()" aria-controls="ledgerSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Ledger' : ''" placement="end">
+                [ngbTooltip]="isSidenavCollapsed() ? 'Ledger' : ''" placement="end"
+                routerLinkActive="border border-light bg-transparent">
                 <i class="bi bi-book" [class.me-2]="!isSidenavCollapsed()"></i>
                 @if (!isSidenavCollapsed()) {
                 <span class="flex-grow-1">Ledger</span>

@@ -13,7 +13,7 @@ export const FUNDS_ROUTES: Routes = [
     },
     {
         path: 'list',
-        data: { breadcrumb: 'Funds' },
+        data: { breadcrumb: 'Fund List' },
         component: FundList
     },
     {

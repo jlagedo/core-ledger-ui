@@ -11,7 +11,7 @@ export const SECURITIES_ROUTES: Routes = [
   },
   {
     path: 'list',
-    data: { breadcrumb: 'Securities' },
+    data: { breadcrumb: 'Security List' },
     component: SecurityList
   },
   {

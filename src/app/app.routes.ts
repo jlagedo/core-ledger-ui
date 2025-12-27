@@ -49,12 +49,12 @@ export const routes: Routes = [
   },
   {
     path: 'journal-entries',
-    data: { breadcrumb: 'Journal Entries' },
+    data: { breadcrumb: 'Journal' },
     loadChildren: () => import('./features/journal-entries/journal-entries.routes').then(m => m.JOURNAL_ENTRIES_ROUTES)
   },
   {
     path: 'posting-periods',
-    data: { breadcrumb: 'Posting Periods' },
+    data: { breadcrumb: 'Periods' },
     loadChildren: () => import('./features/posting-periods/posting-periods.routes').then(m => m.POSTING_PERIODS_ROUTES)
   },
   {
