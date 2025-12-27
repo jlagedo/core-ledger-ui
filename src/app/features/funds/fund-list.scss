@@ -1,0 +1,27 @@
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+th[sortable] {
+  cursor: pointer;
+  user-select: none;
+}
+
+th[sortable].desc:before,
+th[sortable].asc:before {
+  content: '';
+  display: inline-block;
+  margin-right: 0.5em;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+
+th[sortable].desc:before {
+  border-top: 4px solid;
+}
+
+th[sortable].asc:before {
+  border-bottom: 4px solid;
+}

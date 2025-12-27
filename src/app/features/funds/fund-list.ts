@@ -1,14 +1,112 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+  viewChildren
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
+import { Fund, PaginatedResponse } from '../../models/fund.model';
+import { FundService } from '../../services/fund';
+import {
+  NgbDropdown,
+  NgbDropdownItem,
+  NgbDropdownMenu,
+  NgbDropdownToggle,
+  NgbPagination
+} from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
+import { SortableDirective, SortEvent } from '../../directives/sortable.directive';
+import { FundsStore } from './funds-store';
+import { ToastService } from '../../services/toast-service';
 
 @Component({
-    selector: 'app-fund-list',
-    imports: [],
-    template: `
-    <div class="container-fluid py-4">
-      <h1 class="mb-4">Fund List</h1>
-      <p class="text-muted">List of all funds</p>
-    </div>
-  `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-fund-list',
+  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, DatePipe],
+  providers: [FundsStore],
+  templateUrl: './fund-list.html',
+  styleUrl: './fund-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FundList { }
+export class FundList {
+  store = inject(FundsStore);
+  fundService = inject(FundService);
+  destroyRef = inject(DestroyRef);
+  toastService = inject(ToastService);
+
+  fundsResponse = signal<PaginatedResponse<Fund> | null>(null);
+
+  collectionSize = computed(() => this.fundsResponse()?.totalCount ?? 0);
+
+  headers = viewChildren(SortableDirective);
+
+  constructor() {
+    effect(() => {
+      this.loadFunds();
+    });
+
+    effect(() => {
+      const headers = this.headers();
+      const sortColumn = this.store.sortColumn();
+      const sortDirection = this.store.sortDirection();
+
+      for (const header of headers) {
+        if (header.sortable === sortColumn) {
+          header.direction = sortDirection;
+        } else {
+          header.direction = '';
+        }
+      }
+    });
+  }
+
+  onSearch(value: string): void {
+    this.store.setSearchTerm(value.trim());
+    this.loadFunds();
+  }
+
+  onSort({ column, direction }: SortEvent): void {
+    for (const header of this.headers()) {
+      if (header.sortable !== column) {
+        header.direction = '';
+      }
+    }
+
+    if (direction === '') {
+      this.store.resetSort();
+    } else {
+      this.store.setSort(column || 'name', direction);
+    }
+
+    this.loadFunds();
+  }
+
+  public loadFunds(): void {
+    const search = this.store.searchTerm();
+    const filter = search ? `name=${search}` : undefined;
+    const offset = (this.store.page() - 1) * this.store.pageSize();
+
+    this.fundService.getFunds(
+      this.store.pageSize(),
+      offset,
+      this.store.sortColumn(),
+      this.store.sortDirection(),
+      filter
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: response => this.fundsResponse.set(response),
+        error: err => console.error('Failed to load funds:', err)
+      });
+  }
+
+  onPageSizeChange(newSize: number): void {
+    this.store.setPageSize(newSize);
+    this.loadFunds();
+  }
+}

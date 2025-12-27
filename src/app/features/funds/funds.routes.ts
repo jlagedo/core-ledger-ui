@@ -3,16 +3,23 @@ import { Funds } from './funds';
 import { FundList } from './fund-list';
 import { FundDetails } from './fund-details';
 import { ShareClasses } from './share-classes';
+import { FundForm } from './fund-form/fund-form';
 
 export const FUNDS_ROUTES: Routes = [
     {
         path: '',
-        component: Funds,
+        redirectTo: 'list',
+        pathMatch: 'full'
     },
     {
         path: 'list',
-        data: { breadcrumb: 'Fund List' },
+        data: { breadcrumb: 'Funds' },
         component: FundList
+    },
+    {
+        path: 'new',
+        data: { breadcrumb: 'Create Fund' },
+        component: FundForm
     },
     {
         path: 'share-classes',
