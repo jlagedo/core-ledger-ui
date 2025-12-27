@@ -11,7 +11,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RouterLink} from '@angular/router';
 import {DatePipe} from '@angular/common';
-import {Security, PaginatedResponse} from '../../../models/security.model';
+import {PaginatedResponse, Security} from '../../../models/security.model';
 import {SecurityService} from '../../../services/security';
 import {
   NgbDropdown,
@@ -21,7 +21,7 @@ import {
   NgbModal,
   NgbPagination
 } from '@ng-bootstrap/ng-bootstrap';
-import {FormsModule, NgModel} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {SortableDirective, SortEvent} from '../../../directives/sortable.directive';
 import {SecuritiesStore} from './securities-store';
 import {DeactivateModal} from './deactivate-modal/deactivate-modal';

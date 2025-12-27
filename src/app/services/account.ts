@@ -1,17 +1,17 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 import {
   Account,
+  AccountsByTypeReportDto,
   CreateAccount,
-  UpdateAccount,
   PaginatedResponse,
-  AccountsByTypeReportDto
+  UpdateAccount
 } from '../models/account.model';
-import { AccountType } from '../models/account_type.model';
-import { API_URL } from '../config/api.config';
-import { LoggerService } from './logger';
+import {AccountType} from '../models/account_type.model';
+import {API_URL} from '../config/api.config';
+import {LoggerService} from './logger';
 
 @Injectable({
   providedIn: 'root',

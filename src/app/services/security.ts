@@ -1,18 +1,13 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { API_URL } from '../config/api.config';
-import {
-  Security,
-  PaginatedResponse,
-  CreateSecurity,
-  UpdateSecurity,
-} from '../models/security.model';
-import { SecurityType } from '../models/security_type.model';
-import { LoggerService } from './logger';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
+import {API_URL} from '../config/api.config';
+import {CreateSecurity, PaginatedResponse, Security, UpdateSecurity,} from '../models/security.model';
+import {SecurityType} from '../models/security_type.model';
+import {LoggerService} from './logger';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class SecurityService {
   private readonly apiUrl = inject(API_URL);
   private readonly http = inject(HttpClient);

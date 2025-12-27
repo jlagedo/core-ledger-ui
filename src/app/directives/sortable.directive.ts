@@ -1,4 +1,4 @@
-import { Directive, Input, output } from '@angular/core';
+import {Directive, Input, output} from '@angular/core';
 
 export type SortDirection = 'asc' | 'desc' | '';
 
@@ -33,6 +33,6 @@ export class SortableDirective {
 
   rotate() {
     this.direction = rotate[this.direction];
-    this.sort.emit({ column: this.sortable, direction: this.direction });
+    this.sort.emit({column: this.sortable, direction: this.direction});
   }
 }

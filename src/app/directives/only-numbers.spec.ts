@@ -1,4 +1,4 @@
-import { OnlyNumbers } from './only-numbers';
+import {OnlyNumbers} from './only-numbers';
 
 describe('OnlyNumbers', () => {
   it('should create an instance', () => {

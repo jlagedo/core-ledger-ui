@@ -1,507 +1,512 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark transition-all border-end border-tertiary"
-    [style.width]="isSidenavCollapsed() ? '70px' : '280px'" style="height: 100vh;"
-    [attr.aria-label]="isSidenavCollapsed() ? 'Collapsed sidenav' : 'Expanded sidenav'">
+<div [attr.aria-label]="isSidenavCollapsed() ? 'Collapsed sidenav' : 'Expanded sidenav'"
+     [style.width]="isSidenavCollapsed() ? '70px' : '280px'" class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark transition-all border-end border-tertiary"
+     style="height: 100vh;">
 
-    <!-- Logo & Toggle Section -->
-    <div class="d-flex align-items-center mb-3"
-        [class.justify-content-between]="!isSidenavCollapsed()" [class.justify-content-center]="isSidenavCollapsed()">
-        <a class="d-flex align-items-center text-white text-decoration-none"
-            [routerLink]="isSidenavCollapsed() ? null : '/dashboard'" (click)="handleLogoClick($event)"
-            [class.cursor-pointer]="isSidenavCollapsed()" [attr.role]="isSidenavCollapsed() ? 'button' : null"
-            [attr.aria-label]="isSidenavCollapsed() ? 'Expand sidenav' : 'Go to dashboard'" tabindex="0">
-            <img src="apple-touch-icon.png" alt="Fluxo Logo" width="32" height="32"
-                [class.me-2]="!isSidenavCollapsed()">
-            @if (!isSidenavCollapsed()) {
-            <span class="fs-4">Fluxo</span>
-            }
-        </a>
+  <!-- Logo & Toggle Section -->
+  <div [class.justify-content-between]="!isSidenavCollapsed()"
+       [class.justify-content-center]="isSidenavCollapsed()" class="d-flex align-items-center mb-3">
+    <a (click)="handleLogoClick($event)"
+       [attr.aria-label]="isSidenavCollapsed() ? 'Expand sidenav' : 'Go to dashboard'" [attr.role]="isSidenavCollapsed() ? 'button' : null"
+       [class.cursor-pointer]="isSidenavCollapsed()" [routerLink]="isSidenavCollapsed() ? null : '/dashboard'"
+       class="d-flex align-items-center text-white text-decoration-none" tabindex="0">
+      <img [class.me-2]="!isSidenavCollapsed()" alt="Fluxo Logo" height="32" src="apple-touch-icon.png"
+           width="32">
+      @if (!isSidenavCollapsed()) {
+        <span class="fs-4">Fluxo</span>
+      }
+    </a>
+    @if (!isSidenavCollapsed()) {
+      <button (click)="toggleSidenav()" [attr.aria-expanded]="true"
+              [attr.aria-label]="'Collapse sidenav'" class="btn btn-link text-white p-0 border-0">
+        <i class="bi bi-x-lg" style="font-size: 1.5rem;"></i>
+      </button>
+    }
+  </div>
+  <hr>
+  <!-- Navigation Menu -->
+  <ul class="nav nav-pills flex-column mb-auto">
+    <!-- Overview -->
+    <li class="nav-item">
+      <a [class.justify-content-center]="isSidenavCollapsed()"
+         [ngbTooltip]="isSidenavCollapsed() ? 'Overview' : ''" [routerLinkActiveOptions]="{ exact: true }"
+         aria-current="page" class="nav-link text-white d-flex align-items-center" placement="end"
+         routerLink="/dashboard" routerLinkActive="active">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-grid-fill"></i>
         @if (!isSidenavCollapsed()) {
-        <button class="btn btn-link text-white p-0 border-0" (click)="toggleSidenav()"
-            [attr.aria-label]="'Collapse sidenav'" [attr.aria-expanded]="true">
-            <i class="bi bi-x-lg" style="font-size: 1.5rem;"></i>
-        </button>
+          <span>Overview</span>
         }
-    </div>
-    <hr>
-    <!-- Navigation Menu -->
-    <ul class="nav nav-pills flex-column mb-auto">
-        <!-- Overview -->
-        <li class="nav-item">
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" routerLink="/dashboard"
-                routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-current="page"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Overview' : ''" placement="end">
-                <i class="bi bi-grid-fill" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span>Overview</span>
-                }
-            </a>
-        </li>
+      </a>
+    </li>
 
-        <!-- Funds with Submenu -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleFunds()" role="button"
-                [attr.aria-expanded]="!isFundsCollapsed()" aria-controls="fundsSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Funds' : ''" placement="end"
-                routerLinkActive="border border-light bg-transparent">
-                <i class="bi bi-briefcase" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span class="flex-grow-1">Funds</span>
-                <i class="bi" [class.bi-chevron-right]="isFundsCollapsed()" [class.bi-chevron-down]="!isFundsCollapsed()"></i>
-                }
+    <!-- Funds with Submenu -->
+    <li>
+      <a (click)="toggleFunds()"
+         [attr.aria-expanded]="!isFundsCollapsed()" [class.justify-content-center]="isSidenavCollapsed()" [ngbTooltip]="isSidenavCollapsed() ? 'Funds' : ''"
+         aria-controls="fundsSubmenu" class="nav-link text-white d-flex align-items-center"
+         placement="end" role="button"
+         routerLinkActive="border border-light bg-transparent">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-briefcase"></i>
+        @if (!isSidenavCollapsed()) {
+          <span class="flex-grow-1">Funds</span>
+          <i [class.bi-chevron-down]="!isFundsCollapsed()" [class.bi-chevron-right]="isFundsCollapsed()" class="bi"></i>
+        }
+      </a>
+      <div [ngbCollapse]="isFundsCollapsed()" id="fundsSubmenu">
+        <ul [class.ms-3]="!isSidenavCollapsed()"
+            class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Fund List' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/funds/list"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Fund List</span>
+              }
             </a>
-            <div [ngbCollapse]="isFundsCollapsed()" id="fundsSubmenu">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
-                    [class.ms-3]="!isSidenavCollapsed()">
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/funds/list"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Fund List' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Fund List</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/funds/share-classes"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Share Classes' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Share Classes</span>
-                            }
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-
-        <!-- Portfolio with Submenu -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" (click)="togglePortfolio()" role="button"
-                [attr.aria-expanded]="!isPortfolioCollapsed()" aria-controls="portfolioSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Portfolio' : ''" placement="end"
-                routerLinkActive="border border-light bg-transparent">
-                <i class="bi bi-folder" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span class="flex-grow-1">Portfolio</span>
-                <i class="bi" [class.bi-chevron-right]="isPortfolioCollapsed()" [class.bi-chevron-down]="!isPortfolioCollapsed()"></i>
-                }
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Share Classes' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/funds/share-classes"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Share Classes</span>
+              }
             </a>
-            <div [ngbCollapse]="isPortfolioCollapsed()" id="portfolioSubmenu">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
-                    [class.ms-3]="!isSidenavCollapsed()">
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/portfolio/holdings"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Holdings' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Holdings</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/portfolio/cash-ledger"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Cash Ledger' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Cash Ledger</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/portfolio/valuation"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Valuation Summary' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Valuation Summary</span>
-                            }
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+          </li>
+        </ul>
+      </div>
+    </li>
 
-        <!-- Transactions with Submenu -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleTransactions()"
-                role="button" [attr.aria-expanded]="!isTransactionsCollapsed()" aria-controls="transactionsSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Transactions' : ''" placement="end"
-                routerLinkActive="border border-light bg-transparent">
-                <i class="bi bi-arrow-left-right" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span class="flex-grow-1">Transactions</span>
-                <i class="bi" [class.bi-chevron-right]="isTransactionsCollapsed()" [class.bi-chevron-down]="!isTransactionsCollapsed()"></i>
-                }
+    <!-- Portfolio with Submenu -->
+    <li>
+      <a (click)="togglePortfolio()"
+         [attr.aria-expanded]="!isPortfolioCollapsed()" [class.justify-content-center]="isSidenavCollapsed()" [ngbTooltip]="isSidenavCollapsed() ? 'Portfolio' : ''"
+         aria-controls="portfolioSubmenu" class="nav-link text-white d-flex align-items-center"
+         placement="end" role="button"
+         routerLinkActive="border border-light bg-transparent">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-folder"></i>
+        @if (!isSidenavCollapsed()) {
+          <span class="flex-grow-1">Portfolio</span>
+          <i [class.bi-chevron-down]="!isPortfolioCollapsed()" [class.bi-chevron-right]="isPortfolioCollapsed()"
+             class="bi"></i>
+        }
+      </a>
+      <div [ngbCollapse]="isPortfolioCollapsed()" id="portfolioSubmenu">
+        <ul [class.ms-3]="!isSidenavCollapsed()"
+            class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Holdings' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/portfolio/holdings"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Holdings</span>
+              }
             </a>
-            <div [ngbCollapse]="isTransactionsCollapsed()" id="transactionsSubmenu">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
-                    [class.ms-3]="!isSidenavCollapsed()">
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/transactions/capture"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Capture Transaction' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Capture Transaction</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/transactions/ledger"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Transaction Ledger' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Transaction Ledger</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/transactions/import"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Import' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Import</span>
-                            }
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-
-        <!-- Pricing & Valuation with Submenu -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" (click)="togglePricing()" role="button"
-                [attr.aria-expanded]="!isPricingCollapsed()" aria-controls="pricingSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Pricing & Valuation' : ''" placement="end"
-                routerLinkActive="border border-light bg-transparent">
-                <i class="bi bi-currency-dollar" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span class="flex-grow-1">Pricing & Valuation</span>
-                <i class="bi" [class.bi-chevron-right]="isPricingCollapsed()" [class.bi-chevron-down]="!isPricingCollapsed()"></i>
-                }
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Cash Ledger' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/portfolio/cash-ledger"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Cash Ledger</span>
+              }
             </a>
-            <div [ngbCollapse]="isPricingCollapsed()" id="pricingSubmenu">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
-                    [class.ms-3]="!isSidenavCollapsed()">
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center"
-                            routerLink="/pricing-valuation/load-prices" routerLinkActive="active"
-                            [ngbTooltip]="isSidenavCollapsed() ? 'Load Prices' : ''" placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Load Prices</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center"
-                            routerLink="/pricing-valuation/price-history" routerLinkActive="active"
-                            [ngbTooltip]="isSidenavCollapsed() ? 'Price History' : ''" placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Price History</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center"
-                            routerLink="/pricing-valuation/run-valuation" routerLinkActive="active"
-                            [ngbTooltip]="isSidenavCollapsed() ? 'Run Valuation' : ''" placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Run Valuation</span>
-                            }
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-
-        <!-- NAV with Submenu -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleNav()" role="button"
-                [attr.aria-expanded]="!isNavCollapsed()" aria-controls="navSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'NAV' : ''" placement="end"
-                routerLinkActive="border border-light bg-transparent">
-                <i class="bi bi-calculator" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span class="flex-grow-1">NAV</span>
-                <i class="bi" [class.bi-chevron-right]="isNavCollapsed()" [class.bi-chevron-down]="!isNavCollapsed()"></i>
-                }
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Valuation Summary' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/portfolio/valuation"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Valuation Summary</span>
+              }
             </a>
-            <div [ngbCollapse]="isNavCollapsed()" id="navSubmenu">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
-                    [class.ms-3]="!isSidenavCollapsed()">
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/nav/calculation"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'NAV Calculation' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>NAV Calculation</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/nav/history"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'NAV History' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>NAV History</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/nav/breakdown"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'NAV Breakdown' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>NAV Breakdown</span>
-                            }
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+          </li>
+        </ul>
+      </div>
+    </li>
 
-        <!-- Reports with Submenu -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleReports()" role="button"
-                [attr.aria-expanded]="!isReportsCollapsed()" aria-controls="reportsSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Reports' : ''" placement="end"
-                routerLinkActive="border border-light bg-transparent">
-                <i class="bi bi-file-earmark-text" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span class="flex-grow-1">Reports</span>
-                <i class="bi" [class.bi-chevron-right]="isReportsCollapsed()" [class.bi-chevron-down]="!isReportsCollapsed()"></i>
-                }
+    <!-- Transactions with Submenu -->
+    <li>
+      <a (click)="toggleTransactions()"
+         [attr.aria-expanded]="!isTransactionsCollapsed()" [class.justify-content-center]="isSidenavCollapsed()"
+         [ngbTooltip]="isSidenavCollapsed() ? 'Transactions' : ''" aria-controls="transactionsSubmenu" class="nav-link text-white d-flex align-items-center"
+         placement="end" role="button"
+         routerLinkActive="border border-light bg-transparent">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-arrow-left-right"></i>
+        @if (!isSidenavCollapsed()) {
+          <span class="flex-grow-1">Transactions</span>
+          <i [class.bi-chevron-down]="!isTransactionsCollapsed()" [class.bi-chevron-right]="isTransactionsCollapsed()"
+             class="bi"></i>
+        }
+      </a>
+      <div [ngbCollapse]="isTransactionsCollapsed()" id="transactionsSubmenu">
+        <ul [class.ms-3]="!isSidenavCollapsed()"
+            class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Capture Transaction' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/transactions/capture"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Capture Transaction</span>
+              }
             </a>
-            <div [ngbCollapse]="isReportsCollapsed()" id="reportsSubmenu">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
-                    [class.ms-3]="!isSidenavCollapsed()">
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/reports/holdings"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Holdings Report' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Holdings Report</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/reports/cash"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Cash Report' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Cash Report</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/reports/transactions"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Transaction Report' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Transaction Report</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/reports/nav"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'NAV Report' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>NAV Report</span>
-                            }
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-
-        <!-- Admin / Reference Data with Submenu -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleAdmin()" role="button"
-                [attr.aria-expanded]="!isAdminCollapsed()" aria-controls="adminSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Admin' : ''" placement="end"
-                routerLinkActive="border border-light bg-transparent">
-                <i class="bi bi-gear" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span class="flex-grow-1">Admin</span>
-                <i class="bi" [class.bi-chevron-right]="isAdminCollapsed()" [class.bi-chevron-down]="!isAdminCollapsed()"></i>
-                }
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Transaction Ledger' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/transactions/ledger"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Transaction Ledger</span>
+              }
             </a>
-            <div [ngbCollapse]="isAdminCollapsed()" id="adminSubmenu">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
-                    [class.ms-3]="!isSidenavCollapsed()">
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/admin/securities"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Securities' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Securities</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/admin/pricing-sources"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Pricing Sources' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Pricing Sources</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/admin/currencies"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Currencies' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Currencies</span>
-                            }
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/admin/users"
-                            routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Users' : ''"
-                            placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Users</span>
-                            }
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-
-        <li>
-            <hr class="my-2 border-secondary">
-        </li>
-
-        <!-- Ledger with Submenu -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" (click)="toggleLedger()" role="button"
-                [attr.aria-expanded]="!isLedgerCollapsed()" aria-controls="ledgerSubmenu"
-                [ngbTooltip]="isSidenavCollapsed() ? 'Ledger' : ''" placement="end"
-                routerLinkActive="border border-light bg-transparent">
-                <i class="bi bi-book" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span class="flex-grow-1">Ledger</span>
-                <i class="bi" [class.bi-chevron-right]="isLedgerCollapsed()" [class.bi-chevron-down]="!isLedgerCollapsed()"></i>
-                }
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Import' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/transactions/import"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Import</span>
+              }
             </a>
-            <div [ngbCollapse]="isLedgerCollapsed()" id="ledgerSubmenu">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small"
-                    [class.ms-3]="!isSidenavCollapsed()">
-                    <li>
-                        <a class="nav-link text-white d-flex align-items-center" routerLink="/chart-of-accounts"
-                            routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-                            [ngbTooltip]="isSidenavCollapsed() ? 'Chart of Accounts' : ''" placement="end">
-                            @if (isSidenavCollapsed()) {
-                            <span class="submenu-indicator"></span>
-                            } @else {
-                            <span>Chart of Accounts</span>
-                            }
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+          </li>
+        </ul>
+      </div>
+    </li>
 
-        <!-- Journal -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" routerLink="/journal-entries"
-                routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Journal' : ''" placement="end">
-                <i class="bi bi-journal-text" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span>Journal</span>
-                }
+    <!-- Pricing & Valuation with Submenu -->
+    <li>
+      <a (click)="togglePricing()"
+         [attr.aria-expanded]="!isPricingCollapsed()" [class.justify-content-center]="isSidenavCollapsed()" [ngbTooltip]="isSidenavCollapsed() ? 'Pricing & Valuation' : ''"
+         aria-controls="pricingSubmenu" class="nav-link text-white d-flex align-items-center"
+         placement="end" role="button"
+         routerLinkActive="border border-light bg-transparent">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-currency-dollar"></i>
+        @if (!isSidenavCollapsed()) {
+          <span class="flex-grow-1">Pricing & Valuation</span>
+          <i [class.bi-chevron-down]="!isPricingCollapsed()" [class.bi-chevron-right]="isPricingCollapsed()"
+             class="bi"></i>
+        }
+      </a>
+      <div [ngbCollapse]="isPricingCollapsed()" id="pricingSubmenu">
+        <ul [class.ms-3]="!isSidenavCollapsed()"
+            class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Load Prices' : ''"
+               class="nav-link text-white d-flex align-items-center" placement="end"
+               routerLink="/pricing-valuation/load-prices" routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Load Prices</span>
+              }
             </a>
-        </li>
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Price History' : ''"
+               class="nav-link text-white d-flex align-items-center" placement="end"
+               routerLink="/pricing-valuation/price-history" routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Price History</span>
+              }
+            </a>
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Run Valuation' : ''"
+               class="nav-link text-white d-flex align-items-center" placement="end"
+               routerLink="/pricing-valuation/run-valuation" routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Run Valuation</span>
+              }
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
 
-        <!-- Periods -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" routerLink="/posting-periods"
-                routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Periods' : ''" placement="end">
-                <i class="bi bi-calendar3" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span>Periods</span>
-                }
+    <!-- NAV with Submenu -->
+    <li>
+      <a (click)="toggleNav()"
+         [attr.aria-expanded]="!isNavCollapsed()" [class.justify-content-center]="isSidenavCollapsed()" [ngbTooltip]="isSidenavCollapsed() ? 'NAV' : ''"
+         aria-controls="navSubmenu" class="nav-link text-white d-flex align-items-center"
+         placement="end" role="button"
+         routerLinkActive="border border-light bg-transparent">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-calculator"></i>
+        @if (!isSidenavCollapsed()) {
+          <span class="flex-grow-1">NAV</span>
+          <i [class.bi-chevron-down]="!isNavCollapsed()" [class.bi-chevron-right]="isNavCollapsed()" class="bi"></i>
+        }
+      </a>
+      <div [ngbCollapse]="isNavCollapsed()" id="navSubmenu">
+        <ul [class.ms-3]="!isSidenavCollapsed()"
+            class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'NAV Calculation' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/nav/calculation"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>NAV Calculation</span>
+              }
             </a>
-        </li>
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'NAV History' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/nav/history"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>NAV History</span>
+              }
+            </a>
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'NAV Breakdown' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/nav/breakdown"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>NAV Breakdown</span>
+              }
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
 
-        <!-- Balances & Reports -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" routerLink="/balances-reports"
-                routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Balances & Reports' : ''"
-                placement="end">
-                <i class="bi bi-graph-up" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span>Balances & Reports</span>
-                }
+    <!-- Reports with Submenu -->
+    <li>
+      <a (click)="toggleReports()"
+         [attr.aria-expanded]="!isReportsCollapsed()" [class.justify-content-center]="isSidenavCollapsed()" [ngbTooltip]="isSidenavCollapsed() ? 'Reports' : ''"
+         aria-controls="reportsSubmenu" class="nav-link text-white d-flex align-items-center"
+         placement="end" role="button"
+         routerLinkActive="border border-light bg-transparent">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-file-earmark-text"></i>
+        @if (!isSidenavCollapsed()) {
+          <span class="flex-grow-1">Reports</span>
+          <i [class.bi-chevron-down]="!isReportsCollapsed()" [class.bi-chevron-right]="isReportsCollapsed()"
+             class="bi"></i>
+        }
+      </a>
+      <div [ngbCollapse]="isReportsCollapsed()" id="reportsSubmenu">
+        <ul [class.ms-3]="!isSidenavCollapsed()"
+            class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Holdings Report' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/reports/holdings"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Holdings Report</span>
+              }
             </a>
-        </li>
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Cash Report' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/reports/cash"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Cash Report</span>
+              }
+            </a>
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Transaction Report' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/reports/transactions"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Transaction Report</span>
+              }
+            </a>
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'NAV Report' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/reports/nav"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>NAV Report</span>
+              }
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
 
-        <!-- Administration -->
-        <li>
-            <a class="nav-link text-white d-flex align-items-center"
-                [class.justify-content-center]="isSidenavCollapsed()" routerLink="/administration"
-                routerLinkActive="active" [ngbTooltip]="isSidenavCollapsed() ? 'Administration' : ''" placement="end">
-                <i class="bi bi-sliders" [class.me-2]="!isSidenavCollapsed()"></i>
-                @if (!isSidenavCollapsed()) {
-                <span>Administration</span>
-                }
+    <!-- Admin / Reference Data with Submenu -->
+    <li>
+      <a (click)="toggleAdmin()"
+         [attr.aria-expanded]="!isAdminCollapsed()" [class.justify-content-center]="isSidenavCollapsed()" [ngbTooltip]="isSidenavCollapsed() ? 'Admin' : ''"
+         aria-controls="adminSubmenu" class="nav-link text-white d-flex align-items-center"
+         placement="end" role="button"
+         routerLinkActive="border border-light bg-transparent">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-gear"></i>
+        @if (!isSidenavCollapsed()) {
+          <span class="flex-grow-1">Admin</span>
+          <i [class.bi-chevron-down]="!isAdminCollapsed()" [class.bi-chevron-right]="isAdminCollapsed()" class="bi"></i>
+        }
+      </a>
+      <div [ngbCollapse]="isAdminCollapsed()" id="adminSubmenu">
+        <ul [class.ms-3]="!isSidenavCollapsed()"
+            class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Securities' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/admin/securities"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Securities</span>
+              }
             </a>
-        </li>
-    </ul>
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Pricing Sources' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/admin/pricing-sources"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Pricing Sources</span>
+              }
+            </a>
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Currencies' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/admin/currencies"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Currencies</span>
+              }
+            </a>
+          </li>
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Users' : ''" class="nav-link text-white d-flex align-items-center"
+               placement="end" routerLink="/admin/users"
+               routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Users</span>
+              }
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+
+    <li>
+      <hr class="my-2 border-secondary">
+    </li>
+
+    <!-- Ledger with Submenu -->
+    <li>
+      <a (click)="toggleLedger()"
+         [attr.aria-expanded]="!isLedgerCollapsed()" [class.justify-content-center]="isSidenavCollapsed()" [ngbTooltip]="isSidenavCollapsed() ? 'Ledger' : ''"
+         aria-controls="ledgerSubmenu" class="nav-link text-white d-flex align-items-center"
+         placement="end" role="button"
+         routerLinkActive="border border-light bg-transparent">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-book"></i>
+        @if (!isSidenavCollapsed()) {
+          <span class="flex-grow-1">Ledger</span>
+          <i [class.bi-chevron-down]="!isLedgerCollapsed()" [class.bi-chevron-right]="isLedgerCollapsed()"
+             class="bi"></i>
+        }
+      </a>
+      <div [ngbCollapse]="isLedgerCollapsed()" id="ledgerSubmenu">
+        <ul [class.ms-3]="!isSidenavCollapsed()"
+            class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <li>
+            <a [ngbTooltip]="isSidenavCollapsed() ? 'Chart of Accounts' : ''" [routerLinkActiveOptions]="{ exact: true }"
+               class="nav-link text-white d-flex align-items-center" placement="end"
+               routerLink="/chart-of-accounts" routerLinkActive="active">
+              @if (isSidenavCollapsed()) {
+                <span class="submenu-indicator"></span>
+              } @else {
+                <span>Chart of Accounts</span>
+              }
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+
+    <!-- Journal -->
+    <li>
+      <a [class.justify-content-center]="isSidenavCollapsed()"
+         [ngbTooltip]="isSidenavCollapsed() ? 'Journal' : ''" class="nav-link text-white d-flex align-items-center"
+         placement="end" routerLink="/journal-entries" routerLinkActive="active">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-journal-text"></i>
+        @if (!isSidenavCollapsed()) {
+          <span>Journal</span>
+        }
+      </a>
+    </li>
+
+    <!-- Periods -->
+    <li>
+      <a [class.justify-content-center]="isSidenavCollapsed()"
+         [ngbTooltip]="isSidenavCollapsed() ? 'Periods' : ''" class="nav-link text-white d-flex align-items-center"
+         placement="end" routerLink="/posting-periods" routerLinkActive="active">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-calendar3"></i>
+        @if (!isSidenavCollapsed()) {
+          <span>Periods</span>
+        }
+      </a>
+    </li>
+
+    <!-- Balances & Reports -->
+    <li>
+      <a [class.justify-content-center]="isSidenavCollapsed()"
+         [ngbTooltip]="isSidenavCollapsed() ? 'Balances & Reports' : ''" class="nav-link text-white d-flex align-items-center"
+         placement="end" routerLink="/balances-reports"
+         routerLinkActive="active">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-graph-up"></i>
+        @if (!isSidenavCollapsed()) {
+          <span>Balances & Reports</span>
+        }
+      </a>
+    </li>
+
+    <!-- Administration -->
+    <li>
+      <a [class.justify-content-center]="isSidenavCollapsed()"
+         [ngbTooltip]="isSidenavCollapsed() ? 'Administration' : ''" class="nav-link text-white d-flex align-items-center"
+         placement="end" routerLink="/administration" routerLinkActive="active">
+        <i [class.me-2]="!isSidenavCollapsed()" class="bi bi-sliders"></i>
+        @if (!isSidenavCollapsed()) {
+          <span>Administration</span>
+        }
+      </a>
+    </li>
+  </ul>
 </div>

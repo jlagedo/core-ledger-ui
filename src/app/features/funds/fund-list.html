@@ -1,127 +1,126 @@
 <main class="container-fluid">
 
-    <div class="card bg-body-tertiary border-0 shadow-sm rounded-4">
-        <div class="card-body">
+  <div class="card bg-body-tertiary border-0 shadow-sm rounded-4">
+    <div class="card-body">
 
-            <div class="row g-3 align-items-center mb-4">
+      <div class="row g-3 align-items-center mb-4">
 
-                <div class="col-md-4">
-                    <div class="input-group">
+        <div class="col-md-4">
+          <div class="input-group">
                         <span class="input-group-text bg-secondary border-secondary text-light">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control bg-body text-light border-secondary"
-                            placeholder="Search funds..." #searchInput [value]="store.searchTerm()"
-                            (keydown.enter)="onSearch(searchInput.value)" aria-label="Search funds by name">
+            <input #searchInput (keydown.enter)="onSearch(searchInput.value)"
+                   [value]="store.searchTerm()" aria-label="Search funds by name" class="form-control bg-body text-light border-secondary"
+                   placeholder="Search funds..." type="text">
+          </div>
+        </div>
+
+        <div class="col-md-8 text-end">
+          <div class="btn-group gap-2">
+
+            <button class="btn btn-sm btn-dark border-secondary text-light">
+              <i class="bi bi-funnel"></i> Filters
+            </button>
+
+            <button class="btn btn-sm btn-dark border-secondary text-light">
+              <i class="bi bi-download"></i> Export
+            </button>
+
+            <button aria-label="Create new fund" class="btn btn-sm btn-primary" routerLink="/funds/new">
+              <i class="bi bi-plus-lg me-1"></i> New Fund
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive rounded-3 border border-dark">
+        <table class="table table-sm table-hover align-middle text-light">
+
+          <thead class="text-secondary text-uppercase small fw-semibold">
+          <tr>
+            <th (sort)="onSort($event)" class="text-end" scope="col" sortable="Code">Code</th>
+            <th (sort)="onSort($event)" class="text-start" scope="col" sortable="Name">Name</th>
+            <th (sort)="onSort($event)" class="text-center" scope="col" sortable="BaseCurrency">Base
+              Currency
+            </th>
+            <th (sort)="onSort($event)" class="text-center" scope="col" sortable="InceptionDate">
+              Inception Date
+            </th>
+            <th (sort)="onSort($event)" class="text-center" scope="col" sortable="ValuationFrequency">
+              Valuation Frequency
+            </th>
+            <th class="text-end" scope="col">Actions</th>
+          </tr>
+          </thead>
+
+          <tbody class="table-group-divider">
+
+            @defer (on immediate) {
+              @for (fund of fundsResponse()?.items; track fund.id) {
+                <tr class="align-middle">
+
+                  <td class="text-end"><strong class="numeric">{{ fund.code }}</strong></td>
+                  <td class="text-start">{{ fund.name }}</td>
+                  <td class="text-center">{{ fund.baseCurrency }}</td>
+                  <td class="text-center">{{ fund.inceptionDate | date: 'shortDate' }}</td>
+                  <td class="text-center">{{ fund.valuationFrequencyDescription }}</td>
+
+                  <td class="text-end">
+
+                    <div class="d-inline-block" container="body" ngbDropdown>
+                      <button class="btn btn-sm btn-dark border-secondary text-light" ngbDropdownToggle>
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+
+                      <div class="bg-dark text-light border-secondary" ngbDropdownMenu>
+                        <button [routerLink]="['/funds', fund.id]" ngbDropdownItem>View</button>
+                        <button ngbDropdownItem>Edit</button>
+                      </div>
                     </div>
-                </div>
 
-                <div class="col-md-8 text-end">
-                    <div class="btn-group gap-2">
+                  </td>
+                </tr>
+              }
+            } @loading {
+              <tr>
+                <td class="text-center py-5" colspan="7">
+                  <div class="spinner-border text-primary" role="status"></div>
+                  <div class="mt-2 text-muted">Loading funds…</div>
+                </td>
+              </tr>
+            } @error {
+              <tr>
+                <td class="text-center text-danger py-5" colspan="7">
+                  Failed to load funds.
+                </td>
+              </tr>
+            }
 
-                        <button class="btn btn-sm btn-dark border-secondary text-light">
-                            <i class="bi bi-funnel"></i> Filters
-                        </button>
+          </tbody>
+        </table>
 
-                        <button class="btn btn-sm btn-dark border-secondary text-light">
-                            <i class="bi bi-download"></i> Export
-                        </button>
+        <div class="d-flex justify-content-between align-items-center px-2 py-3 small text-secondary">
 
-                        <button class="btn btn-sm btn-primary" routerLink="/funds/new" aria-label="Create new fund">
-                            <i class="bi bi-plus-lg me-1"></i> New Fund
-                        </button>
+          <ngb-pagination (pageChange)="store.setPage($event); loadFunds()" [boundaryLinks]="true"
+                          [collectionSize]="collectionSize()" [maxSize]="5" [pageSize]="store.pageSize()"
+                          [page]="store.page()" [rotate]="true">
+          </ngb-pagination>
 
-                    </div>
-                </div>
-            </div>
+          <span class="ms-3">{{ collectionSize() }} total funds</span>
 
-            <div class="table-responsive rounded-3 border border-dark">
-                <table class="table table-sm table-hover align-middle text-light">
-
-                    <thead class="text-secondary text-uppercase small fw-semibold">
-                        <tr>
-                            <th scope="col" class="text-end" sortable="Code" (sort)="onSort($event)">Code</th>
-                            <th scope="col" class="text-start" sortable="Name" (sort)="onSort($event)">Name</th>
-                            <th scope="col" class="text-center" sortable="BaseCurrency" (sort)="onSort($event)">Base
-                                Currency</th>
-                            <th scope="col" class="text-center" sortable="InceptionDate" (sort)="onSort($event)">
-                                Inception Date</th>
-                            <th scope="col" class="text-center" sortable="ValuationFrequency" (sort)="onSort($event)">
-                                Valuation Frequency</th>
-                            <th scope="col" class="text-end">Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="table-group-divider">
-
-                        @defer (on immediate) {
-                        @for (fund of fundsResponse()?.items; track fund.id) {
-                        <tr class="align-middle">
-
-                            <td class="text-end"><strong class="numeric">{{ fund.code }}</strong></td>
-                            <td class="text-start">{{ fund.name }}</td>
-                            <td class="text-center">{{ fund.baseCurrency }}</td>
-                            <td class="text-center">{{ fund.inceptionDate | date: 'shortDate' }}</td>
-                            <td class="text-center">{{ fund.valuationFrequencyDescription }}</td>
-
-                            <td class="text-end">
-
-                                <div ngbDropdown class="d-inline-block" container="body">
-                                    <button class="btn btn-sm btn-dark border-secondary text-light" ngbDropdownToggle>
-                                        <i class="bi bi-three-dots-vertical"></i>
-                                    </button>
-
-                                    <div ngbDropdownMenu class="bg-dark text-light border-secondary">
-                                        <button ngbDropdownItem [routerLink]="['/funds', fund.id]">View</button>
-                                        <button ngbDropdownItem>Edit</button>
-                                    </div>
-                                </div>
-
-                            </td>
-                        </tr>
-                        }
-                        }
-
-                        @loading {
-                        <tr>
-                            <td colspan="7" class="text-center py-5">
-                                <div class="spinner-border text-primary" role="status"></div>
-                                <div class="mt-2 text-muted">Loading funds…</div>
-                            </td>
-                        </tr>
-                        }
-
-                        @error {
-                        <tr>
-                            <td colspan="7" class="text-center text-danger py-5">
-                                Failed to load funds.
-                            </td>
-                        </tr>
-                        }
-
-                    </tbody>
-                </table>
-
-                <div class="d-flex justify-content-between align-items-center px-2 py-3 small text-secondary">
-
-                    <ngb-pagination [collectionSize]="collectionSize()" [page]="store.page()"
-                        [pageSize]="store.pageSize()" (pageChange)="store.setPage($event); loadFunds()" [maxSize]="5"
-                        [rotate]="true" [boundaryLinks]="true">
-                    </ngb-pagination>
-
-                    <span class="ms-3">{{ collectionSize() }} total funds</span>
-
-                    <select class="form-select form-select-sm bg-body text-light border-secondary"
-                        [ngModel]="store.pageSize()" (ngModelChange)="onPageSizeChange($event)" style="width: 180px">
-                        <option [ngValue]="15">15 items per page</option>
-                        <option [ngValue]="50">50 items per page</option>
-                        <option [ngValue]="100">100 items per page</option>
-                    </select>
-
-                </div>
-
-            </div>
+          <select (ngModelChange)="onPageSizeChange($event)"
+                  [ngModel]="store.pageSize()" class="form-select form-select-sm bg-body text-light border-secondary" style="width: 180px">
+            <option [ngValue]="15">15 items per page</option>
+            <option [ngValue]="50">50 items per page</option>
+            <option [ngValue]="100">100 items per page</option>
+          </select>
 
         </div>
+
+      </div>
+
     </div>
+  </div>
 </main>

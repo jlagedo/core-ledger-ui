@@ -1,4 +1,4 @@
-import {Component, inject, input, signal} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {Account} from '../../../models/account.model';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
@@ -10,5 +10,5 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class DeactivateModal {
   activeModal = inject(NgbActiveModal);
-  account =  signal<Account | null>(null);
+  account = signal<Account | null>(null);
 }

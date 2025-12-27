@@ -1,5 +1,5 @@
-import { inject, Injectable } from '@angular/core';
-import { ToastService } from './toast-service';
+import {inject, Injectable} from '@angular/core';
+import {ToastService} from './toast-service';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 

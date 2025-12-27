@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { OnlyNumbers } from '../../../directives/only-numbers';
-import { AccountService } from '../../../services/account';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ToastService } from '../../../services/toast-service';
-import { AccountStatus, NormalBalance, CreateAccount } from '../../../models/account.model';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {OnlyNumbers} from '../../../directives/only-numbers';
+import {AccountService} from '../../../services/account';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {ToastService} from '../../../services/toast-service';
+import {AccountStatus, CreateAccount, NormalBalance} from '../../../models/account.model';
 import {Router} from '@angular/router';
 
 @Component({
@@ -16,23 +16,20 @@ import {Router} from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountForm implements OnInit {
+  isSubmitting = signal(false);
+  submitStatus = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
+  errorMessage = signal<string>('');
   private formBuilder = inject(FormBuilder);
-  private accountService = inject(AccountService);
-  private toastService = inject(ToastService);
-  private router = inject(Router);
-
   accountForm = this.formBuilder.group({
     accountNumber: ['', [Validators.required, Validators.maxLength(10)]],
     description: ['', Validators.required],
     normalBalance: ['2', Validators.required],
     type: ['', Validators.required]
   });
-
-  accountTypes = toSignal(this.accountService.getAccountTypes(), { initialValue: [] });
-
-  isSubmitting = signal(false);
-  submitStatus = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
-  errorMessage = signal<string>('');
+  private accountService = inject(AccountService);
+  accountTypes = toSignal(this.accountService.getAccountTypes(), {initialValue: []});
+  private toastService = inject(ToastService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     // Component initialization
@@ -90,7 +87,7 @@ export class AccountForm implements OnInit {
   }
 
   clearForm() {
-    this.accountForm.reset({ normalBalance: '2' });
+    this.accountForm.reset({normalBalance: '2'});
     this.accountForm.markAsUntouched();
     this.accountForm.markAsPristine();
     this.submitStatus.set('idle');

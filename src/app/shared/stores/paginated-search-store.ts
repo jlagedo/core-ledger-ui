@@ -1,6 +1,6 @@
-import { signalStore, withState, withMethods, patchState, withHooks } from '@ngrx/signals';
-import { inject } from '@angular/core';
-import { LoggerService } from '../../services/logger';
+import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
+import {inject} from '@angular/core';
+import {LoggerService} from '../../services/logger';
 
 export type PaginatedSearchState = {
   searchTerm: string;
@@ -23,7 +23,7 @@ export interface PaginatedSearchStoreConfig {
  * Creates a paginated search store with session storage persistence
  */
 export function createPaginatedSearchStore(config: PaginatedSearchStoreConfig) {
-  const { storageKey, initialSort, defaultPageSize = 15 } = config;
+  const {storageKey, initialSort, defaultPageSize = 15} = config;
 
   const initialState: PaginatedSearchState = {
     searchTerm: '',
@@ -37,7 +37,7 @@ export function createPaginatedSearchStore(config: PaginatedSearchStoreConfig) {
     try {
       const stored = sessionStorage.getItem(storageKey);
       if (stored) {
-        const loadedState = { ...initialState, ...JSON.parse(stored) };
+        const loadedState = {...initialState, ...JSON.parse(stored)};
         logger.debug('Loaded state from sessionStorage', loadedState, storageKey);
         return loadedState;
       }
@@ -75,19 +75,19 @@ export function createPaginatedSearchStore(config: PaginatedSearchStoreConfig) {
 
       return {
         setSearchTerm(searchTerm: string) {
-          patchState(store, { searchTerm, page: 1 });
+          patchState(store, {searchTerm, page: 1});
           saveCurrentState();
         },
         setPage(page: number) {
-          patchState(store, { page });
+          patchState(store, {page});
           saveCurrentState();
         },
         setPageSize(pageSize: number) {
-          patchState(store, { pageSize, page: 1 });
+          patchState(store, {pageSize, page: 1});
           saveCurrentState();
         },
         setSort(sortColumn: string, sortDirection: 'asc' | 'desc') {
-          patchState(store, { sortColumn, sortDirection, page: 1 });
+          patchState(store, {sortColumn, sortDirection, page: 1});
           saveCurrentState();
         },
         resetSort() {

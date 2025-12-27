@@ -1,14 +1,15 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
-    selector: 'app-transactions',
-    imports: [],
-    template: `
+  selector: 'app-transactions',
+  imports: [],
+  template: `
     <div class="container-fluid py-4">
       <h1 class="mb-4">Transactions</h1>
       <p class="text-muted">Capture, view, and manage fund transactions</p>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Transactions { }
+export class Transactions {
+}

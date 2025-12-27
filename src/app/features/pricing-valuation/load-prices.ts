@@ -1,14 +1,15 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
-    selector: 'app-load-prices',
-    imports: [],
-    template: `
+  selector: 'app-load-prices',
+  imports: [],
+  template: `
     <div class="container-fluid py-4">
       <h1 class="mb-4">Load Prices</h1>
       <p class="text-muted">Import current market prices</p>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoadPrices { }
+export class LoadPrices {
+}

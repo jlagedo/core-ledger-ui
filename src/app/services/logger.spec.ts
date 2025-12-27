@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
-import { LoggerService } from './logger';
-import { ToastService } from './toast-service';
+import {TestBed} from '@angular/core/testing';
+import {LoggerService} from './logger';
+import {ToastService} from './toast-service';
 
 describe('LoggerService', () => {
   let service: LoggerService;
@@ -18,7 +18,7 @@ describe('LoggerService', () => {
 
   it('should log debug messages', () => {
     const consoleSpy = vi.spyOn(console, 'debug');
-    service.debug('Test debug message', { foo: 'bar' });
+    service.debug('Test debug message', {foo: 'bar'});
     expect(consoleSpy).toHaveBeenCalled();
   });
 
@@ -64,7 +64,7 @@ describe('LoggerService', () => {
 
     const error = {
       status: 404,
-      error: { message: 'Not Found' },
+      error: {message: 'Not Found'},
     };
 
     service.logHttpError('fetchData', error, undefined, false);

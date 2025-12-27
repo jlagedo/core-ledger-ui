@@ -1,6 +1,6 @@
-import { Component, signal, output, ChangeDetectionStrategy } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NgbCollapse, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import {ChangeDetectionStrategy, Component, output, signal} from '@angular/core';
+import {RouterModule} from '@angular/router';
+import {NgbCollapse, NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-sidenav',

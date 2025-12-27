@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h5 class="modal-title fw-semibold">Confirm Deactivation</h5>
-  <button type="button" class="btn-close" (click)="activeModal.dismiss()" aria-label="Close"></button>
+  <button (click)="activeModal.dismiss()" aria-label="Close" class="btn-close" type="button"></button>
 </div>
 
 <div class="modal-body">
@@ -44,16 +44,17 @@
 
     <div class="alert alert-warning mt-3 mb-0" role="alert">
       <i class="bi bi-info-circle me-2"></i>
-      <strong>Note:</strong> This action will mark the security as inactive. The security data will be preserved for historical reference.
+      <strong>Note:</strong> This action will mark the security as inactive. The security data will be preserved for
+      historical reference.
     </div>
   }
 </div>
 
 <div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">
+  <button (click)="activeModal.dismiss()" class="btn btn-secondary" type="button">
     Cancel
   </button>
-  <button type="button" class="btn btn-danger" (click)="activeModal.close('confirm')">
+  <button (click)="activeModal.close('confirm')" class="btn btn-danger" type="button">
     <i class="bi bi-x-circle me-1"></i>
     Deactivate
   </button>

@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, switchMap } from 'rxjs';
+import {inject, Injectable} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {filter, map} from 'rxjs';
 
 export interface Breadcrumb {
   label: string;
@@ -23,7 +23,7 @@ export class BreadCrumbService {
         return this.deduplicateBreadcrumbs(breadcrumbs);
       })
     ),
-    { initialValue: [] }
+    {initialValue: []}
   );
 
   private createBreadcrumbs(
@@ -48,7 +48,7 @@ export class BreadCrumbService {
 
       const label = child.snapshot.data['breadcrumb'];
       if (label) {
-        breadcrumbs.push({ label, url });
+        breadcrumbs.push({label, url});
       }
 
       return this.createBreadcrumbs(child, url, breadcrumbs);

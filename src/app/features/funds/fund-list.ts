@@ -8,11 +8,11 @@ import {
   signal,
   viewChildren
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
-import { Fund, PaginatedResponse } from '../../models/fund.model';
-import { FundService } from '../../services/fund';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {RouterLink} from '@angular/router';
+import {DatePipe} from '@angular/common';
+import {Fund, PaginatedResponse} from '../../models/fund.model';
+import {FundService} from '../../services/fund';
 import {
   NgbDropdown,
   NgbDropdownItem,
@@ -20,11 +20,11 @@ import {
   NgbDropdownToggle,
   NgbPagination
 } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
-import { SortableDirective, SortEvent } from '../../directives/sortable.directive';
-import { FundsStore } from './funds-store';
-import { ToastService } from '../../services/toast-service';
-import { LoggerService } from '../../services/logger';
+import {FormsModule} from '@angular/forms';
+import {SortableDirective, SortEvent} from '../../directives/sortable.directive';
+import {FundsStore} from './funds-store';
+import {ToastService} from '../../services/toast-service';
+import {LoggerService} from '../../services/logger';
 
 @Component({
   selector: 'app-fund-list',
@@ -72,7 +72,7 @@ export class FundList {
     this.loadFunds();
   }
 
-  onSort({ column, direction }: SortEvent): void {
+  onSort({column, direction}: SortEvent): void {
     for (const header of this.headers()) {
       if (header.sortable !== column) {
         header.direction = '';

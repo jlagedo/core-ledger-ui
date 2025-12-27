@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DeactivateModal } from './deactivate-modal';
+import {DeactivateModal} from './deactivate-modal';
 
 describe('DeactivateModal', () => {
   let component: DeactivateModal;
@@ -10,7 +10,7 @@ describe('DeactivateModal', () => {
     await TestBed.configureTestingModule({
       imports: [DeactivateModal]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(DeactivateModal);
     component = fixture.componentInstance;

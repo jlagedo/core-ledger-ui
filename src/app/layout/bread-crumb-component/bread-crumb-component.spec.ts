@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { BreadCrumbComponent } from './bread-crumb-component';
+import {BreadCrumbComponent} from './bread-crumb-component';
 
 describe('BreadCrumbComponent', () => {
   let component: BreadCrumbComponent;
@@ -10,7 +10,7 @@ describe('BreadCrumbComponent', () => {
     await TestBed.configureTestingModule({
       imports: [BreadCrumbComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(BreadCrumbComponent);
     component = fixture.componentInstance;

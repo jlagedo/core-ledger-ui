@@ -14,13 +14,13 @@
               <i class="bi bi-search"></i>
             </span>
             <input
-              type="text"
+              #searchInput
+              (keydown.enter)="onSearch(searchInput.value)"
+              [value]="store.searchTerm()"
+              aria-label="Search accounts by description"
               class="form-control bg-body text-light border-secondary"
               placeholder="Search accounts..."
-              #searchInput
-              [value]="store.searchTerm()"
-              (keydown.enter)="onSearch(searchInput.value)"
-              aria-label="Search accounts by description"
+              type="text"
             >
           </div>
         </div>
@@ -38,9 +38,9 @@
             </button>
 
             <button
+              aria-label="Create new account"
               class="btn btn-sm btn-primary"
               routerLink="/chart-of-accounts/new"
-              aria-label="Create new account"
             >
               <i class="bi bi-plus-lg me-1"></i> New Account
             </button>
@@ -55,12 +55,12 @@
 
           <thead class="text-secondary text-uppercase small fw-semibold">
           <tr>
-            <th scope="col" class="text-end" sortable="code" (sort)="onSort($event)">#</th>
-            <th scope="col" class="text-start" sortable="name" (sort)="onSort($event)">Name</th>
-            <th scope="col" class="text-center" sortable="typeid" (sort)="onSort($event)">Type</th>
-            <th scope="col" class="text-center" sortable="status" (sort)="onSort($event)">Status</th>
-            <th scope="col" class="text-center" sortable="normalbalance" (sort)="onSort($event)">Normal Balance</th>
-            <th scope="col" class="text-end">Actions</th>
+            <th (sort)="onSort($event)" class="text-end" scope="col" sortable="code">#</th>
+            <th (sort)="onSort($event)" class="text-start" scope="col" sortable="name">Name</th>
+            <th (sort)="onSort($event)" class="text-center" scope="col" sortable="typeid">Type</th>
+            <th (sort)="onSort($event)" class="text-center" scope="col" sortable="status">Status</th>
+            <th (sort)="onSort($event)" class="text-center" scope="col" sortable="normalbalance">Normal Balance</th>
+            <th class="text-end" scope="col">Actions</th>
           </tr>
           </thead>
 
@@ -81,18 +81,18 @@
 
                   <td class="text-end">
 
-                    <div ngbDropdown class="d-inline-block" container="body">
+                    <div class="d-inline-block" container="body" ngbDropdown>
                       <button class="btn btn-sm btn-dark border-secondary text-light" ngbDropdownToggle>
                         <i class="bi bi-three-dots-vertical"></i>
                       </button>
 
-                      <div ngbDropdownMenu class="bg-dark text-light border-secondary">
+                      <div class="bg-dark text-light border-secondary" ngbDropdownMenu>
                         <button ngbDropdownItem>View</button>
                         <button ngbDropdownItem>Edit</button>
                         <button
-                          ngbDropdownItem
                           (click)="openDeactivateModal(account)"
                           class="text-danger"
+                          ngbDropdownItem
                         >
                           Deactivate
                         </button>
@@ -102,20 +102,16 @@
                   </td>
                 </tr>
               }
-            }
-
-            @loading {
+            } @loading {
               <tr>
-                <td colspan="6" class="text-center py-5">
+                <td class="text-center py-5" colspan="6">
                   <div class="spinner-border text-primary" role="status"></div>
                   <div class="mt-2 text-muted">Loading accounts…</div>
                 </td>
               </tr>
-            }
-
-            @error {
+            } @error {
               <tr>
-                <td colspan="6" class="text-center text-danger py-5">
+                <td class="text-center text-danger py-5" colspan="6">
                   Failed to load accounts.
                 </td>
               </tr>
@@ -128,22 +124,22 @@
         <div class="d-flex justify-content-between align-items-center px-2 py-3 small text-secondary">
 
           <ngb-pagination
-            [collectionSize]="collectionSize()"
-            [page]="store.page()"
-            [pageSize]="store.pageSize()"
             (pageChange)="store.setPage($event); loadAccounts()"
-            [maxSize]="5"
-            [rotate]="true"
             [boundaryLinks]="true"
+            [collectionSize]="collectionSize()"
+            [maxSize]="5"
+            [pageSize]="store.pageSize()"
+            [page]="store.page()"
+            [rotate]="true"
           >
           </ngb-pagination>
 
           <span class="ms-3">{{ collectionSize() }} total accounts</span>
 
           <select
-            class="form-select form-select-sm bg-body text-light border-secondary"
-            [ngModel]="store.pageSize()"
             (ngModelChange)="onPageSizeChange($event)"
+            [ngModel]="store.pageSize()"
+            class="form-select form-select-sm bg-body text-light border-secondary"
             style="width: 180px"
           >
             <option [ngValue]="15">15 items per page</option>

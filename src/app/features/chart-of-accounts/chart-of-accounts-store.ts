@@ -1,4 +1,4 @@
-import { createPaginatedSearchStore } from '../../shared/stores/paginated-search-store';
+import {createPaginatedSearchStore} from '../../shared/stores/paginated-search-store';
 
 export const ChartOfAccountsStore = createPaginatedSearchStore({
   storageKey: 'chart-of-accounts-search-state',

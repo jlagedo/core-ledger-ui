@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { PostingPeriods } from './posting-periods';
+import {PostingPeriods} from './posting-periods';
 
 describe('PostingPeriods', () => {
   let component: PostingPeriods;
@@ -10,7 +10,7 @@ describe('PostingPeriods', () => {
     await TestBed.configureTestingModule({
       imports: [PostingPeriods]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(PostingPeriods);
     component = fixture.componentInstance;

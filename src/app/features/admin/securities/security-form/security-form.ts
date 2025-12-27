@@ -1,11 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { SecurityService } from '../../../../services/security';
-import { ToastService } from '../../../../services/toast-service';
-import { CreateSecurity, UpdateSecurity, SecurityType as SecurityTypeEnum } from '../../../../models/security.model';
-import { SecurityType } from '../../../../models/security_type.model';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {Component, inject, OnInit, signal} from '@angular/core';
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {SecurityService} from '../../../../services/security';
+import {ToastService} from '../../../../services/toast-service';
+import {CreateSecurity, SecurityType as SecurityTypeEnum, UpdateSecurity} from '../../../../models/security.model';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-security-form',
@@ -14,19 +13,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
   styleUrl: './security-form.scss',
 })
 export class SecurityForm implements OnInit {
-  private formBuilder = inject(FormBuilder);
-  private securityService = inject(SecurityService);
-  private toastService = inject(ToastService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-
   securityId = signal<number | null>(null);
   isSubmitting = signal(false);
   submitStatus = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
   errorMessage = signal<string>('');
-
-  securityTypes = toSignal(this.securityService.getSecurityTypes(), { initialValue: [] });
-
+  private formBuilder = inject(FormBuilder);
   securityForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.maxLength(200)]],
     ticker: ['', [Validators.required, Validators.maxLength(20)]],
@@ -34,6 +25,11 @@ export class SecurityForm implements OnInit {
     type: [null as number | null, [Validators.required]],
     currency: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^[A-Z]{3}$/)]],
   });
+  private securityService = inject(SecurityService);
+  securityTypes = toSignal(this.securityService.getSecurityTypes(), {initialValue: []});
+  private toastService = inject(ToastService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
