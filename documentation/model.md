@@ -1,180 +1,257 @@
-Here’s a clean, minimal, **tutorial‑friendly model** for a financial ledger application — something small enough to build in a workshop, but realistic enough to reflect how real financial institutions structure their ledgers.
-
-I’ll also propose a **menu structure** and the **operations** each menu item should expose. This gives you a complete blueprint for a teaching/demo application.
+Great — let’s turn your ABOR tutorial app into something more concrete. I’ll give you **clean, minimal domain models** and **UI wireframes** that match the core processes we outlined earlier. These are intentionally simple so you can build a working prototype without getting lost in enterprise‑level complexity.
 
 ---
 
-# 🧩 Minimal Domain Model  
-This model focuses ONLY on the essential concepts needed to **create, validate, and store ledger entries**.
+# 🧱 **1. Basic Domain Model (Core Entities)**
 
-## 📘 1. **Account**
-Represents a line in the Chart of Accounts.
+Below is a lightweight but realistic model for an ABOR system. You can implement this in any stack (SQL, NoSQL, ORM, etc.).
 
-| Field | Description |
-|------|-------------|
-| `id` | Unique identifier |
-| `code` | Account code (e.g., 1001) |
-| `name` | Human‑readable name |
-| `type` | Asset, Liability, Equity, Income, Expense |
-| `status` | Active / Inactive |
-| `normalBalance` | Debit or Credit |
-
-### Why it’s essential  
-Every journal entry must reference valid accounts.
+## **Fund**
+| Field | Type | Notes |
+|------|------|-------|
+| id | UUID | Primary key |
+| name | string | Fund name |
+| base_currency | string | ISO code |
+| inception_date | date |  |
+| valuation_frequency | enum(daily, weekly) | Simplified |
 
 ---
 
-## 📘 2. **JournalEntry**
-The core object representing a financial posting.
-
-| Field | Description |
-|------|-------------|
-| `id` | Unique identifier |
-| `date` | Posting date |
-| `description` | Free text |
-| `lines` | List of JournalEntryLine |
-| `status` | Draft / Posted |
-
----
-
-## 📘 3. **JournalEntryLine**
-Represents a debit or credit line inside a journal entry.
-
-| Field | Description |
-|------|-------------|
-| `id` | Unique identifier |
-| `accountId` | Reference to Account |
-| `amount` | Positive number |
-| `side` | Debit or Credit |
-| `currency` | Optional (default: system currency) |
-
-### Validation rule  
-Sum(debits) = Sum(credits)
+## **Security**
+| Field | Type | Notes |
+|------|------|-------|
+| id | UUID | Primary key |
+| name | string |  |
+| ticker | string | Optional |
+| isin | string | Optional |
+| type | enum(equity, bond, cash) | Keep it simple |
+| currency | string | ISO code |
 
 ---
 
-## 📘 4. **PostingPeriod**
-Controls when entries can be posted.
+## **Holding**
+Represents the fund’s position in a security.
 
-| Field | Description |
-|------|-------------|
-| `id` | Unique identifier |
-| `year` | Fiscal year |
-| `month` | Fiscal month |
-| `status` | Open / Closed |
-
----
-
-## 📘 5. **LedgerBalance**
-A computed or stored balance per account per period.
-
-| Field | Description |
-|------|-------------|
-| `accountId` | Account |
-| `periodId` | Period |
-| `debitTotal` | Total debits |
-| `creditTotal` | Total credits |
-| `endingBalance` | Computed |
+| Field | Type | Notes |
+|------|------|-------|
+| id | UUID | Primary key |
+| fund_id | UUID | FK → Fund |
+| security_id | UUID | FK → Security |
+| quantity | decimal |  |
+| cost_basis | decimal | Total cost |
+| market_value | decimal | Derived from price × quantity |
 
 ---
 
-# 🧱 Minimal Architecture Components  
-To keep the tutorial simple but realistic:
-
-- **Account Service**  
-  CRUD + validation
-
-- **Journal Entry Service**  
-  Posting logic, validation, persistence
-
-- **Period Service**  
-  Open/close periods
-
-- **Balance Service**  
-  Recompute or query balances
-
-- **Audit Log** (optional but recommended)  
-  Track who posted what
+## **Transaction**
+| Field | Type | Notes |
+|------|------|-------|
+| id | UUID | Primary key |
+| fund_id | UUID | FK |
+| security_id | UUID | FK (nullable for cash-only) |
+| type | enum(buy, sell, dividend, expense, fx, subscription, redemption) | Core ABOR types |
+| trade_date | date |  |
+| settle_date | date |  |
+| quantity | decimal | For buys/sells |
+| price | decimal |  |
+| amount | decimal | Cash impact |
+| currency | string |  |
 
 ---
 
-# 🧭 Menu Structure (Tutorial Application)
-
-Below is a simple, intuitive menu structure suitable for a web UI, CLI, or desktop app.
-
----
-
-# 📂 **Main Menu**
-
-## 1. **Chart of Accounts**
-Operations:
-- List accounts
-- Create account
-- Edit account
-- Deactivate account
-- View account details (including balances)
+## **Price**
+| Field | Type | Notes |
+|------|------|-------|
+| id | UUID | Primary key |
+| security_id | UUID | FK |
+| price_date | date |  |
+| price | decimal |  |
+| source | string | Optional |
 
 ---
 
-## 2. **Journal Entries**
-Operations:
-- List journal entries
-- Create new journal entry
-  - Add debit/credit lines
-  - Validate balancing
-  - Save as draft or post
-- Edit draft entries
-- Post entry
-- Reverse entry (optional)
-- View entry details
+## **Cash Ledger**
+| Field | Type | Notes |
+|------|------|-------|
+| id | UUID | Primary key |
+| fund_id | UUID | FK |
+| currency | string |  |
+| opening_balance | decimal |  |
+| cash_movements | decimal | Sum of transactions |
+| closing_balance | decimal | Derived |
 
 ---
 
-## 3. **Posting Periods**
-Operations:
-- List periods
-- Open period
-- Close period
-- View period status
+## **NAV**
+| Field | Type | Notes |
+|------|------|-------|
+| id | UUID | Primary key |
+| fund_id | UUID | FK |
+| nav_date | date |  |
+| total_assets | decimal |  |
+| total_liabilities | decimal | Simplify to expenses |
+| nav | decimal | total_assets − liabilities |
+| nav_per_share | decimal | Optional |
 
 ---
 
-## 4. **Balances & Reports**
-Operations:
-- View account balance
-- View trial balance
-- View ledger for a specific account
-- Recompute balances (admin)
+# 🧭 **2. UI Wireframes (Text‑Based)**
+
+These are **ASCII wireframes** you can use to sketch your UI layout. They match the sidebar structure we defined earlier.
 
 ---
 
-## 5. **System / Admin**
-Operations:
-- User management (optional)
-- Audit log viewer
-- Configuration (currency, fiscal year start)
+# **📊 Main Layout**
+
+```
++--------------------------------------------------------------+
+|  Sidebar (left)               |   Main Content               |
+|-------------------------------+------------------------------|
+|  Dashboard                    |   [Dynamic content area]     |
+|  Funds                        |                              |
+|    - Fund List                |                              |
+|    - Fund Details             |                              |
+|  Portfolio                    |                              |
+|    - Holdings                 |                              |
+|    - Cash Ledger              |                              |
+|  Transactions                 |                              |
+|    - Capture Transaction      |                              |
+|    - Transaction Ledger       |                              |
+|  Pricing & Valuation          |                              |
+|    - Load Prices              |                              |
+|    - Run Valuation            |                              |
+|  NAV                          |                              |
+|    - Calculate NAV            |                              |
+|    - NAV History              |                              |
+|  Reports                      |                              |
+|    - Holdings Report          |                              |
+|    - Cash Report              |                              |
+|    - NAV Report               |                              |
++--------------------------------------------------------------+
+```
 
 ---
 
-# 🧪 Suggested Tutorial Flow  
-A great tutorial should guide the user through a realistic accounting workflow:
+# **📁 Fund List**
 
-1. **Create accounts**  
-   e.g., Cash, Revenue, Accounts Payable
+```
++------------------------------+
+| Funds                        |
++------------------------------+
+| [Create Fund]                |
++------------------------------+
+| Fund Name        | Currency |
+|------------------|----------|
+| Alpha Fund       | USD      |
+| Beta Income Fund | EUR      |
++------------------------------+
+```
 
-2. **Open a posting period**
+---
 
-3. **Create a journal entry**  
-   Example:  
-   - Debit Cash 100  
-   - Credit Revenue 100  
+# **📄 Fund Details**
 
-4. **Post the entry**
+```
++------------------------------------------------+
+| Fund: Alpha Fund                                |
++------------------------------------------------+
+| Currency: USD                                   |
+| Inception: 2020-01-01                           |
+| Valuation Frequency: Daily                      |
++------------------------------------------------+
+| [Holdings] [Cash Ledger] [Transactions] [NAV]   |
++------------------------------------------------+
+```
 
-5. **View balances**  
-   - Cash increased  
-   - Revenue increased  
+---
 
-6. **Close the period**
+# **💼 Holdings Screen**
 
-This mirrors how real financial systems work but keeps the scope manageable.
+```
++-----------------------------------------------+
+| Holdings - Alpha Fund                         |
++-----------------------------------------------+
+| Security     | Qty       | Price | Mkt Value |
+|--------------|-----------|-------|-----------|
+| AAPL         | 100       | 150   | 15,000    |
+| MSFT         | 50        | 300   | 15,000    |
++-----------------------------------------------+
+| Total Market Value: 30,000                    |
++-----------------------------------------------+
+```
+
+---
+
+# **🔁 Capture Transaction**
+
+```
++-----------------------------------------------+
+| Capture Transaction                            |
++-----------------------------------------------+
+| Fund: [Alpha Fund ▼]                           |
+| Type: [Buy ▼]                                   |
+| Security: [AAPL ▼]                              |
+| Trade Date: [2025-01-01]                        |
+| Settle Date: [2025-01-03]                       |
+| Quantity: [100]                                 |
+| Price: [150]                                    |
+| Amount: [Auto-calculated]                       |
+| Currency: [USD]                                 |
++-----------------------------------------------+
+| [Submit]                                        |
++-----------------------------------------------+
+```
+
+---
+
+# **💵 Load Prices**
+
+```
++-----------------------------------------------+
+| Load Prices                                    |
++-----------------------------------------------+
+| Date: [2025-01-01]                             |
+|                                                |
+| Security | Price | Source                      |
+|----------|--------|----------------------------|
+| AAPL     | [150]  | [Manual]                   |
+| MSFT     | [300]  | [Manual]                   |
++-----------------------------------------------+
+| [Save Prices]                                  |
++-----------------------------------------------+
+```
+
+---
+
+# **🧮 NAV Calculation**
+
+```
++------------------------------------------------+
+| NAV Calculation - Alpha Fund                   |
++------------------------------------------------+
+| Total Market Value: 30,000                     |
+| Cash: 5,000                                    |
+| Liabilities: 500                               |
++------------------------------------------------+
+| NAV: 34,500                                    |
+| Shares Outstanding: 3,450                      |
+| NAV per Share: 10.00                           |
++------------------------------------------------+
+| [Save NAV]                                     |
++------------------------------------------------+
+```
+
+---
+
+# 🎯 Want to go deeper?
+
+I can also generate:
+
+- A **full ERD diagram**
+- A **REST API design**
+- A **React component structure**
+- A **step‑by‑step tutorial script**
+- A **sample dataset** for testing
+- A **valuation engine pseudocode**
+
+Just tell me what direction you want to explore next.

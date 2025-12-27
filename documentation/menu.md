@@ -1,46 +1,40 @@
-🧭 1. Classic Enterprise‑Style Top Menu
-This layout mirrors what financial institutions expect: clear functional domains, predictable grouping, and easy access to core ledger operations.
+📊 Dashboard
+- Overview
+- Key Metrics (AUM, NAV, Cash)
 
-Top Menu
-• Dashboard
-• Chart of Accounts
-• Journal Entries
-• Posting Periods
-• Balances & Reports
-• Administration
+📁 Funds
+- Fund List
+- Fund Details
+- Share Classes (optional)
 
----
-Dashboard
-• Quick stats (open periods, recent entries)
-• Shortcuts to common actions
----
-Chart of Accounts
-• List Accounts
-• Create Account
-• Edit Account
-• Deactivate Account
-• View Account Balances
----
-Journal Entries
-• List Journal Entries
-• Create New Entry
-• Edit Draft Entry
-• Post Entry
-• Reverse Entry
-• View Entry Details
----
-Posting Periods
-• List Periods
-• Open Period
-• Close Period
----
-Balances & Reports
-• Account Balances
-• Trial Balance
-• Ledger by Account
-• Recompute Balances (admin)
----
-Administration
-• Users (optional)
-• Audit Log
-• System Settings
+💼 Portfolio
+- Holdings
+- Cash Ledger
+- Valuation Summary
+
+🔁 Transactions
+- Capture Transaction
+- Transaction Ledger
+- Import (optional)
+
+💵 Pricing & Valuation
+- Load Prices
+- Price History
+- Run Valuation
+
+🧮 NAV
+- NAV Calculation
+- NAV History
+- NAV Breakdown (Assets, Liabilities)
+
+📄 Reports
+- Holdings Report
+- Cash Report
+- Transaction Report
+- NAV Report
+
+⚙️ Admin / Reference Data
+- Securities
+- Pricing Sources
+- Currencies
+- Users (optional)

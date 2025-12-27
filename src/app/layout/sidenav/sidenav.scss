@@ -1,0 +1,55 @@
+:host {
+  display: contents;
+}
+
+.transition-all {
+  transition: width 0.3s ease-in-out;
+  overflow-x: hidden;
+}
+
+.nav-link {
+  transition: all 0.2s ease-in-out;
+  white-space: nowrap;
+}
+
+.btn-link {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0.25rem;
+  }
+
+  &:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0.25rem;
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+  }
+}
+
+.bi {
+  transition: all 0.2s ease-in-out;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// Submenu indicator styles
+.submenu-indicator {
+  width: 6px;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.nav-link:hover .submenu-indicator {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.nav-link.active .submenu-indicator {
+  background-color: var(--bs-primary);
+}
