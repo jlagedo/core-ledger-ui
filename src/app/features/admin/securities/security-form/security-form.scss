@@ -1,0 +1,7 @@
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.form-control.text-uppercase::placeholder {
+  text-transform: none;
+}

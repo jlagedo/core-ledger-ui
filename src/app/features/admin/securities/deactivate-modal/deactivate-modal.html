@@ -1,0 +1,60 @@
+<div class="modal-header">
+  <h5 class="modal-title fw-semibold">Confirm Deactivation</h5>
+  <button type="button" class="btn-close" (click)="activeModal.dismiss()" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+  <p class="text-danger fw-semibold">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    Are you sure you want to deactivate the following security?
+  </p>
+
+  @if (security(); as sec) {
+    <div class="card bg-body-tertiary border-0">
+      <div class="card-body p-3">
+        <dl class="row mb-0 small">
+          <dt class="col-sm-4">Ticker:</dt>
+          <dd class="col-sm-8">
+            <span class="badge bg-info text-dark">{{ sec.ticker }}</span>
+          </dd>
+
+          <dt class="col-sm-4">Name:</dt>
+          <dd class="col-sm-8 fw-semibold">{{ sec.name }}</dd>
+
+          <dt class="col-sm-4">ISIN:</dt>
+          <dd class="col-sm-8">{{ sec.isin || 'N/A' }}</dd>
+
+          <dt class="col-sm-4">Type:</dt>
+          <dd class="col-sm-8">{{ sec.typeDescription }}</dd>
+
+          <dt class="col-sm-4">Currency:</dt>
+          <dd class="col-sm-8">{{ sec.currency }}</dd>
+
+          <dt class="col-sm-4">Status:</dt>
+          <dd class="col-sm-8">
+            @if (sec.status === 1) {
+              <span class="badge bg-success">{{ sec.statusDescription }}</span>
+            } @else {
+              <span class="badge bg-secondary">{{ sec.statusDescription }}</span>
+            }
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="alert alert-warning mt-3 mb-0" role="alert">
+      <i class="bi bi-info-circle me-2"></i>
+      <strong>Note:</strong> This action will mark the security as inactive. The security data will be preserved for historical reference.
+    </div>
+  }
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">
+    Cancel
+  </button>
+  <button type="button" class="btn btn-danger" (click)="activeModal.close('confirm')">
+    <i class="bi bi-x-circle me-1"></i>
+    Deactivate
+  </button>
+</div>

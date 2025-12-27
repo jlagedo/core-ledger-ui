@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { Admin } from './admin';
-import { Securities } from './securities';
 import { PricingSources } from './pricing-sources';
 import { Currencies } from './currencies';
 import { Users } from './users';
@@ -13,7 +12,7 @@ export const ADMIN_ROUTES: Routes = [
     {
         path: 'securities',
         data: { breadcrumb: 'Securities' },
-        component: Securities
+        loadChildren: () => import('./securities/securities.routes').then(m => m.SECURITIES_ROUTES)
     },
     {
         path: 'pricing-sources',
