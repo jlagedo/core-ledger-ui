@@ -1,34 +1,52 @@
-<div class="modal-header">
-  <h5 class="modal-title">Confirm Deactivation</h5>
-  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+<div class="modal-header border-0">
+  <h5 class="modal-title fw-semibold">Confirm Deactivation</h5>
+  <button (click)="activeModal.dismiss()" aria-label="Close" class="btn-close" type="button"></button>
 </div>
+
 <div class="modal-body">
-  <p class="text-danger mb-3">Are you sure you want to deactivate the following account?</p>
-  
+
+  <p class="text-danger mb-3 fw-semibold">
+    Are you sure you want to deactivate the following account?
+  </p>
+
   @if (account(); as acc) {
-    <div class="card">
-      <div class="card-body">
-        <dl class="row mb-0">
-          <dt class="col-sm-4">Code:</dt>
-          <dd class="col-sm-8">{{ acc.code }}</dd>
-          
-          <dt class="col-sm-4">Name:</dt>
-          <dd class="col-sm-8"><strong>{{ acc.name }}</strong></dd>
-          
-          <dt class="col-sm-4">Type:</dt>
+    <div class="card bg-body-tertiary border-0 rounded-3">
+      <div class="card-body p-3">
+
+        <dl class="row mb-0 small">
+
+          <dt class="col-sm-4 text-secondary">Code:</dt>
+          <dd class="col-sm-8">
+            <span class="numeric">{{ acc.code }}</span>
+          </dd>
+
+          <dt class="col-sm-4 text-secondary">Name:</dt>
+          <dd class="col-sm-8 fw-semibold">{{ acc.name }}</dd>
+
+          <dt class="col-sm-4 text-secondary">Type:</dt>
           <dd class="col-sm-8">{{ acc.typeDescription }}</dd>
-          
-          <dt class="col-sm-4">Status:</dt>
-          <dd class="col-sm-8"><span class="badge bg-success">{{ acc.statusDescription }}</span></dd>
-          
-          <dt class="col-sm-4">Normal Balance:</dt>
+
+          <dt class="col-sm-4 text-secondary">Status:</dt>
+          <dd class="col-sm-8">
+            <span class="badge bg-success">{{ acc.statusDescription }}</span>
+          </dd>
+
+          <dt class="col-sm-4 text-secondary">Normal Balance:</dt>
           <dd class="col-sm-8">{{ acc.normalBalanceDescription }}</dd>
+
         </dl>
+
       </div>
     </div>
   }
+
 </div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
-  <button type="button" class="btn btn-danger" (click)="activeModal.close('confirm')">Deactivate</button>
+
+<div class="modal-footer border-0">
+  <button (click)="activeModal.dismiss()" class="btn btn-dark border-secondary text-light" type="button">
+    Cancel
+  </button>
+  <button (click)="activeModal.close('confirm')" class="btn btn-danger" type="button">
+    Deactivate
+  </button>
 </div>

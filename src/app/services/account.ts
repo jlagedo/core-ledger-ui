@@ -2,7 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Account, CreateAccount, UpdateAccount, PaginatedResponse } from '../models/account.model';
+import {
+  Account,
+  CreateAccount,
+  UpdateAccount,
+  PaginatedResponse,
+  AccountsByTypeReportDto
+} from '../models/account.model';
 import { AccountType } from '../models/account_type.model';
 import { API_URL } from '../config/api.config';
 
@@ -86,5 +92,9 @@ export class AccountService {
 
   deleteAccountType(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/accounttypes/${id}`);
+  }
+
+  getAccountsByTypeReport(): Observable<AccountsByTypeReportDto[]> {
+    return this.http.get<AccountsByTypeReportDto[]>(`${this.apiUrl}/accounts/reports/by-type`);
   }
 }

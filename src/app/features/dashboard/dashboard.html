@@ -1,66 +1,73 @@
-<main class="container-fluid">
+<main class="container-fluid px-3 pb-4">
   <div class="row g-4">
 
-    <!-- Total Balance Widget -->
-    <div class="col-md-4">
-      <div class="card text-bg-primary shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title fw-semibold">Total Balance</h5>
-          <p class="card-text display-6">$1,245,300.00</p>
-          <small class="opacity-75">As of December 2025</small>
+    <!-- Total Balance -->
+    <div class="col-xl-4 col-lg-6">
+      <div class="card bg-body-tertiary text-light shadow-sm border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Total Balance</h6>
+          <p class="display-6 fw-bold mb-1">
+            <span class="numeric">$1,245,300.00</span>
+          </p>
+          <small class="text-muted">As of December 2025</small>
         </div>
       </div>
     </div>
 
-    <!-- Journal Entries Widget -->
-    <div class="col-md-4">
-      <div class="card text-bg-secondary shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title fw-semibold">Recent Journal Entries</h5>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item bg-secondary text-light border-dark">Invoice #1023 – $2,500</li>
-            <li class="list-group-item bg-secondary text-light border-dark">Payroll – $18,000</li>
-            <li class="list-group-item bg-secondary text-light">Rent – $3,200</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <!-- Journal Entries -->
+    <div class="col-xl-4 col-lg-6">
+      <div class="card bg-body-tertiary text-light shadow-sm border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Recent Journal Entries</h6>
 
-    <!-- Posting Period Widget -->
-    <div class="col-md-4">
-      <div class="card text-bg-danger shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title fw-semibold">Current Posting Period</h5>
-          <p class="card-text fs-4">December 2025</p>
-          <small class="opacity-75">Status: Open</small>
-        </div>
-      </div>
-    </div>
-
-    <!-- Reports Widget -->
-    <div class="col-md-6">
-      <div class="card bg-secondary text-light shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title fw-semibold">Quick Reports</h5>
-          <div class="d-grid gap-2 mt-3">
-            <button class="btn btn-outline-light">Trial Balance</button>
-            <button class="btn btn-outline-light">Income Statement</button>
-            <button class="btn btn-outline-light">Cash Flow</button>
+          <div class="d-flex flex-column gap-2">
+            <div>Invoice #1023 – <span class="numeric">$2,500</span></div>
+            <div>Payroll – <span class="numeric">$18,000</span></div>
+            <div>Rent – <span class="numeric">$3,200</span></div>
           </div>
+
         </div>
       </div>
     </div>
 
-    <!-- Admin Shortcuts Widget -->
-    <div class="col-md-6">
-      <div class="card bg-secondary text-light shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title fw-semibold">Administration</h5>
-          <div class="d-grid gap-2 mt-3">
-            <button class="btn btn-outline-light">User Management</button>
-            <button class="btn btn-outline-light">System Settings</button>
-            <button class="btn btn-outline-light">Audit Logs</button>
+    <!-- Pie Chart -->
+    <div class="col-xl-4 col-lg-12">
+      <div class="card bg-body-tertiary text-light shadow-sm border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Active Accounts by Type</h6>
+          <div echarts [options]="chartOption()" style="height: 260px;" class="w-100 mb-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Reports -->
+    <div class="col-xl-6">
+      <div class="card bg-body-tertiary text-light shadow-sm border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Quick Reports</h6>
+
+          <div class="d-grid gap-2">
+            <button class="btn btn-dark border-secondary text-light">Trial Balance</button>
+            <button class="btn btn-dark border-secondary text-light">Income Statement</button>
+            <button class="btn btn-dark border-secondary text-light">Cash Flow</button>
           </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Administration -->
+    <div class="col-xl-6">
+      <div class="card bg-body-tertiary text-light shadow-sm border-0 rounded-4 h-100">
+        <div class="card-body p-4">
+          <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Administration</h6>
+
+          <div class="d-grid gap-2">
+            <button class="btn btn-dark border-secondary text-light">User Management</button>
+            <button class="btn btn-dark border-secondary text-light">System Settings</button>
+            <button class="btn btn-dark border-secondary text-light">Audit Logs</button>
+          </div>
+
         </div>
       </div>
     </div>

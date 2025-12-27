@@ -1,112 +1,157 @@
 <main class="container-fluid">
 
   <!-- Card Wrapper -->
-  <div class="card shadow-sm">
+  <div class="card bg-body-tertiary border-0 shadow-sm rounded-4">
     <div class="card-body">
 
       <!-- Toolbar -->
-      <div class="row g-3 align-items-center mb-3">
+      <div class="row g-3 align-items-center mb-4">
+
+        <!-- Search -->
         <div class="col-md-4">
           <div class="input-group">
-            <span class="input-group-text">
+            <span class="input-group-text bg-secondary border-secondary text-light">
               <i class="bi bi-search"></i>
             </span>
-            <input type="text" class="form-control" placeholder="Search accounts..." #searchInput [value]="store.searchTerm()"
-              (keydown.enter)="onSearch(searchInput.value)" aria-label="Search accounts by description">
+            <input
+              type="text"
+              class="form-control bg-body text-light border-secondary"
+              placeholder="Search accounts..."
+              #searchInput
+              [value]="store.searchTerm()"
+              (keydown.enter)="onSearch(searchInput.value)"
+              aria-label="Search accounts by description"
+            >
           </div>
         </div>
 
+        <!-- Actions -->
         <div class="col-md-8 text-end">
-          <div class="btn-group">
-            <button class="btn btn-outline-secondary" >
+          <div class="btn-group gap-2">
+
+            <button class="btn btn-sm btn-dark border-secondary text-light">
               <i class="bi bi-funnel"></i> Filters
             </button>
-            <button class="btn btn-outline-secondary">
+
+            <button class="btn btn-sm btn-dark border-secondary text-light">
               <i class="bi bi-download"></i> Export
             </button>
-            <button class="btn btn-primary" routerLink="/chart-of-accounts/new" aria-label="Create new account">
+
+            <button
+              class="btn btn-sm btn-primary"
+              routerLink="/chart-of-accounts/new"
+              aria-label="Create new account"
+            >
               <i class="bi bi-plus-lg me-1"></i> New Account
             </button>
+
           </div>
         </div>
       </div>
 
       <!-- Table -->
-      <div class="table-responsive">
-        <table class="table table-hover table-striped table-sm table-bordered" >
-          <thead>
-            <tr>
-              <th scope="col" class="text-end" sortable="code" (sort)="onSort($event)">#</th>
-              <th scope="col" class="text-start" sortable="name" (sort)="onSort($event)">Name</th>
-              <th scope="col" class="text-center" sortable="typeid" (sort)="onSort($event)">Type</th>
-              <th scope="col" class="text-center" sortable="status" (sort)="onSort($event)">Status</th>
-              <th scope="col" class="text-center" sortable="normalbalance" (sort)="onSort($event)">Normal Balance</th>
-              <th scope="col" class="text-center">Actions</th>
-            </tr>
+      <div class="table-responsive rounded-3 border border-dark">
+        <table class="table table-sm table-hover align-middle text-light">
+
+          <thead class="text-secondary text-uppercase small fw-semibold">
+          <tr>
+            <th scope="col" class="text-end" sortable="code" (sort)="onSort($event)">#</th>
+            <th scope="col" class="text-start" sortable="name" (sort)="onSort($event)">Name</th>
+            <th scope="col" class="text-center" sortable="typeid" (sort)="onSort($event)">Type</th>
+            <th scope="col" class="text-center" sortable="status" (sort)="onSort($event)">Status</th>
+            <th scope="col" class="text-center" sortable="normalbalance" (sort)="onSort($event)">Normal Balance</th>
+            <th scope="col" class="text-end">Actions</th>
+          </tr>
           </thead>
+
           <tbody class="table-group-divider">
+
             @defer (on immediate) {
-            @for (account of accountsResponse()?.items; track account.id) {
-            <tr>
-              <td class="text-end">{{ account.code }}</td>
-              <td class="text-start">{{ account.name }}</td>
-              <td class="text-center">{{ account.typeDescription }}</td>
-              <td class="text-center">{{ account.statusDescription }}</td>
-              <td class="text-center">{{ account.normalBalanceDescription }}</td>
-              <td class="text-center">
+              @for (account of accountsResponse()?.items; track account.id) {
+                <tr class="align-middle">
 
-                <div ngbDropdown class="d-inline-block" container="body">
-                  <button class="btn btn-sm" ngbDropdownToggle>
-                    <i class="bi bi-three-dots-vertical"></i>
-                  </button>
+                  <td class="text-end">
+                    <span class="numeric">{{ account.code }}</span>
+                  </td>
 
-                  <div ngbDropdownMenu>
-                    <button ngbDropdownItem>View</button>
-                    <button ngbDropdownItem>Edit</button>
-                    <button ngbDropdownItem
-                            (click)="openDeactivateModal(account)"
-                            class="text-danger">Deactivate</button>
-                  </div>
-                </div>
+                  <td class="text-start">{{ account.name }}</td>
+                  <td class="text-center">{{ account.typeDescription }}</td>
+                  <td class="text-center">{{ account.statusDescription }}</td>
+                  <td class="text-center">{{ account.normalBalanceDescription }}</td>
 
-              </td>
-            </tr>
+                  <td class="text-end">
+
+                    <div ngbDropdown class="d-inline-block" container="body">
+                      <button class="btn btn-sm btn-dark border-secondary text-light" ngbDropdownToggle>
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+
+                      <div ngbDropdownMenu class="bg-dark text-light border-secondary">
+                        <button ngbDropdownItem>View</button>
+                        <button ngbDropdownItem>Edit</button>
+                        <button
+                          ngbDropdownItem
+                          (click)="openDeactivateModal(account)"
+                          class="text-danger"
+                        >
+                          Deactivate
+                        </button>
+                      </div>
+                    </div>
+
+                  </td>
+                </tr>
+              }
             }
-            } @loading {
-            <tr>
-              <td colspan="6" class="text-center py-5">
-                <div class="spinner-border text-primary" role="status"></div>
-                <div class="mt-2 text-muted">Loading accounts…</div>
-              </td>
-            </tr>
-            } @error {
-            <tr>
-              <td colspan="6" class="text-center text-danger py-5">
-                Failed to load accounts.
-              </td>
-            </tr>
+
+            @loading {
+              <tr>
+                <td colspan="6" class="text-center py-5">
+                  <div class="spinner-border text-primary" role="status"></div>
+                  <div class="mt-2 text-muted">Loading accounts…</div>
+                </td>
+              </tr>
+            }
+
+            @error {
+              <tr>
+                <td colspan="6" class="text-center text-danger py-5">
+                  Failed to load accounts.
+                </td>
+              </tr>
             }
 
           </tbody>
         </table>
 
-        <div class="d-flex justify-content-between p-2">
+        <!-- Pagination Row -->
+        <div class="d-flex justify-content-between align-items-center px-2 py-3 small text-secondary">
 
-          <ngb-pagination [collectionSize]="collectionSize()" [page]="store.page()" [pageSize]="store.pageSize()"
-            (pageChange)="store.setPage($event); loadAccounts()" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+          <ngb-pagination
+            [collectionSize]="collectionSize()"
+            [page]="store.page()"
+            [pageSize]="store.pageSize()"
+            (pageChange)="store.setPage($event); loadAccounts()"
+            [maxSize]="5"
+            [rotate]="true"
+            [boundaryLinks]="true"
+          >
           </ngb-pagination>
-          <span class="d-flex align-items-center text-muted">
-            {{ collectionSize() }} total accounts
-          </span>
 
-          <select class="form-select page-size-select" [ngModel]="store.pageSize()"
-            (ngModelChange)="onPageSizeChange($event)">
+          <span class="ms-3">{{ collectionSize() }} total accounts</span>
+
+          <select
+            class="form-select form-select-sm bg-body text-light border-secondary"
+            [ngModel]="store.pageSize()"
+            (ngModelChange)="onPageSizeChange($event)"
+            style="width: 180px"
+          >
             <option [ngValue]="15">15 items per page</option>
             <option [ngValue]="50">50 items per page</option>
             <option [ngValue]="100">100 items per page</option>
           </select>
-        </div>
 
+        </div>
 
       </div>
 

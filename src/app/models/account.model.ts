@@ -44,3 +44,9 @@ export interface UpdateAccount {
     status: AccountStatus;
     normalBalance: NormalBalance;
 }
+
+export interface AccountsByTypeReportDto {
+    typeId: number;
+    typeDescription: string;
+    activeAccountCount: number;
+}
