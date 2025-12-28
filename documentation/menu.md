@@ -2,39 +2,59 @@
 - Overview
 - Key Metrics (AUM, NAV, Cash)
 
-📁 Funds
+📁 Fund Setup
 - Fund List
 - Fund Details
-- Share Classes (optional)
+- Share Classes
 
 💼 Portfolio
 - Holdings
-- Cash Ledger
-- Valuation Summary
+- Cash & FX Ledger
+- Portfolio Valuation
 
-🔁 Transactions
-- Capture Transaction
-- Transaction Ledger
-- Import (optional)
+💳 Capital Activity
+- Subscriptions / Contributions
+- Redemptions / Withdrawals
+- Switches (optional)
+- Capital Activity Ledger
+- Investor Holdings
+- Import Capital Activity
 
-💵 Pricing & Valuation
+🔁 Trades
+- Trade Entry
+- Trade Ledger
+- Import Trades
+
+💵 Market Data & Valuation
 - Load Prices
 - Price History
 - Run Valuation
 
-🧮 NAV
+🧮 NAV Processing
 - NAV Calculation
 - NAV History
-- NAV Breakdown (Assets, Liabilities)
+- NAV Breakdown
 
 📄 Reports
 - Holdings Report
 - Cash Report
-- Transaction Report
+- Trade Report
+- Capital Activity Report
 - NAV Report
 
-⚙️ Admin / Reference Data
+⚙️ Reference Data
 - Securities
 - Pricing Sources
 - Currencies
-- Users (optional)
+- Users
+
+
+👥 Transfer Agency
+- Investor Registry
+- Investor Onboarding
+- Investor Transactions
+- Investor Balances
+- Compliance & Eligibility
+- Fees & Commissions
+- Distributions
+- TA Reports
