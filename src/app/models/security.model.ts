@@ -12,7 +12,16 @@ export enum SecurityType {
   ETF = 6,
   REIT = 7,
   Derivative = 8,
-  Hybrid = 9
+  Hybrid = 9,
+  Future = 10,
+  OptionOnEquity = 11,
+  OptionOnFuture = 12,
+  Forward = 13,
+  Fund = 14,
+  Receipt = 15,
+  FX = 16,
+  Commodity = 17,
+  Index = 18
 }
 
 export interface Security {
