@@ -1,4 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {provideRouter} from '@angular/router';
+import {provideLocationMocks} from '@angular/common/testing';
 
 import {Sidenav} from './sidenav';
 
@@ -8,7 +10,8 @@ describe('Sidenav', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Sidenav]
+      imports: [Sidenav],
+      providers: [provideRouter([]), provideLocationMocks()]
     })
       .compileComponents();
 

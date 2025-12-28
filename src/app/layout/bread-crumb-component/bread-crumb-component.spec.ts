@@ -1,4 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {provideRouter} from '@angular/router';
+import {provideLocationMocks} from '@angular/common/testing';
 
 import {BreadCrumbComponent} from './bread-crumb-component';
 
@@ -8,7 +10,8 @@ describe('BreadCrumbComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BreadCrumbComponent]
+      imports: [BreadCrumbComponent],
+      providers: [provideRouter([]), provideLocationMocks()]
     })
       .compileComponents();
 

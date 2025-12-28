@@ -1,10 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 import {App} from './app';
+import {provideRouter} from '@angular/router';
+import {provideLocationMocks} from '@angular/common/testing';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [provideRouter([]), provideLocationMocks()]
     }).compileComponents();
   });
 
@@ -14,10 +17,12 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should render main layout', async () => {
     const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, core-ledger-ui');
+    expect(compiled.querySelector('main')).toBeTruthy();
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
   });
 });

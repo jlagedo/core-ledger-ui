@@ -1,14 +1,27 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {provideHttpClient} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 
 import {Dashboard} from './dashboard';
+
+// Mock ResizeObserver for ngx-echarts
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
 
 describe('Dashboard', () => {
   let component: Dashboard;
   let fixture: ComponentFixture<Dashboard>;
 
   beforeEach(async () => {
+    // Add ResizeObserver polyfill
+    globalThis.ResizeObserver = ResizeObserverMock as any;
+
     await TestBed.configureTestingModule({
-      imports: [Dashboard]
+      imports: [Dashboard],
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     })
       .compileComponents();
 

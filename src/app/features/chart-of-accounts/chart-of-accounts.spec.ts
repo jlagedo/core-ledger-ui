@@ -1,4 +1,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {provideRouter} from '@angular/router';
+import {provideLocationMocks} from '@angular/common/testing';
+import {provideHttpClient} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 
 import {ChartOfAccounts} from './chart-of-accounts';
 
@@ -8,7 +12,13 @@ describe('ChartOfAccounts', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChartOfAccounts]
+      imports: [ChartOfAccounts],
+      providers: [
+        provideRouter([]),
+        provideLocationMocks(),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
 
