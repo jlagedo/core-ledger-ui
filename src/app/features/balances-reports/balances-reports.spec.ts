@@ -1,4 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {provideRouter} from '@angular/router';
+import {provideLocationMocks} from '@angular/common/testing';
 
 import {BalancesReports} from './balances-reports';
 
@@ -8,7 +10,8 @@ describe('BalancesReports', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BalancesReports]
+      imports: [BalancesReports],
+      providers: [provideRouter([]), provideLocationMocks()]
     })
       .compileComponents();
 

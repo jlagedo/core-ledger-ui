@@ -1,4 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {provideRouter} from '@angular/router';
+import {provideLocationMocks} from '@angular/common/testing';
 
 import {JournalEntries} from './journal-entries';
 
@@ -8,7 +10,8 @@ describe('JournalEntries', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [JournalEntries]
+      imports: [JournalEntries],
+      providers: [provideRouter([]), provideLocationMocks()]
     })
       .compileComponents();
 
