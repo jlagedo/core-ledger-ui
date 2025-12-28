@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgbDatepickerModule, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 import {FundService} from '../../../services/fund';
 import {ToastService} from '../../../services/toast-service';
@@ -36,7 +36,7 @@ export class FundForm implements OnInit {
     this.fundForm.patchValue({inceptionDate: today});
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.isSubmitting()) {
       return;
     }
@@ -70,24 +70,24 @@ export class FundForm implements OnInit {
           this.router.navigate(['/funds/list']);
         }, 1500);
       },
-      error: (error) => {
+      error: (error: unknown) => {
         this.isSubmitting.set(false);
         this.submitStatus.set('error');
 
-        const message = error.error?.message || 'Failed to create fund. Please try again.';
+        const message = (error as any).error?.message || 'Failed to create fund. Please try again.';
         this.errorMessage.set(message);
         this.toastService.error(message, 8000);
       }
     });
   }
 
-  retrySubmit() {
+  retrySubmit(): void {
     this.submitStatus.set('idle');
     this.errorMessage.set('');
     this.onSubmit();
   }
 
-  clearForm() {
+  clearForm(): void {
     const today = this.dateToNgbDate(new Date());
     this.fundForm.reset({
       code: '',
@@ -101,25 +101,25 @@ export class FundForm implements OnInit {
     this.errorMessage.set('');
   }
 
-  getControl(name: string) {
+  getControl(name: string): AbstractControl {
     return this.fundForm.get(name)!;
   }
 
-  isInvalid(name: string) {
+  isInvalid(name: string): boolean {
     const c = this.getControl(name);
     return c.touched && c.invalid;
   }
 
-  isValid(name: string) {
+  isValid(name: string): boolean {
     const c = this.getControl(name);
     return c.touched && c.valid;
   }
 
-  hasError(name: string, error: string) {
+  hasError(name: string, error: string): boolean {
     return this.getControl(name).errors?.[error];
   }
 
-  protected cancelback() {
+  protected cancelback(): void {
     this.fundForm.reset();
     this.router.navigate(['/funds/list']).then(r => this.clearForm());
   }

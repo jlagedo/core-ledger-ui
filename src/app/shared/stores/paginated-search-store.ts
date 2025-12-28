@@ -62,7 +62,7 @@ export function createPaginatedSearchStore(config: PaginatedSearchStoreConfig) {
     withMethods((store) => {
       const logger = inject(LoggerService);
 
-      const saveCurrentState = () => {
+      const saveCurrentState = (): void => {
         const state: PaginatedSearchState = {
           searchTerm: store.searchTerm(),
           page: store.page(),

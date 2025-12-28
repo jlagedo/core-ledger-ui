@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {OnlyNumbers} from '../../../directives/only-numbers';
 import {AccountService} from '../../../services/account';
 import {toSignal} from '@angular/core/rxjs-interop';
@@ -36,7 +36,7 @@ export class AccountForm implements OnInit {
     // Component initialization
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.isSubmitting()) {
       return;
     }
@@ -70,24 +70,24 @@ export class AccountForm implements OnInit {
           this.router.navigate(['/chart-of-accounts']);
         }, 1500);
       },
-      error: (error) => {
+      error: (error: unknown) => {
         this.isSubmitting.set(false);
         this.submitStatus.set('error');
 
-        const message = error.error?.message || 'Failed to create account. Please try again.';
+        const message = (error as any).error?.message || 'Failed to create account. Please try again.';
         this.errorMessage.set(message);
         this.toastService.error(message, 8000);
       }
     });
   }
 
-  retrySubmit() {
+  retrySubmit(): void {
     this.submitStatus.set('idle');
     this.errorMessage.set('');
     this.onSubmit();
   }
 
-  clearForm() {
+  clearForm(): void {
     this.accountForm.reset({normalBalance: '2'});
     this.accountForm.markAsUntouched();
     this.accountForm.markAsPristine();
@@ -95,25 +95,25 @@ export class AccountForm implements OnInit {
     this.errorMessage.set('');
   }
 
-  getControl(name: string) {
+  getControl(name: string): AbstractControl {
     return this.accountForm.get(name)!;
   }
 
-  isInvalid(name: string) {
+  isInvalid(name: string): boolean {
     const c = this.getControl(name);
     return c.touched && c.invalid;
   }
 
-  isValid(name: string) {
+  isValid(name: string): boolean {
     const c = this.getControl(name);
     return c.touched && c.valid;
   }
 
-  hasError(name: string, error: string) {
+  hasError(name: string, error: string): boolean {
     return this.getControl(name).errors?.[error];
   }
 
-  protected cancelback() {
+  protected cancelback(): void {
     this.accountForm.reset();
     this.router.navigate(['/chart-of-accounts']).then(r => this.clearForm());
   }

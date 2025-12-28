@@ -47,11 +47,11 @@ export class SecurityService {
 
   deactivateSecurity(id: number): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/securities/${id}/deactivate`, null).pipe(
-      catchError((error) => {
+      catchError((error: unknown) => {
         this.logger.error(`Failed to deactivate security`, {
-          status: error.status,
-          errorCode: error.error?.errorCode,
-          message: error.error?.message,
+          status: (error as any).status,
+          errorCode: (error as any).error?.errorCode,
+          message: (error as any).error?.message,
         }, 'SecurityService.deactivateSecurity');
         return throwError(() => error);
       })

@@ -71,13 +71,13 @@ export class Dashboard {
   }
 
   private groupAccountsByType(data: AccountsByTypeReportDto[]): Array<{ name: string; value: number }> {
-    const total = data.reduce((sum, item) => sum + item.activeAccountCount, 0);
+    const total = data.reduce((sum: number, item: AccountsByTypeReportDto): number => sum + item.activeAccountCount, 0);
 
-    return data.reduce((acc, item) => {
+    return data.reduce((acc: Array<{ name: string; value: number }>, item: AccountsByTypeReportDto): Array<{ name: string; value: number }> => {
       const percentage = (item.activeAccountCount / total) * 100;
 
       if (percentage < 4) {
-        const othersItem = acc.find(d => d.name === 'Others');
+        const othersItem = acc.find((d: { name: string; value: number }): boolean => d.name === 'Others');
         if (othersItem) {
           othersItem.value += item.activeAccountCount;
         } else {
@@ -91,12 +91,12 @@ export class Dashboard {
     }, [] as Array<{ name: string; value: number }>);
   }
 
-  private loadAccountsByTypeReport() {
+  private loadAccountsByTypeReport(): void {
     this.accountService.getAccountsByTypeReport()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: response => this.accountsByTypeReport.set(response),
-        error: err => this.logger.logHttpError('load accounts by type report', err, 'Failed to load dashboard data. Please refresh the page.')
+        error: (err: unknown) => this.logger.logHttpError('load accounts by type report', err, 'Failed to load dashboard data. Please refresh the page.')
       });
 
   }

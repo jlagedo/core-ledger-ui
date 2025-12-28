@@ -9,7 +9,7 @@ import {
   PaginatedResponse,
   UpdateAccount
 } from '../models/account.model';
-import {AccountType} from '../models/account_type.model';
+import {AccountType, CreateAccountType, UpdateAccountType} from '../models/account_type.model';
 import {API_URL} from '../config/api.config';
 import {LoggerService} from './logger';
 
@@ -60,16 +60,16 @@ export class AccountService {
 
   deactivateAccount(id: number): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/accounts/${id}/deactivate`, null).pipe(
-      catchError((error) => {
+      catchError((error: unknown) => {
         this.logger.error(
           `Failed to deactivate account ${id}`,
           {
-            status: error.status,
-            errorCode: error.error?.errorCode,
-            message: error.error?.message,
-            correlationId: error.error?.correlationId,
-            traceId: error.error?.traceId,
-            validationErrors: error.error?.errors,
+            status: (error as any).status,
+            errorCode: (error as any).error?.errorCode,
+            message: (error as any).error?.message,
+            correlationId: (error as any).error?.correlationId,
+            traceId: (error as any).error?.traceId,
+            validationErrors: (error as any).error?.errors,
           },
           'AccountService.deactivateAccount'
         );
@@ -87,11 +87,11 @@ export class AccountService {
     return this.http.get<AccountType>(`${this.apiUrl}/accounttypes/${id}`);
   }
 
-  createAccountType(accountType: { description: string }): Observable<AccountType> {
+  createAccountType(accountType: CreateAccountType): Observable<AccountType> {
     return this.http.post<AccountType>(`${this.apiUrl}/accounttypes`, accountType);
   }
 
-  updateAccountType(id: number, accountType: { description: string }): Observable<void> {
+  updateAccountType(id: number, accountType: UpdateAccountType): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/accounttypes/${id}`, accountType);
   }
 

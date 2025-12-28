@@ -112,7 +112,7 @@ export class SecurityList {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: response => this.securitiesResponse.set(response),
-        error: err => this.logger.logHttpError('load securities', err, 'Failed to load securities. Please try again.')
+        error: (err: unknown) => this.logger.logHttpError('load securities', err, 'Failed to load securities. Please try again.')
       });
   }
 
@@ -126,7 +126,7 @@ export class SecurityList {
     modalRef.componentInstance.security.set(security);
 
     modalRef.result.then(
-      (result) => {
+      (result: string | undefined) => {
         if (result === 'confirm') {
           this.securityService.deactivateSecurity(security.id)
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -136,15 +136,15 @@ export class SecurityList {
                 modalRef.close();
                 this.toastService.success(`Security "${security.name}" deactivated successfully`);
               },
-              error: err => {
-                const errorMessage = err?.error?.message || err?.message || 'Failed to deactivate security. Please try again.';
+              error: (err: unknown) => {
+                const errorMessage = (err as any)?.error?.message || (err as any)?.message || 'Failed to deactivate security. Please try again.';
                 this.logger.logHttpError('deactivate security', err, errorMessage, false);
                 this.toastService.error(errorMessage);
               }
             });
         }
       },
-      () => {
+      (): void => {
         // Modal dismissed
       }
     );

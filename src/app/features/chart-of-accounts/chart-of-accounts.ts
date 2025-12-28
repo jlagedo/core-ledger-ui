@@ -108,7 +108,7 @@ export class ChartOfAccounts {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: response => this.accountsResponse.set(response),
-        error: err => this.logger.logHttpError('load accounts', err, 'Failed to load accounts. Please try again.')
+        error: (err: unknown) => this.logger.logHttpError('load accounts', err, 'Failed to load accounts. Please try again.')
       });
   }
 
@@ -122,7 +122,7 @@ export class ChartOfAccounts {
     modalRef.componentInstance.account.set(account);
 
     modalRef.result.then(
-      (result) => {
+      (result: string | undefined) => {
         if (result === 'confirm') {
           this.accountService.deactivateAccount(account.id)
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -132,15 +132,15 @@ export class ChartOfAccounts {
                 modalRef.close();
                 this.toastService.success(`Account "${account.name}" deactivated successfully`);
               },
-              error: err => {
-                const errorMessage = err?.error?.message || err?.message || 'Failed to deactivate account. Please try again.';
+              error: (err: unknown) => {
+                const errorMessage = (err as any)?.error?.message || (err as any)?.message || 'Failed to deactivate account. Please try again.';
                 this.logger.logHttpError('deactivate account', err, errorMessage, false);
                 this.toastService.error(errorMessage);
               }
             });
         }
       },
-      () => {
+      (): void => {
         // Modal dismissed
       }
     );

@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
-import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SecurityService} from '../../../../services/security';
 import {ToastService} from '../../../../services/toast-service';
@@ -51,7 +51,7 @@ export class SecurityForm implements OnInit {
           currency: security.currency,
         });
       },
-      error: (err) => {
+      error: (err: unknown) => {
         this.toastService.error('Failed to load security');
         this.router.navigate(['/admin/securities']);
       }
@@ -88,10 +88,10 @@ export class SecurityForm implements OnInit {
             this.router.navigate(['/admin/securities']);
           }, 1500);
         },
-        error: (error) => {
+        error: (error: unknown) => {
           this.isSubmitting.set(false);
           this.submitStatus.set('error');
-          this.errorMessage.set(error.error?.message || 'Failed to update security');
+          this.errorMessage.set((error as any).error?.message || 'Failed to update security');
         }
       });
     } else {
@@ -112,10 +112,10 @@ export class SecurityForm implements OnInit {
             this.router.navigate(['/admin/securities']);
           }, 1500);
         },
-        error: (error) => {
+        error: (error: unknown) => {
           this.isSubmitting.set(false);
           this.submitStatus.set('error');
-          this.errorMessage.set(error.error?.message || 'Failed to create security');
+          this.errorMessage.set((error as any).error?.message || 'Failed to create security');
         }
       });
     }
@@ -145,7 +145,7 @@ export class SecurityForm implements OnInit {
     this.errorMessage.set('');
   }
 
-  getControl(name: string) {
+  getControl(name: string): AbstractControl {
     return this.securityForm.get(name)!;
   }
 
