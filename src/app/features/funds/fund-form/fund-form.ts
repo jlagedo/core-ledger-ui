@@ -5,11 +5,12 @@ import {NgbDatepickerModule, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 import {FundService} from '../../../services/fund';
 import {ToastService} from '../../../services/toast-service';
 import {CreateFund, ValuationFrequency} from '../../../models/fund.model';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
+import {BreadCrumbComponent} from '../../../layout/bread-crumb-component/bread-crumb-component';
 
 @Component({
   selector: 'app-fund-form',
-  imports: [CommonModule, ReactiveFormsModule, NgbDatepickerModule],
+  imports: [CommonModule, ReactiveFormsModule, NgbDatepickerModule, BreadCrumbComponent, RouterLink],
   templateUrl: './fund-form.html',
   styleUrl: './fund-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

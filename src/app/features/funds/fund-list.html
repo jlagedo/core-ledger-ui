@@ -1,37 +1,64 @@
+<nav class="d-flex flex-column px-3 py-2 border-bottom mb-3 bg-body-secondary shadow-sm sticky-top">
+
+  <!-- Breadcrumb (small, subtle) -->
+  <app-bread-crumb-component />
+
+  <!-- Title + Actions -->
+  <div class="d-flex align-items-center mt-1">
+    <h1 class="h4 mb-0">Fund Explorer</h1>
+
+    <div class="d-flex gap-3 ms-auto align-items-center">
+
+      <button class="btn btn-sm btn-dark border-secondary text-light">
+        <i class="bi bi-funnel"></i> Filters
+      </button>
+
+      <button class="btn btn-sm btn-dark border-secondary text-light">
+        <i class="bi bi-download"></i> Export
+      </button>
+
+      <button aria-label="Create new fund" class="btn btn-sm btn-primary" routerLink="/funds/new">
+        <i class="bi bi-plus-lg me-1"></i> New Fund
+      </button>
+
+    </div>
+  </div>
+
+</nav>
+
 <main class="container-fluid">
+
+  <!--  <app-bread-crumb-component/>-->
 
   <div class="card bg-body-tertiary border-0 shadow-sm rounded-4">
     <div class="card-body">
 
       <div class="row g-3 align-items-center mb-4">
 
-        <div class="col-md-4">
+        <div class="col-4">
           <div class="input-group">
                         <span class="input-group-text bg-secondary border-secondary text-light">
                             <i class="bi bi-search"></i>
                         </span>
             <input #searchInput (keydown.enter)="onSearch(searchInput.value)"
-                   [value]="store.searchTerm()" aria-label="Search funds by name" class="form-control bg-body text-light border-secondary"
+                   [value]="store.searchTerm()" aria-label="Search funds by name"
+                   class="form-control bg-body text-light border-secondary"
                    placeholder="Search funds..." type="text">
           </div>
         </div>
 
-        <div class="col-md-8 text-end">
-          <div class="btn-group gap-2">
+        <div class="col-4 text-center">{{ collectionSize() }} total funds</div>
 
-            <button class="btn btn-sm btn-dark border-secondary text-light">
-              <i class="bi bi-funnel"></i> Filters
-            </button>
+        <div class="col-4 d-flex justify-content-end">
 
-            <button class="btn btn-sm btn-dark border-secondary text-light">
-              <i class="bi bi-download"></i> Export
-            </button>
+          <select (ngModelChange)="onPageSizeChange($event)"
+                  [ngModel]="store.pageSize()" class="form-select form-select-sm bg-body text-light border-secondary"
+                  style="width: 180px">
+            <option [ngValue]="15">15 items per page</option>
+            <option [ngValue]="50">50 items per page</option>
+            <option [ngValue]="100">100 items per page</option>
+          </select>
 
-            <button aria-label="Create new fund" class="btn btn-sm btn-primary" routerLink="/funds/new">
-              <i class="bi bi-plus-lg me-1"></i> New Fund
-            </button>
-
-          </div>
         </div>
       </div>
 
@@ -107,15 +134,6 @@
                           [collectionSize]="collectionSize()" [maxSize]="5" [pageSize]="store.pageSize()"
                           [page]="store.page()" [rotate]="true">
           </ngb-pagination>
-
-          <span class="ms-3">{{ collectionSize() }} total funds</span>
-
-          <select (ngModelChange)="onPageSizeChange($event)"
-                  [ngModel]="store.pageSize()" class="form-select form-select-sm bg-body text-light border-secondary" style="width: 180px">
-            <option [ngValue]="15">15 items per page</option>
-            <option [ngValue]="50">50 items per page</option>
-            <option [ngValue]="100">100 items per page</option>
-          </select>
 
         </div>
 
