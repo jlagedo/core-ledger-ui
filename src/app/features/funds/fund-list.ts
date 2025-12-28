@@ -25,11 +25,11 @@ import {SortableDirective, SortEvent} from '../../directives/sortable.directive'
 import {FundsStore} from './funds-store';
 import {ToastService} from '../../services/toast-service';
 import {LoggerService} from '../../services/logger';
-import {BreadCrumbComponent} from '../../layout/bread-crumb-component/bread-crumb-component';
+import {PageHeader} from '../../layout/page-header/page-header';
 
 @Component({
   selector: 'app-fund-list',
-  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, DatePipe, BreadCrumbComponent],
+  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, DatePipe, PageHeader],
   providers: [FundsStore],
   templateUrl: './fund-list.html',
   styleUrl: './fund-list.scss',

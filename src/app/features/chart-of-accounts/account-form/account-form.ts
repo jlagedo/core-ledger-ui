@@ -7,10 +7,11 @@ import {toSignal} from '@angular/core/rxjs-interop';
 import {ToastService} from '../../../services/toast-service';
 import {AccountStatus, CreateAccount, NormalBalance} from '../../../models/account.model';
 import {Router} from '@angular/router';
+import {PageHeader} from '../../../layout/page-header/page-header';
 
 @Component({
   selector: 'app-account-form',
-  imports: [CommonModule, ReactiveFormsModule, OnlyNumbers],
+  imports: [CommonModule, ReactiveFormsModule, OnlyNumbers, PageHeader],
   templateUrl: './account-form.html',
   styleUrl: './account-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

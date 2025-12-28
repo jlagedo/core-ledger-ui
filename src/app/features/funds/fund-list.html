@@ -1,30 +1,14 @@
-<nav class="d-flex flex-column px-3 py-2 border-bottom mb-3 bg-body-secondary shadow-sm sticky-top">
-
-  <!-- Breadcrumb (small, subtle) -->
-  <app-bread-crumb-component />
-
-  <!-- Title + Actions -->
-  <div class="d-flex align-items-center mt-1">
-    <h1 class="h4 mb-0">Fund Explorer</h1>
-
-    <div class="d-flex gap-3 ms-auto align-items-center">
-
-      <button class="btn btn-sm btn-dark border-secondary text-light">
-        <i class="bi bi-funnel"></i> Filters
-      </button>
-
-      <button class="btn btn-sm btn-dark border-secondary text-light">
-        <i class="bi bi-download"></i> Export
-      </button>
-
-      <button aria-label="Create new fund" class="btn btn-sm btn-primary" routerLink="/funds/new">
-        <i class="bi bi-plus-lg me-1"></i> New Fund
-      </button>
-
-    </div>
-  </div>
-
-</nav>
+<app-page-header title="Fund Explorer">
+  <button class="btn btn-sm btn-dark border-secondary text-light">
+    <i class="bi bi-funnel"></i> Filters
+  </button>
+  <button class="btn btn-sm btn-dark border-secondary text-light">
+    <i class="bi bi-download"></i> Export
+  </button>
+  <button aria-label="Create new fund" class="btn btn-sm btn-primary" routerLink="/funds/new">
+    <i class="bi bi-plus-lg me-1"></i> New Fund
+  </button>
+</app-page-header>
 
 <main class="container-fluid">
 

@@ -26,10 +26,11 @@ import {ChartOfAccountsStore} from './chart-of-accounts-store';
 import {DeactivateModal} from './deactivate-modal/deactivate-modal';
 import {ToastService} from '../../services/toast-service';
 import {LoggerService} from '../../services/logger';
+import {PageHeader} from '../../layout/page-header/page-header';
 
 @Component({
   selector: 'app-chart-of-accounts',
-  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem],
+  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, PageHeader],
   providers: [ChartOfAccountsStore],
   templateUrl: './chart-of-accounts.html',
   styleUrl: './chart-of-accounts.scss',

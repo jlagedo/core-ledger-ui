@@ -5,10 +5,11 @@ import {SecurityService} from '../../../../services/security';
 import {ToastService} from '../../../../services/toast-service';
 import {CreateSecurity, SecurityType as SecurityTypeEnum, UpdateSecurity} from '../../../../models/security.model';
 import {toSignal} from '@angular/core/rxjs-interop';
+import {PageHeader} from '../../../../layout/page-header/page-header';
 
 @Component({
   selector: 'app-security-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, PageHeader],
   templateUrl: './security-form.html',
   styleUrl: './security-form.scss',
 })

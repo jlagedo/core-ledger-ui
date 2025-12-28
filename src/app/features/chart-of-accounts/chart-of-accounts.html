@@ -1,51 +1,36 @@
+<app-page-header title="Chart of Accounts">
+  <button class="btn btn-sm btn-dark border-secondary text-light">
+    <i class="bi bi-funnel"></i> Filters
+  </button>
+  <button class="btn btn-sm btn-dark border-secondary text-light">
+    <i class="bi bi-download"></i> Export
+  </button>
+  <button aria-label="Create new account" class="btn btn-sm btn-primary" routerLink="/chart-of-accounts/new">
+    <i class="bi bi-plus-lg me-1"></i> New Account
+  </button>
+</app-page-header>
+
 <main class="container-fluid">
 
   <!-- Card Wrapper -->
   <div class="card bg-body-tertiary border-0 shadow-sm rounded-4">
     <div class="card-body">
 
-      <!-- Toolbar -->
-      <div class="row g-3 align-items-center mb-4">
-
-        <!-- Search -->
-        <div class="col-md-4">
-          <div class="input-group">
-            <span class="input-group-text bg-secondary border-secondary text-light">
-              <i class="bi bi-search"></i>
-            </span>
-            <input
-              #searchInput
-              (keydown.enter)="onSearch(searchInput.value)"
-              [value]="store.searchTerm()"
-              aria-label="Search accounts by description"
-              class="form-control bg-body text-light border-secondary"
-              placeholder="Search accounts..."
-              type="text"
-            >
-          </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="col-md-8 text-end">
-          <div class="btn-group gap-2">
-
-            <button class="btn btn-sm btn-dark border-secondary text-light">
-              <i class="bi bi-funnel"></i> Filters
-            </button>
-
-            <button class="btn btn-sm btn-dark border-secondary text-light">
-              <i class="bi bi-download"></i> Export
-            </button>
-
-            <button
-              aria-label="Create new account"
-              class="btn btn-sm btn-primary"
-              routerLink="/chart-of-accounts/new"
-            >
-              <i class="bi bi-plus-lg me-1"></i> New Account
-            </button>
-
-          </div>
+      <!-- Search -->
+      <div class="mb-4">
+        <div class="input-group" style="max-width: 400px;">
+          <span class="input-group-text bg-secondary border-secondary text-light">
+            <i class="bi bi-search"></i>
+          </span>
+          <input
+            #searchInput
+            (keydown.enter)="onSearch(searchInput.value)"
+            [value]="store.searchTerm()"
+            aria-label="Search accounts by description"
+            class="form-control bg-body text-light border-secondary"
+            placeholder="Search accounts..."
+            type="text"
+          >
         </div>
       </div>
 

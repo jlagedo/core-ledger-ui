@@ -27,10 +27,11 @@ import {SecuritiesStore} from './securities-store';
 import {DeactivateModal} from './deactivate-modal/deactivate-modal';
 import {ToastService} from '../../../services/toast-service';
 import {LoggerService} from '../../../services/logger';
+import {PageHeader} from '../../../layout/page-header/page-header';
 
 @Component({
   selector: 'app-security-list',
-  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, DatePipe],
+  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, DatePipe, PageHeader],
   providers: [SecuritiesStore],
   templateUrl: './security-list.html',
   styleUrl: './security-list.scss',

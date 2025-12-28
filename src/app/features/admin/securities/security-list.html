@@ -1,37 +1,35 @@
+<app-page-header title="Securities">
+  <button class="btn btn-sm btn-dark border-secondary text-light">
+    <i class="bi bi-funnel"></i> Filters
+  </button>
+  <button class="btn btn-sm btn-dark border-secondary text-light">
+    <i class="bi bi-download"></i> Export
+  </button>
+  <button aria-label="Create new security" class="btn btn-sm btn-primary" routerLink="/admin/securities/new">
+    <i class="bi bi-plus-lg me-1"></i> New Security
+  </button>
+</app-page-header>
+
 <main class="container-fluid">
 
   <div class="card bg-body-tertiary border-0 shadow-sm rounded-4">
     <div class="card-body">
 
-      <div class="row g-3 align-items-center mb-4">
-
-        <div class="col-md-4">
-          <div class="input-group">
-                        <span class="input-group-text bg-secondary border-secondary text-light">
-                            <i class="bi bi-search"></i>
-                        </span>
-            <input #searchInput (keydown.enter)="onSearch(searchInput.value)"
-                   [value]="store.searchTerm()" aria-label="Search securities by name" class="form-control bg-body text-light border-secondary"
-                   placeholder="Search securities..." type="text">
-          </div>
-        </div>
-
-        <div class="col-md-8 text-end">
-          <div class="btn-group gap-2">
-
-            <button class="btn btn-sm btn-dark border-secondary text-light">
-              <i class="bi bi-funnel"></i> Filters
-            </button>
-
-            <button class="btn btn-sm btn-dark border-secondary text-light">
-              <i class="bi bi-download"></i> Export
-            </button>
-
-            <button aria-label="Create new security" class="btn btn-sm btn-primary" routerLink="/admin/securities/new">
-              <i class="bi bi-plus-lg me-1"></i> New Security
-            </button>
-
-          </div>
+      <!-- Search -->
+      <div class="mb-4">
+        <div class="input-group" style="max-width: 400px;">
+          <span class="input-group-text bg-secondary border-secondary text-light">
+            <i class="bi bi-search"></i>
+          </span>
+          <input
+            #searchInput
+            (keydown.enter)="onSearch(searchInput.value)"
+            [value]="store.searchTerm()"
+            aria-label="Search securities by name"
+            class="form-control bg-body text-light border-secondary"
+            placeholder="Search securities..."
+            type="text"
+          >
         </div>
       </div>
 
