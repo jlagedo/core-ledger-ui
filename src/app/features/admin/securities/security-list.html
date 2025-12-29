@@ -15,21 +15,32 @@
   <div class="card bg-body-tertiary border-0 shadow-sm rounded-4">
     <div class="card-body">
 
-      <!-- Search -->
-      <div class="mb-4">
-        <div class="input-group" style="max-width: 400px;">
-          <span class="input-group-text bg-secondary border-secondary text-light">
-            <i class="bi bi-search"></i>
-          </span>
-          <input
-            #searchInput
-            (keydown.enter)="onSearch(searchInput.value)"
-            [value]="store.searchTerm()"
-            aria-label="Search securities by name"
-            class="form-control bg-body text-light border-secondary"
-            placeholder="Search securities..."
-            type="text"
-          >
+      <div class="row g-3 align-items-center mb-4">
+
+        <div class="col-4">
+          <div class="input-group">
+            <span class="input-group-text bg-secondary border-secondary text-light">
+              <i class="bi bi-search"></i>
+            </span>
+            <input #searchInput (keydown.enter)="onSearch(searchInput.value)"
+                   [value]="store.searchTerm()" aria-label="Search securities by name"
+                   class="form-control bg-body text-light border-secondary"
+                   placeholder="Search securities..." type="text">
+          </div>
+        </div>
+
+        <div class="col-4 text-center">{{ collectionSize() }} total securities</div>
+
+        <div class="col-4 d-flex justify-content-end">
+
+          <select (ngModelChange)="onPageSizeChange($event)"
+                  [ngModel]="store.pageSize()" class="form-select form-select-sm bg-body text-light border-secondary"
+                  style="width: 180px">
+            <option [ngValue]="15">15 items per page</option>
+            <option [ngValue]="50">50 items per page</option>
+            <option [ngValue]="100">100 items per page</option>
+          </select>
+
         </div>
       </div>
 
@@ -108,19 +119,9 @@
         <div class="d-flex justify-content-between align-items-center px-2 py-3 small text-secondary">
 
           <ngb-pagination (pageChange)="store.setPage($event); loadSecurities()" [boundaryLinks]="true"
-                          [collectionSize]="collectionSize()" [maxSize]="5"
-                          [pageSize]="store.pageSize()"
+                          [collectionSize]="collectionSize()" [maxSize]="5" [pageSize]="store.pageSize()"
                           [page]="store.page()" [rotate]="true">
           </ngb-pagination>
-
-          <span class="ms-3">{{ collectionSize() }} total securities</span>
-
-          <select (ngModelChange)="onPageSizeChange($event)"
-                  [ngModel]="store.pageSize()" class="form-select form-select-sm bg-body text-light border-secondary" style="width: 180px">
-            <option [ngValue]="15">15 items per page</option>
-            <option [ngValue]="50">50 items per page</option>
-            <option [ngValue]="100">100 items per page</option>
-          </select>
 
         </div>
 
