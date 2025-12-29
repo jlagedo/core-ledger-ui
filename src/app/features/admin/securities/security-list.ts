@@ -25,6 +25,7 @@ import {FormsModule} from '@angular/forms';
 import {SortableDirective, SortEvent} from '../../../directives/sortable.directive';
 import {SecuritiesStore} from './securities-store';
 import {DeactivateModal} from './deactivate-modal/deactivate-modal';
+import {ImportB3Modal} from './import-b3-modal/import-b3-modal';
 import {ToastService} from '../../../services/toast-service';
 import {LoggerService} from '../../../services/logger';
 import {PageHeader} from '../../../layout/page-header/page-header';
@@ -139,6 +140,35 @@ export class SecurityList {
               error: err => {
                 const errorMessage = err?.error?.message || err?.message || 'Failed to deactivate security. Please try again.';
                 this.logger.logHttpError('deactivate security', err, errorMessage, false);
+                this.toastService.error(errorMessage);
+              }
+            });
+        }
+      },
+      () => {
+        // Modal dismissed
+      }
+    );
+  }
+
+  openImportB3Modal(): void {
+    const modalRef = this.modal.open(ImportB3Modal);
+
+    modalRef.result.then(
+      (result) => {
+        if (result === 'confirm') {
+          this.securityService.importB3InstructionFile()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: (response) => {
+                modalRef.close();
+                this.toastService.success(
+                  `B3 import job created successfully (Job ID: ${response.coreJobId}, Reference: ${response.referenceId})`
+                );
+              },
+              error: err => {
+                const errorMessage = err?.error?.message || err?.message || 'Failed to import B3 instruction file. Please try again.';
+                this.logger.logHttpError('import B3 instruction file', err, errorMessage, false);
                 this.toastService.error(errorMessage);
               }
             });

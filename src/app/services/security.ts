@@ -5,6 +5,7 @@ import {catchError} from 'rxjs/operators';
 import {API_URL} from '../config/api.config';
 import {CreateSecurity, PaginatedResponse, Security, UpdateSecurity,} from '../models/security.model';
 import {SecurityType} from '../models/security_type.model';
+import {ImportB3InstructionFileResponse} from '../models/import-b3-response.model';
 import {LoggerService} from './logger';
 
 @Injectable({providedIn: 'root'})
@@ -60,5 +61,18 @@ export class SecurityService {
 
   getSecurityTypes(): Observable<SecurityType[]> {
     return this.http.get<SecurityType[]>(`${this.apiUrl}/securitytypes`);
+  }
+
+  importB3InstructionFile(): Observable<ImportB3InstructionFileResponse> {
+    return this.http.post<ImportB3InstructionFileResponse>(`${this.apiUrl}/jobs-ingestion/import-b3-instruction-file`, null).pipe(
+      catchError((error) => {
+        this.logger.error(`Failed to import B3 instruction file`, {
+          status: error.status,
+          errorCode: error.error?.errorCode,
+          message: error.error?.message,
+        }, 'SecurityService.importB3InstructionFile');
+        return throwError(() => error);
+      })
+    );
   }
 }
