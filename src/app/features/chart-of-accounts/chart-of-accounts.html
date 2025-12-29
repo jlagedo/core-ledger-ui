@@ -1,8 +1,8 @@
 <app-page-header title="Chart of Accounts">
-  <button class="btn btn-sm btn-dark border-secondary text-light">
+  <button class="btn btn-sm btn-secondary">
     <i class="bi bi-funnel"></i> Filters
   </button>
-  <button class="btn btn-sm btn-dark border-secondary text-light">
+  <button class="btn btn-sm btn-secondary">
     <i class="bi bi-download"></i> Export
   </button>
   <button aria-label="Create new account" class="btn btn-sm btn-primary" routerLink="/chart-of-accounts/new">
@@ -20,12 +20,12 @@
 
         <div class="col-4">
           <div class="input-group">
-            <span class="input-group-text bg-secondary border-secondary text-light">
+            <span class="input-group-text bg-body-secondary border-secondary">
               <i class="bi bi-search"></i>
             </span>
             <input #searchInput (keydown.enter)="onSearch(searchInput.value)"
                    [value]="store.searchTerm()" aria-label="Search accounts by description"
-                   class="form-control bg-body text-light border-secondary"
+                   class="form-control bg-body border-secondary"
                    placeholder="Search accounts..." type="text">
           </div>
         </div>
@@ -35,7 +35,7 @@
         <div class="col-4 d-flex justify-content-end">
 
           <select (ngModelChange)="onPageSizeChange($event)"
-                  [ngModel]="store.pageSize()" class="form-select form-select-sm bg-body text-light border-secondary"
+                  [ngModel]="store.pageSize()" class="form-select form-select-sm bg-body border-secondary"
                   style="width: 180px">
             <option [ngValue]="15">15 items per page</option>
             <option [ngValue]="50">50 items per page</option>
@@ -46,8 +46,8 @@
       </div>
 
       <!-- Table -->
-      <div class="table-responsive rounded-3 border border-dark">
-        <table class="table table-sm table-hover align-middle text-light">
+      <div class="table-responsive rounded-3 border border-tertiary">
+        <table class="table table-sm table-hover align-middle">
 
           <thead class="text-secondary text-uppercase small fw-semibold">
           <tr>
@@ -78,11 +78,11 @@
                   <td class="text-end">
 
                     <div class="d-inline-block" container="body" ngbDropdown>
-                      <button class="btn btn-sm btn-dark border-secondary text-light" ngbDropdownToggle>
+                      <button class="btn btn-sm btn-secondary" ngbDropdownToggle>
                         <i class="bi bi-three-dots-vertical"></i>
                       </button>
 
-                      <div class="bg-dark text-light border-secondary" ngbDropdownMenu>
+                      <div ngbDropdownMenu>
                         <button ngbDropdownItem>View</button>
                         <button ngbDropdownItem>Edit</button>
                         <button

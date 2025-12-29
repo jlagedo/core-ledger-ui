@@ -21,7 +21,7 @@ export class ToastsContainer {
     const classMap: Record<string, string> = {
       success: 'bg-success text-white',
       error: 'bg-danger text-white',
-      warning: 'bg-warning text-dark',
+      warning: 'bg-warning text-bg-warning',
       info: 'bg-info text-white'
     };
     return classMap[type] || '';

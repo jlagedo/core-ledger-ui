@@ -1,5 +1,5 @@
 <div [attr.aria-label]="isSidenavCollapsed() ? 'Collapsed sidenav' : 'Expanded sidenav'"
-     [style.width]="isSidenavCollapsed() ? '70px' : '280px'" class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark transition-all border-end border-tertiary"
+     [style.width]="isSidenavCollapsed() ? '70px' : '280px'" class="d-flex flex-column flex-shrink-0 p-3 transition-all border-end"
      style="height: 100vh;">
 
   <!-- Logo & Toggle Section -->
@@ -12,7 +12,7 @@
       <img [class.me-2]="!isSidenavCollapsed()" alt="Fluxo Logo" height="32" src="apple-touch-icon.png"
            width="32">
       @if (!isSidenavCollapsed()) {
-        <span class="fs-4">Fluxo</span>
+        <span class="fs-4 numeric">Core</span>
       }
     </a>
     @if (!isSidenavCollapsed()) {
@@ -509,4 +509,8 @@
       </a>
     </li>
   </ul>
+
+  <!-- User Profile with Theme Toggle -->
+  <hr class="border-secondary mt-auto">
+  <app-user-profile [isCollapsed]="isSidenavCollapsed()" />
 </div>
