@@ -28,6 +28,16 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "IBMPlexSans-{Light,Regular,Medium,SemiBold,Bold}.woff2",
+                "input": "node_modules/@ibm/plex/IBM-Plex-Sans/fonts/complete/woff2",
+                "output": "assets/fonts/ibm-plex-sans"
+              },
+              {
+                "glob": "IBMPlexMono-{Light,Regular,Medium,SemiBold,Bold}.woff2",
+                "input": "node_modules/@ibm/plex/IBM-Plex-Mono/fonts/complete/woff2",
+                "output": "assets/fonts/ibm-plex-mono"
               }
             ],
             "styles": [

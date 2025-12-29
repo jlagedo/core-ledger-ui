@@ -43,19 +43,100 @@ Represents the fund’s position in a security.
 
 ---
 
-## **Transaction**
-| Field | Type | Notes |
-|------|------|-------|
-| id | UUID | Primary key |
-| fund_id | UUID | FK |
-| security_id | UUID | FK (nullable for cash-only) |
-| type | enum(buy, sell, dividend, expense, fx, subscription, redemption) | Core ABOR types |
-| trade_date | date |  |
-| settle_date | date |  |
-| quantity | decimal | For buys/sells |
-| price | decimal |  |
-| amount | decimal | Cash impact |
-| currency | string |  |
+Create the transaction model, create all layers needed following the project structure.
+
+models
+  Transaction - defined below ## **Transaction model **
+  TransactionType - must have id, short description and long description
+  TransactionSubType - must have id, short description and long description
+  TransactionStatus - must have id, short description and long description
+
+Follow these api definitions 
+
+API - transaction
+actions:
+- list - follow the same pattern from other list apis (account, fund, security)
+- create - create validation
+- update
+
+API - transaction/types
+actions:
+- list - simple list action dont need full pagination, ordering or filtering
+
+API - transaction/subtypes
+actions:
+- list - simple list action dont need full pagination or ordering, should be able to filter by typeid
+
+API - transaction/status
+actions:
+- list - simple list action dont need full pagination, ordering or filter
+
+
+
+## **Transaction model **
+| Field                  | Type    | Notes                       |
+|------------------------|---------|-----------------------------|
+| id                     | int     | Primary key                 |
+| fund_id                | int     | FK fund                     |
+| security_id            | int     | FK (nullable for cash-only) |
+| transaction_subtype_id | int     | fk transaction_sub_type     |
+| trade_date             | date    |                             |
+| settle_date            | date    |                             |
+| quantity               | decimal | For buys/sells              |
+| price                  | decimal |                             |
+| amount                 | decimal | Cash impact                 |
+| currency               | string  | ISO 3 letters               |
+| statusid               | int     | TransactionStatus           |
+
+---
+
+# Trade Transaction Statuses (TransactionStatus)
+
+| **Status** | **Meaning** |
+|------------|-------------|
+| **NEW** | Trade was created/imported but not yet confirmed |
+| **EXECUTED** | Trade confirmed by broker (price + quantity final) |
+| **BOOKED** | GL entries generated (trade posted to accounting) |
+| **PENDING_SETTLEMENT** | Waiting for settlement date (e.g., D+2) |
+| **SETTLED** | Cash and position updated; trade fully completed |
+| **CANCELED** | Trade canceled before settlement |
+| **REVERSED** | Trade reversed after settlement (requires accounting reversal) |
+| **FAILED** | Trade failed settlement or failed validation |
+
+
+# 📘 **Trade Transactions types (TransactionType,  TransactionSubType)**
+Split into different tables TransactionType and TransactionSubType
+| **Type** | **Subtype** | **Description** |
+|---------|-------------|-----------------|
+| **EQUITY** | BUY | Purchase of shares |
+| **EQUITY** | SELL | Sale of shares |
+| **EQUITY** | BUY_CANCEL | Cancel a buy trade |
+| **EQUITY** | SELL_CANCEL | Cancel a sell trade |
+| **EQUITY** | SHORT_SELL | Initiate a short position |
+| **EQUITY** | SHORT_COVER | Close a short position |
+| **ETF** | BUY | Purchase of ETF units |
+| **ETF** | SELL | Sale of ETF units |
+| **FIXED_INCOME** | PURCHASE | Buy a bond or note |
+| **FIXED_INCOME** | SALE | Sell a bond or note |
+| **FIXED_INCOME** | AMORTIZATION | Principal repayment (trade‑like event) |
+| **FIXED_INCOME** | ACCRUAL_INTEREST | Interest accrual (trade‑like for ABOR) |
+| **FIXED_INCOME** | COUPON | Coupon received (trade‑like) |
+| **DERIVATIVE_FUTURE** | OPEN | Open a futures position |
+| **DERIVATIVE_FUTURE** | CLOSE | Close a futures position |
+| **DERIVATIVE_OPTION** | BUY | Buy an option |
+| **DERIVATIVE_OPTION** | SELL | Sell an option |
+| **DERIVATIVE_OPTION** | EXERCISE | Exercise an option |
+| **DERIVATIVE_OPTION** | EXPIRY | Option expires worthless |
+| **DERIVATIVE_SWAP** | INITIATION | Start a swap |
+| **DERIVATIVE_SWAP** | SETTLEMENT | Swap cashflow settlement |
+| **FX** | SPOT | FX spot trade |
+| **FX** | FORWARD | FX forward contract |
+| **FX** | SWAP | FX swap (two‑leg trade) |
+| **FX** | SETTLEMENT | Settlement of FX contract |
+| **MONEY_MARKET** | PURCHASE | Buy MM instrument |
+| **MONEY_MARKET** | REDEMPTION | Redeem MM instrument |
+
+---
 
 ---
 
