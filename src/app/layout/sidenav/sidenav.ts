@@ -1,7 +1,8 @@
-import {ChangeDetectionStrategy, Component, output, signal} from '@angular/core';
-import {RouterModule} from '@angular/router';
-import {NgbCollapse, NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
-import {UserProfile} from '../user-profile/user-profile';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { NgbCollapse, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { UserProfile } from '../user-profile/user-profile';
+import { MenuService } from '../../services/menu.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -11,51 +12,38 @@ import {UserProfile} from '../user-profile/user-profile';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Sidenav {
-  isFundsCollapsed = signal(true);
-  isPortfolioCollapsed = signal(true);
-  isTransactionsCollapsed = signal(true);
-  isPricingCollapsed = signal(true);
-  isNavCollapsed = signal(true);
-  isReportsCollapsed = signal(true);
-  isAdminCollapsed = signal(true);
-  isLedgerCollapsed = signal(true);
+  private readonly menuService = inject(MenuService);
+
+  readonly menuItems = this.menuService.menuItems;
+  private readonly menuCollapsedState = signal<Map<string, boolean>>(new Map());
   isSidenavCollapsed = signal(false);
   sidenavToggle = output<boolean>();
 
-  toggleFunds() {
-    this.isFundsCollapsed.update(value => !value);
+  constructor() {
+    // Initialize collapsed state for all menu items with children
+    this.menuItems().forEach((item) => {
+      if (item.children) {
+        this.menuCollapsedState.update((map) => {
+          map.set(item.label, true);
+          return new Map(map);
+        });
+      }
+    });
   }
 
-  togglePortfolio() {
-    this.isPortfolioCollapsed.update(value => !value);
+  isMenuItemCollapsed(label: string): boolean {
+    return this.menuCollapsedState().get(label) ?? true;
   }
 
-  toggleTransactions() {
-    this.isTransactionsCollapsed.update(value => !value);
-  }
-
-  togglePricing() {
-    this.isPricingCollapsed.update(value => !value);
-  }
-
-  toggleNav() {
-    this.isNavCollapsed.update(value => !value);
-  }
-
-  toggleReports() {
-    this.isReportsCollapsed.update(value => !value);
-  }
-
-  toggleAdmin() {
-    this.isAdminCollapsed.update(value => !value);
-  }
-
-  toggleLedger() {
-    this.isLedgerCollapsed.update(value => !value);
+  toggleMenuItem(label: string): void {
+    this.menuCollapsedState.update((map) => {
+      map.set(label, !map.get(label));
+      return new Map(map);
+    });
   }
 
   toggleSidenav() {
-    this.isSidenavCollapsed.update(value => !value);
+    this.isSidenavCollapsed.update((value) => !value);
     this.sidenavToggle.emit(this.isSidenavCollapsed());
   }
 

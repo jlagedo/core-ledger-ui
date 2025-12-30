@@ -14,10 +14,10 @@
 
   <!--  <app-bread-crumb-component/>-->
 
-  <div class="card bg-body-tertiary border-0 shadow-sm rounded-4">
-    <div class="card-body">
+  <div class="card bg-body-tertiary border-0 shadow-sm rounded-4  border-top">
+    <div class="card-body p-3">
 
-      <div class="row g-3 align-items-center mb-4">
+      <div class="row align-items-center mb-3">
 
         <div class="col-4">
           <div class="input-group">
@@ -31,12 +31,16 @@
           </div>
         </div>
 
-        <div class="col-4 text-center">{{ collectionSize() }} total funds</div>
+        <div class="col-4 text-center">
+          <span class="text-muted small">
+            <i class="bi bi-collection me-1"></i>{{ collectionSize() }} total funds
+          </span>
+        </div>
 
         <div class="col-4 d-flex justify-content-end">
 
           <select (ngModelChange)="onPageSizeChange($event)"
-                  [ngModel]="store.pageSize()" class="form-select form-select-sm bg-body border-secondary"
+                  [ngModel]="store.pageSize()" class="form-select form-select bg-body border-secondary"
                   style="width: 180px">
             <option [ngValue]="15">15 items per page</option>
             <option [ngValue]="50">50 items per page</option>
@@ -47,9 +51,10 @@
       </div>
 
       <div class="table-responsive rounded-3 border border-tertiary">
-        <table class="table table-sm table-hover align-middle">
 
-          <thead class="text-secondary text-uppercase small fw-semibold">
+        <table class="table  table-hover align-middle ">
+
+          <thead class="text-uppercase fw-bold py-2">
           <tr>
             <th (sort)="onSort($event)" class="text-end" scope="col" sortable="Code">Code</th>
             <th (sort)="onSort($event)" class="text-start" scope="col" sortable="Name">Name</th>
@@ -72,16 +77,20 @@
               @for (fund of fundsResponse()?.items; track fund.id) {
                 <tr class="align-middle">
 
-                  <td class="text-end"><strong class="numeric">{{ fund.code }}</strong></td>
+                  <td class="text-end">
+
+                    <strong class="numeric">{{ fund.code }}</strong>
+
+                  </td>
                   <td class="text-start">{{ fund.name }}</td>
                   <td class="text-center">{{ fund.baseCurrency }}</td>
-                  <td class="text-center">{{ fund.inceptionDate | date: 'shortDate' }}</td>
+                  <td class="text-center text-muted">{{ fund.inceptionDate | date: 'shortDate' }}</td>
                   <td class="text-center">{{ fund.valuationFrequencyDescription }}</td>
 
                   <td class="text-end">
 
-                    <div class="d-inline-block" container="body" ngbDropdown>
-                      <button class="btn btn-sm btn-secondary" ngbDropdownToggle>
+                    <div class="d-inline-block table-row-actions" container="body" ngbDropdown>
+                      <button class="btn btn-sm small btn-secondary p-0 m-0" ngbDropdownToggle>
                         <i class="bi bi-three-dots-vertical"></i>
                       </button>
 
@@ -90,6 +99,8 @@
                         <button ngbDropdownItem>Edit</button>
                       </div>
                     </div>
+
+
 
                   </td>
                 </tr>

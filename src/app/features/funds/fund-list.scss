@@ -25,3 +25,12 @@ th[sortable].desc:before {
 th[sortable].asc:before {
   border-bottom: 4px solid;
 }
+
+.table-row-actions {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.table-hover tbody tr:hover .table-row-actions {
+  opacity: 1;
+}

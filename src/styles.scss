@@ -10,7 +10,8 @@
   $primary: #00A86B,
   $secondary: #4F6F6A,
   $dark: #1E2A28,
-  $light: #F3F5F4
+  $light: #F3F5F4,
+  $font-size-base: 0.85rem
 
 );
 
@@ -106,4 +107,13 @@
 
 .numeric {
   font-family: 'IBM Plex Mono', monospace;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
