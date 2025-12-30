@@ -1,18 +1,21 @@
-# Feature Menu Service
 
-## Overview
 
-I need to create a feature menu service that will be used to populate the sidenav with the list of features.
-It will fetch the allowed menu items from the API and return them to the sidenav component.
-This will allow us to control what features are available to the user based on their role.
+Here you go — your **minimal User model** represented as a clean Markdown table.
 
-## API
-  GET /api/menu-items
-  Mock the needed data for the sidenav. will be implemented in the backend later.
+---
 
-## nfr
-  - The service should be lazy loaded.
-  - The service should be injectable.
-  - should not allow forced browsing of routes that are not allowed by the user role.
-  - should cache the menu items for 5 minutes.
-  
+# 🧩 User Model (Markdown Table)
+
+| Property        | Type       | Description |
+|-----------------|------------|-------------|
+| `Id`            | `Guid`     | Internal primary key for your backend user. |
+| `AuthProviderId` | `string`  | The unique external user ID from Auth0 or other providers (the `sub` claim). |
+| `Provider`      | `string`   | Identity provider name (e.g., `auth0`, `google-oauth2`, `github`). |
+| `Email`         | `string?`  | Optional email returned by the provider. |
+| `Name`          | `string?`  | Optional display name. |
+| `CreatedAt`     | `DateTime` | Timestamp when the user was first created in your system. |
+| `LastLoginAt`   | `DateTime` | Timestamp of the user's most recent login. |
+
+---
+
+If you want, I can also output this as a SQL table, EF Core entity configuration, or a DTO version.

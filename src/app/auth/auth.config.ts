@@ -11,5 +11,8 @@ export const authConfig: PassedInitialConfig = {
     silentRenew: true,
     useRefreshToken: true,
     secureRoutes: ['/api'],
+    customParamsAuthRequest: {
+      audience: 'https://core-ledger-api'
+    }
   },
 }
