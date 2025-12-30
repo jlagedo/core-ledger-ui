@@ -27,8 +27,16 @@
     <div ngbDropdownMenu class="shadow-sm">
       @if (userProfile()) {
         <div class="px-3 py-2 border-bottom">
-          <div class="fw-semibold">{{ userProfile()!.name }}</div>
-          <small class="text-body-secondary">{{ userProfile()!.email }}</small>
+          <div class="fw-semibold">{{ displayName() }}</div>
+          <small class="text-body-secondary d-block">{{ userProfile()!.email }}</small>
+          @if (currentUser()) {
+            <div class="mt-2">
+              <small class="badge bg-primary me-1">ID: {{ currentUser()!.id }}</small>
+              <small class="text-body-secondary d-block mt-1">
+                Last login: {{ currentUser()!.lastLoginAt | date: 'short' }}
+              </small>
+            </div>
+          }
         </div>
       }
       <button ngbDropdownItem routerLink="/profile">
