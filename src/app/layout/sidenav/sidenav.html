@@ -1,23 +1,23 @@
-<div [attr.aria-label]="isSidenavCollapsed() ? 'Collapsed sidenav' : 'Expanded sidenav'"
-     [style.width]="isSidenavCollapsed() ? '70px' : '220px'"
+<div [attr.aria-label]="store.isSidenavCollapsed() ? 'Collapsed sidenav' : 'Expanded sidenav'"
+     [style.width]="store.isSidenavCollapsed() ? '70px' : '220px'"
      class="d-flex flex-column flex-shrink-0 p-3 transition-all border-end"
      style="height: 100vh;">
 
   <!-- Logo & Toggle Section -->
-  <div [class.justify-content-between]="!isSidenavCollapsed()"
-       [class.justify-content-center]="isSidenavCollapsed()" class="d-flex align-items-center mb-3">
+  <div [class.justify-content-between]="!store.isSidenavCollapsed()"
+       [class.justify-content-center]="store.isSidenavCollapsed()" class="d-flex align-items-center mb-3">
     <a (click)="handleLogoClick($event)"
-       [attr.aria-label]="isSidenavCollapsed() ? 'Expand sidenav' : 'Go to dashboard'"
-       [attr.role]="isSidenavCollapsed() ? 'button' : null"
-       [class.cursor-pointer]="isSidenavCollapsed()" [routerLink]="isSidenavCollapsed() ? null : '/dashboard'"
+       [attr.aria-label]="store.isSidenavCollapsed() ? 'Expand sidenav' : 'Go to dashboard'"
+       [attr.role]="store.isSidenavCollapsed() ? 'button' : null"
+       [class.cursor-pointer]="store.isSidenavCollapsed()" [routerLink]="store.isSidenavCollapsed() ? null : '/dashboard'"
        class="d-flex align-items-center text-white text-decoration-none" tabindex="0">
-      <img [class.me-2]="!isSidenavCollapsed()" alt="Fluxo Logo" height="32" src="apple-touch-icon.png"
+      <img [class.me-2]="!store.isSidenavCollapsed()" alt="Fluxo Logo" height="32" src="apple-touch-icon.png"
            width="32">
-      @if (!isSidenavCollapsed()) {
+      @if (!store.isSidenavCollapsed()) {
         <span class="fs-4 numeric">Core</span>
       }
     </a>
-    @if (!isSidenavCollapsed()) {
+    @if (!store.isSidenavCollapsed()) {
       <button (click)="toggleSidenav()" [attr.aria-expanded]="true"
               [attr.aria-label]="'Collapse sidenav'" class="btn btn-link text-white p-0 border-0">
         <i class="bi bi-x-lg" style="font-size: 1.5rem;"></i>
@@ -37,34 +37,34 @@
       @if (item.children) {
         <!-- Menu item with submenu -->
         <li>
-          <a (click)="toggleMenuItem(item.label)"
+          <a (click)="store.toggleMenuItem(item.label)"
              [attr.aria-controls]="item.label + 'Submenu'"
-             [attr.aria-expanded]="!isMenuItemCollapsed(item.label)"
-             [class.justify-content-center]="isSidenavCollapsed()"
-             [ngbTooltip]="isSidenavCollapsed() ? item.label : ''"
+             [attr.aria-expanded]="!store.isMenuItemCollapsed(item.label)"
+             [class.justify-content-center]="store.isSidenavCollapsed()"
+             [ngbTooltip]="store.isSidenavCollapsed() ? item.label : ''"
              class="nav-link text-white d-flex align-items-center"
              placement="end" role="button"
              routerLinkActive="border border-light bg-transparent">
-            <i [class.me-2]="!isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
-            @if (!isSidenavCollapsed()) {
+            <i [class.me-2]="!store.isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
+            @if (!store.isSidenavCollapsed()) {
               <span class="flex-grow-1">{{ item.label }}</span>
-              <i [class.bi-chevron-down]="!isMenuItemCollapsed(item.label)"
-                 [class.bi-chevron-right]="isMenuItemCollapsed(item.label)"
+              <i [class.bi-chevron-down]="!store.isMenuItemCollapsed(item.label)"
+                 [class.bi-chevron-right]="store.isMenuItemCollapsed(item.label)"
                  class="bi"></i>
             }
           </a>
-          <div [attr.id]="item.label + 'Submenu'" [ngbCollapse]="isMenuItemCollapsed(item.label)">
-            <ul [class.ms-3]="!isSidenavCollapsed()"
+          <div [attr.id]="item.label + 'Submenu'" [ngbCollapse]="store.isSidenavCollapsed() || store.isMenuItemCollapsed(item.label)">
+            <ul [class.ms-3]="!store.isSidenavCollapsed()"
                 class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
               @for (child of item.children; track child.label) {
                 <li>
-                  <a [ngbTooltip]="isSidenavCollapsed() ? child.label : ''"
+                  <a [ngbTooltip]="store.isSidenavCollapsed() ? child.label : ''"
                      [routerLinkActiveOptions]="child.exactMatch ? { exact: true } : { exact: false }"
                      [routerLink]="child.route"
                      class="nav-link text-white d-flex align-items-center"
                      placement="end"
                      routerLinkActive="active">
-                    @if (isSidenavCollapsed()) {
+                    @if (store.isSidenavCollapsed()) {
                       <span class="submenu-indicator"></span>
                     } @else {
                       <span>{{ child.label }}</span>
@@ -78,15 +78,15 @@
       } @else {
         <!-- Simple menu item without submenu -->
         <li class="nav-item">
-          <a [class.justify-content-center]="isSidenavCollapsed()"
-             [ngbTooltip]="isSidenavCollapsed() ? item.label : ''"
+          <a [class.justify-content-center]="store.isSidenavCollapsed()"
+             [ngbTooltip]="store.isSidenavCollapsed() ? item.label : ''"
              [routerLinkActiveOptions]="item.exactMatch ? { exact: true } : { exact: false }"
              [routerLink]="item.route"
              class="nav-link text-white d-flex align-items-center"
              placement="end"
              routerLinkActive="active">
-            <i [class.me-2]="!isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
-            @if (!isSidenavCollapsed()) {
+            <i [class.me-2]="!store.isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
+            @if (!store.isSidenavCollapsed()) {
               <span>{{ item.label }}</span>
             }
           </a>
@@ -97,5 +97,5 @@
 
   <!-- User Profile with Theme Toggle -->
   <hr class="border-secondary mt-auto">
-  <app-user-profile [isCollapsed]="isSidenavCollapsed()"/>
+  <app-user-profile [isCollapsed]="store.isSidenavCollapsed()"/>
 </div>
