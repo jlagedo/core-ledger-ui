@@ -1,8 +1,10 @@
-import { Injectable, signal, computed, inject, DOCUMENT } from '@angular/core';
+import {Injectable, signal, computed, inject, DOCUMENT} from '@angular/core';
+import {ENVIRONMENT} from '../config/environment.config';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class ThemeService {
-  private readonly STORAGE_KEY = 'core-ledger-theme';
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly STORAGE_KEY = this.environment.storage.theme;
   private readonly document = inject(DOCUMENT);
 
   // Private writable signal

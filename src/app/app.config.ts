@@ -7,6 +7,7 @@ import {provideMicroSentry} from '@micro-sentry/angular';
 
 import {routes} from './app.routes';
 import {authConfig} from './auth/auth.config';
+import {environment} from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,10 +19,11 @@ export const appConfig: ApplicationConfig = {
       const oidcSecurityService = inject(OidcSecurityService);
       return firstValueFrom(oidcSecurityService.checkAuth());
     }),
+    // Configure Sentry from environment
     provideMicroSentry({
-      dsn: "http://b7728d237cc34ee99eecb03fc6213b80@localhost:8000/1",
-      environment: "local_development",
-      release: "1.0.0"
+      dsn: environment.sentry.dsn,
+      environment: environment.sentry.environment,
+      release: environment.sentry.release,
     })
   ],
 };

@@ -1,0 +1,59 @@
+import {InjectionToken} from '@angular/core';
+import {environment} from '../../environments/environment';
+
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+export interface Environment {
+  production: boolean;
+  apiUrl: string;
+  logLevel: LogLevel;
+  enableSentry: boolean;
+
+  // Sentry Configuration
+  sentry: {
+    dsn: string;
+    environment: string;
+    release: string;
+  };
+
+  // Auth0 / OIDC Configuration
+  auth: {
+    authority: string;
+    clientId: string;
+    scope: string;
+    audience: string;
+  };
+
+  // Toast Notification Delays (milliseconds)
+  toast: {
+    defaultDelay: number;
+    successDelay: number;
+    errorDelay: number;
+    serviceUnavailableDelay: number;
+  };
+
+  // Pagination Defaults
+  pagination: {
+    defaultPageSize: number;
+    apiDefaultLimit: number;
+  };
+
+  // Storage Keys
+  storage: {
+    theme: string;
+    sidenavState: string;
+    fundsSearch: string;
+    accountsSearch: string;
+    securitiesSearch: string;
+  };
+
+  // Feature Flags
+  features: {
+    sidenavDefaultCollapsed: boolean;
+  };
+}
+
+export const ENVIRONMENT = new InjectionToken<Environment>('Environment configuration', {
+  providedIn: 'root',
+  factory: () => environment,
+});

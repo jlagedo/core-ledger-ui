@@ -2,6 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {LoggerService} from './logger';
 import {ToastService} from './toast-service';
 import {MicroSentryService} from '@micro-sentry/angular';
+import {ENVIRONMENT} from '../config/environment.config';
 
 describe('LoggerService', () => {
   let service: LoggerService;
@@ -23,9 +24,25 @@ describe('LoggerService', () => {
     report: vi.fn(),
   };
 
+  // Mock Environment
+  const mockEnvironment = {
+    production: false,
+    apiUrl: '/api',
+    logLevel: 'debug' as const,
+    enableSentry: true,
+    sentry: {
+      dsn: 'test-dsn',
+      environment: 'test',
+      release: '1.0.0',
+    },
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{provide: MicroSentryService, useValue: mockMicroSentryService}],
+      providers: [
+        {provide: MicroSentryService, useValue: mockMicroSentryService},
+        {provide: ENVIRONMENT, useValue: mockEnvironment},
+      ],
     });
     service = TestBed.inject(LoggerService);
     toastService = TestBed.inject(ToastService);
@@ -134,5 +151,23 @@ describe('LoggerService', () => {
     service.logHttpError('fetchData', error, 'Failed to load data');
 
     expect(microSentryService.withScope).toHaveBeenCalled();
+  });
+
+  it('should not send errors to Sentry when Sentry is disabled', () => {
+    // Reconfigure with Sentry disabled
+    const disabledEnvironment = {...mockEnvironment, enableSentry: false};
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        {provide: MicroSentryService, useValue: mockMicroSentryService},
+        {provide: ENVIRONMENT, useValue: disabledEnvironment},
+      ],
+    });
+    const disabledService = TestBed.inject(LoggerService);
+    vi.clearAllMocks();
+
+    disabledService.error('Test error', {foo: 'bar'});
+
+    expect(microSentryService.withScope).not.toHaveBeenCalled();
   });
 });

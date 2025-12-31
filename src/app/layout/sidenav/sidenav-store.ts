@@ -3,13 +3,14 @@ import {inject} from '@angular/core';
 import {LoggerService} from '../../services/logger';
 import {SessionStorageService} from '../../shared/storage/session-storage.service';
 import {StorageService} from '../../shared/storage/storage.interface';
+import {environment} from '../../../environments/environment';
 
 export type SidenavState = {
   menuItemsCollapsedState: Record<string, boolean>;
   isSidenavCollapsed: boolean;
 };
 
-const STORAGE_KEY = 'sidenav-state';
+const STORAGE_KEY = environment.storage.sidenavState;
 
 const initialState: SidenavState = {
   menuItemsCollapsedState: {},

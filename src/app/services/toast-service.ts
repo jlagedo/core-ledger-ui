@@ -1,4 +1,5 @@
-import {Injectable, signal} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
+import {ENVIRONMENT} from '../config/environment.config';
 
 export type ToastType = 'success' | 'warning' | 'error' | 'info';
 
@@ -12,7 +13,8 @@ export interface Toast {
   providedIn: 'root',
 })
 export class ToastService {
-  private readonly DEFAULT_DELAY = 10000;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly DEFAULT_DELAY = this.environment.toast.defaultDelay;
 
   private readonly _toasts = signal<Toast[]>([]);
   readonly toasts = this._toasts.asReadonly();

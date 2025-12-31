@@ -2,6 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {MicroSentryService} from '@micro-sentry/angular';
 import {Severity} from '@micro-sentry/core';
 import {ToastService} from './toast-service';
+import {ENVIRONMENT} from '../config/environment.config';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -19,10 +20,12 @@ export interface LogEntry {
 export class LoggerService {
   private toastService = inject(ToastService);
   private microSentry = inject(MicroSentryService);
+  private environment = inject(ENVIRONMENT);
 
-  // In production, this would be configurable via environment
-  private readonly logLevel: LogLevel = 'debug';
-  private readonly isDevelopment = true; // Should come from environment
+  // Configuration from environment
+  private readonly logLevel: LogLevel = this.environment.logLevel;
+  private readonly isDevelopment = !this.environment.production;
+  private readonly enableSentry = this.environment.enableSentry;
 
   private readonly levelPriority: Record<LogLevel, number> = {
     debug: 0,
@@ -144,6 +147,11 @@ export class LoggerService {
       return;
     }
 
+    // Check if Sentry is enabled
+    if (!this.enableSentry) {
+      return;
+    }
+
     try {
       // Use withScope to add context for this specific log entry
       this.microSentry.withScope((scope) => {
@@ -190,6 +198,11 @@ export class LoggerService {
       validationErrors?: Record<string, string[]>;
     }
   ) {
+    // Check if Sentry is enabled
+    if (!this.enableSentry) {
+      return;
+    }
+
     try {
       this.microSentry.withScope((scope) => {
         // Add operation context

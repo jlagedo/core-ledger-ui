@@ -1,18 +1,19 @@
-import { PassedInitialConfig } from 'angular-auth-oidc-client';
+import {PassedInitialConfig} from 'angular-auth-oidc-client';
+import {environment} from '../../environments/environment';
 
 export const authConfig: PassedInitialConfig = {
   config: {
-    authority: 'https://dev-7yj4txd3qg4xsckj.us.auth0.com',
+    authority: environment.auth.authority,
     redirectUrl: window.location.origin,
     postLogoutRedirectUri: window.location.origin + '/login',
-    clientId: 'PDPnT19fdBAv5VLjg3OR4U6N5wqkGohT',
-    scope: 'openid profile email offline_access',
+    clientId: environment.auth.clientId,
+    scope: environment.auth.scope,
     responseType: 'code',
     silentRenew: true,
     useRefreshToken: true,
     secureRoutes: ['/api'],
     customParamsAuthRequest: {
-      audience: 'https://core-ledger-api'
-    }
+      audience: environment.auth.audience,
+    },
   },
-}
+};
