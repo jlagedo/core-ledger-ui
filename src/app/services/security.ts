@@ -4,7 +4,7 @@ import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {API_URL} from '../config/api.config';
 import {CreateSecurity, PaginatedResponse, Security, UpdateSecurity,} from '../models/security.model';
-import {SecurityType} from '../models/security_type.model';
+import {SecurityType} from '../models/security-type.model';
 import {ImportB3InstructionFileResponse} from '../models/import-b3-response.model';
 import {LoggerService} from './logger';
 

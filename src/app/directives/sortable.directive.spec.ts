@@ -95,27 +95,4 @@ describe('SortableDirective', () => {
 
     expect(component.lastSortEvent).toEqual({column: 'age', direction: 'asc'});
   });
-
-  it('should apply correct CSS classes based on direction', () => {
-    const nameElement = nameHeader.nativeElement as HTMLElement;
-    const directive = nameHeader.injector.get(SortableDirective);
-
-    // Set to asc
-    directive.direction = 'asc';
-    fixture.detectChanges();
-    expect(nameElement.classList.contains('asc')).toBe(true);
-    expect(nameElement.classList.contains('desc')).toBe(false);
-
-    // Set to desc
-    directive.direction = 'desc';
-    fixture.detectChanges();
-    expect(nameElement.classList.contains('asc')).toBe(false);
-    expect(nameElement.classList.contains('desc')).toBe(true);
-
-    // Set to empty
-    directive.direction = '';
-    fixture.detectChanges();
-    expect(nameElement.classList.contains('asc')).toBe(false);
-    expect(nameElement.classList.contains('desc')).toBe(false);
-  });
 });

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, output } from '@angular/cor
 import { RouterModule } from '@angular/router';
 import { NgbCollapse, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { UserProfile } from '../user-profile/user-profile';
-import { MenuService } from '../../services/menu.service';
+import { MenuService } from '../../services/menu-service';
 import { SidenavStore } from './sidenav-store';
 
 @Component({

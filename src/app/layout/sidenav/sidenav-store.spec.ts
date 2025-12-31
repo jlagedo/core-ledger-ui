@@ -2,30 +2,18 @@ import {TestBed} from '@angular/core/testing';
 import {vi} from 'vitest';
 import {SidenavStore} from './sidenav-store';
 import {LoggerService} from '../../services/logger';
+import {SessionStorageService} from '../../shared/storage/session-storage.service';
+import {InMemoryStorageService} from '../../testing/in-memory-storage.service';
 
 describe('SidenavStore', () => {
   let store: InstanceType<typeof SidenavStore>;
-  let storage: {[key: string]: string};
+  let storageService: InMemoryStorageService;
   let loggerService: any;
 
   beforeEach(() => {
-    // Mock sessionStorage
-    storage = {};
-    vi.spyOn(sessionStorage, 'getItem').mockImplementation((key: string) => storage[key] || null);
-    vi.spyOn(sessionStorage, 'setItem').mockImplementation((key: string, value: string) => {
-      storage[key] = value;
-      return undefined;
-    });
-    vi.spyOn(sessionStorage, 'removeItem').mockImplementation((key: string) => {
-      delete storage[key];
-      return undefined;
-    });
-    vi.spyOn(sessionStorage, 'clear').mockImplementation(() => {
-      storage = {};
-      return undefined;
-    });
+    // Create fresh storage and logger for each test
+    storageService = new InMemoryStorageService();
 
-    // Create mock logger
     loggerService = {
       debug: vi.fn(),
       warn: vi.fn(),
@@ -34,15 +22,13 @@ describe('SidenavStore', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [{provide: LoggerService, useValue: loggerService}],
+      providers: [
+        {provide: LoggerService, useValue: loggerService},
+        {provide: SessionStorageService, useValue: storageService},
+      ],
     });
 
     store = TestBed.runInInjectionContext(() => new SidenavStore());
-  });
-
-  afterEach(() => {
-    vi.clearAllMocks();
-    storage = {};
   });
 
   describe('Initialization', () => {
@@ -56,7 +42,7 @@ describe('SidenavStore', () => {
         menuItemsCollapsedState: {Funds: false, Portfolio: true},
         isSidenavCollapsed: true,
       };
-      storage['sidenav-state'] = JSON.stringify(savedState);
+      storageService.setItem('sidenav-state', JSON.stringify(savedState));
 
       // Create new store instance to trigger onInit
       const newStore = TestBed.runInInjectionContext(() => new SidenavStore());
@@ -84,7 +70,7 @@ describe('SidenavStore', () => {
     });
 
     it('should handle JSON parse errors gracefully', () => {
-      storage['sidenav-state'] = 'invalid json{{{';
+      storageService.setItem('sidenav-state', 'invalid json{{{');
 
       const newStore = TestBed.runInInjectionContext(() => new SidenavStore());
 
@@ -103,7 +89,12 @@ describe('SidenavStore', () => {
       store.toggleMenuItem('Funds');
 
       expect(store.menuItemsCollapsedState()['Funds']).toBe(false);
-      expect(sessionStorage.setItem).toHaveBeenCalled();
+
+      // Verify state was saved to storage
+      const saved = storageService.getItem('sidenav-state');
+      expect(saved).toBeTruthy();
+      const state = JSON.parse(saved!);
+      expect(state.menuItemsCollapsedState.Funds).toBe(false);
     });
 
     it('should toggle menu item from expanded to collapsed', () => {
@@ -116,7 +107,8 @@ describe('SidenavStore', () => {
     it('should save state to sessionStorage after toggle', () => {
       store.toggleMenuItem('Portfolio');
 
-      const savedState = JSON.parse(storage['sidenav-state']);
+      const saved = storageService.getItem('sidenav-state');
+      const savedState = JSON.parse(saved!);
       expect(savedState.menuItemsCollapsedState).toEqual({Portfolio: false});
       expect(loggerService.debug).toHaveBeenCalledWith(
         'Saved sidenav state to sessionStorage',
@@ -153,7 +145,8 @@ describe('SidenavStore', () => {
     it('should save state after explicit set', () => {
       store.setMenuItemCollapsed('Admin', false);
 
-      const savedState = JSON.parse(storage['sidenav-state']);
+      const saved = storageService.getItem('sidenav-state');
+      const savedState = JSON.parse(saved!);
       expect(savedState.menuItemsCollapsedState).toEqual({Admin: false});
     });
   });
@@ -177,7 +170,12 @@ describe('SidenavStore', () => {
       store.toggleSidenav();
 
       expect(store.isSidenavCollapsed()).toBe(true);
-      expect(sessionStorage.setItem).toHaveBeenCalled();
+
+      // Verify state was saved
+      const saved = storageService.getItem('sidenav-state');
+      expect(saved).toBeTruthy();
+      const state = JSON.parse(saved!);
+      expect(state.isSidenavCollapsed).toBe(true);
     });
 
     it('should toggle sidenav from collapsed to expanded', () => {
@@ -190,7 +188,8 @@ describe('SidenavStore', () => {
     it('should save state after toggle', () => {
       store.toggleSidenav();
 
-      const savedState = JSON.parse(storage['sidenav-state']);
+      const saved = storageService.getItem('sidenav-state');
+      const savedState = JSON.parse(saved!);
       expect(savedState.isSidenavCollapsed).toBe(true);
     });
   });
@@ -211,7 +210,8 @@ describe('SidenavStore', () => {
     it('should save state after explicit set', () => {
       store.setSidenavCollapsed(true);
 
-      const savedState = JSON.parse(storage['sidenav-state']);
+      const saved = storageService.getItem('sidenav-state');
+      const savedState = JSON.parse(saved!);
       expect(savedState.isSidenavCollapsed).toBe(true);
     });
   });
@@ -239,11 +239,11 @@ describe('SidenavStore', () => {
 
     it('should only save if changes were made', () => {
       store.initializeMenuItems(['Funds']);
-      const savedStateAfterFirst = storage['sidenav-state'];
+      const savedStateAfterFirst = storageService.getItem('sidenav-state');
 
       // Call again with same items - no changes
       store.initializeMenuItems(['Funds']);
-      const savedStateAfterSecond = storage['sidenav-state'];
+      const savedStateAfterSecond = storageService.getItem('sidenav-state');
 
       // Storage should not have changed
       expect(savedStateAfterSecond).toBe(savedStateAfterFirst);
@@ -257,8 +257,8 @@ describe('SidenavStore', () => {
   });
 
   describe('SessionStorage Error Handling', () => {
-    it('should handle sessionStorage.setItem quota exceeded error', () => {
-      vi.spyOn(sessionStorage, 'setItem').mockImplementation(() => {
+    it('should handle storage.setItem quota exceeded error', () => {
+      vi.spyOn(storageService, 'setItem').mockImplementation(() => {
         throw new Error('QuotaExceededError');
       });
 
@@ -270,9 +270,18 @@ describe('SidenavStore', () => {
       );
     });
 
-    it('should handle sessionStorage.getItem error on init', () => {
-      vi.spyOn(sessionStorage, 'getItem').mockImplementation(() => {
+    it('should handle storage.getItem error on init', () => {
+      const errorStorage = new InMemoryStorageService();
+      vi.spyOn(errorStorage, 'getItem').mockImplementation(() => {
         throw new Error('StorageAccessError');
+      });
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          {provide: LoggerService, useValue: loggerService},
+          {provide: SessionStorageService, useValue: errorStorage},
+        ],
       });
 
       const newStore = TestBed.runInInjectionContext(() => new SidenavStore());
@@ -290,7 +299,8 @@ describe('SidenavStore', () => {
       store.setSidenavCollapsed(true);
       store.setMenuItemCollapsed('Admin', false);
 
-      const savedState = JSON.parse(storage['sidenav-state']);
+      const saved = storageService.getItem('sidenav-state');
+      const savedState = JSON.parse(saved!);
       expect(savedState).toEqual({
         menuItemsCollapsedState: {
           Funds: false,
@@ -306,7 +316,7 @@ describe('SidenavStore', () => {
         menuItemsCollapsedState: {Funds: false, Portfolio: true, Admin: false},
         isSidenavCollapsed: true,
       };
-      storage['sidenav-state'] = JSON.stringify(originalState);
+      storageService.setItem('sidenav-state', JSON.stringify(originalState));
 
       const newStore = TestBed.runInInjectionContext(() => new SidenavStore());
 

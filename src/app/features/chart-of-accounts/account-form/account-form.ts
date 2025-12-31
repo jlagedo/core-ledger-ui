@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {OnlyNumbers} from '../../../directives/only-numbers';
+import {OnlyNumbersDirective} from '../../../directives/only-numbers.directive';
 import {AccountService} from '../../../services/account';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {ToastService} from '../../../services/toast-service';
@@ -11,7 +11,7 @@ import {PageHeader} from '../../../layout/page-header/page-header';
 
 @Component({
   selector: 'app-account-form',
-  imports: [CommonModule, ReactiveFormsModule, OnlyNumbers, PageHeader],
+  imports: [CommonModule, ReactiveFormsModule, OnlyNumbersDirective, PageHeader],
   templateUrl: './account-form.html',
   styleUrl: './account-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

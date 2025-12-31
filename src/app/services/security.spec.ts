@@ -4,7 +4,7 @@ import {HttpTestingController, provideHttpClientTesting} from '@angular/common/h
 
 import {SecurityService} from './security';
 import {CreateSecurity, PaginatedResponse, Security, UpdateSecurity} from '../models/security.model';
-import {SecurityType} from '../models/security_type.model';
+import {SecurityType} from '../models/security-type.model';
 import {API_URL} from '../config/api.config';
 
 describe('SecurityService', () => {

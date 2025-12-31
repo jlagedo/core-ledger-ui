@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, input} from '@angular/core';
-import {BreadCrumbComponent} from '../bread-crumb-component/bread-crumb-component';
+import {BreadcrumbComponent} from '../breadcrumb/breadcrumb';
 
 @Component({
   selector: 'app-page-header',
-  imports: [BreadCrumbComponent],
+  imports: [BreadcrumbComponent],
   templateUrl: './page-header.html',
   styleUrl: './page-header.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

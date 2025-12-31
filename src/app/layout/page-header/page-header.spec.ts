@@ -1,7 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {PageHeader} from './page-header';
-import {ActivatedRoute} from '@angular/router';
-import {provideRouter} from '@angular/router';
+import {provideTestDependencies} from '../../testing/test-helpers';
 
 describe('PageHeader', () => {
   let component: PageHeader;
@@ -10,9 +9,7 @@ describe('PageHeader', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PageHeader],
-      providers: [
-        provideRouter([])
-      ]
+      providers: provideTestDependencies(),
     }).compileComponents();
 
     fixture = TestBed.createComponent(PageHeader);
@@ -36,6 +33,6 @@ describe('PageHeader', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('app-bread-crumb-component')).toBeTruthy();
+    expect(compiled.querySelector('app-breadcrumb')).toBeTruthy();
   });
 });

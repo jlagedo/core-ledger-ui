@@ -2,27 +2,19 @@ import {TestBed} from '@angular/core/testing';
 import {vi} from 'vitest';
 import {createPaginatedSearchStore, PaginatedSearchState} from './paginated-search-store';
 import {LoggerService} from '../../services/logger';
+import {SessionStorageService} from '../storage/session-storage.service';
+import {InMemoryStorageService} from '../../testing/in-memory-storage.service';
 
 describe('PaginatedSearchStore', () => {
   type StoreInstance = InstanceType<ReturnType<typeof createPaginatedSearchStore>>;
   let store: StoreInstance;
-  let sessionStorageSpy: any;
+  let storageService: InMemoryStorageService;
   let loggerService: any;
 
   beforeEach(() => {
-    // Mock sessionStorage
-    let storage: { [key: string]: string } = {};
-    sessionStorageSpy = vi.spyOn(sessionStorage, 'getItem').mockImplementation((key: string) => storage[key] || null);
-    vi.spyOn(sessionStorage, 'setItem').mockImplementation((key: string, value: string) => {
-      storage[key] = value;
-      return undefined;
-    });
-    vi.spyOn(sessionStorage, 'clear').mockImplementation(() => {
-      storage = {};
-      return undefined;
-    });
+    // Create fresh storage and logger for each test
+    storageService = new InMemoryStorageService();
 
-    // Create mock logger
     loggerService = {
       debug: vi.fn(),
       warn: vi.fn(),
@@ -32,7 +24,8 @@ describe('PaginatedSearchStore', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        {provide: LoggerService, useValue: loggerService}
+        {provide: LoggerService, useValue: loggerService},
+        {provide: SessionStorageService, useValue: storageService},
       ]
     });
 
@@ -42,7 +35,7 @@ describe('PaginatedSearchStore', () => {
       defaultPageSize: 20
     });
 
-    store = new StoreClass();
+    store = TestBed.runInInjectionContext(() => new StoreClass());
   });
 
   it('should initialize with default state', () => {
@@ -95,12 +88,12 @@ describe('PaginatedSearchStore', () => {
     store.setPage(2);
     store.setSort('age', 'desc');
 
-    expect(sessionStorage.setItem).toHaveBeenCalled();
-
-    const calls = (sessionStorage.setItem as any).mock.calls;
-    const lastCall = calls[calls.length - 1];
-    expect(lastCall[0]).toBe('test-store');
-    expect(lastCall[1]).toContain('"sortColumn":"age"');
+    // Verify state was saved to storage
+    const saved = storageService.getItem('test-store');
+    expect(saved).toBeTruthy();
+    const state = JSON.parse(saved!);
+    expect(state.sortColumn).toBe('age');
+    expect(state.sortDirection).toBe('desc');
   });
 
   it('should load state from sessionStorage on init', () => {
@@ -112,7 +105,7 @@ describe('PaginatedSearchStore', () => {
       sortDirection: 'desc'
     };
 
-    sessionStorage.setItem('test-store-2', JSON.stringify(savedState));
+    storageService.setItem('test-store-2', JSON.stringify(savedState));
 
     const StoreClass = createPaginatedSearchStore({
       storageKey: 'test-store-2',
@@ -120,7 +113,7 @@ describe('PaginatedSearchStore', () => {
       defaultPageSize: 20
     });
 
-    const newStore = new StoreClass();
+    const newStore = TestBed.runInInjectionContext(() => new StoreClass());
 
     expect(newStore.searchTerm()).toBe('saved');
     expect(newStore.page()).toBe(3);
@@ -130,15 +123,14 @@ describe('PaginatedSearchStore', () => {
   });
 
   it('should use initial state if sessionStorage is empty', () => {
-    sessionStorageSpy.mockReturnValue(null);
-
+    // Storage is already empty by default, no need to mock
     const StoreClass = createPaginatedSearchStore({
       storageKey: 'empty-store',
       initialSort: {column: 'id', direction: 'desc'},
       defaultPageSize: 10
     });
 
-    const newStore = new StoreClass();
+    const newStore = TestBed.runInInjectionContext(() => new StoreClass());
 
     expect(newStore.searchTerm()).toBe('');
     expect(newStore.page()).toBe(1);
@@ -148,8 +140,17 @@ describe('PaginatedSearchStore', () => {
   });
 
   it('should handle sessionStorage errors gracefully', () => {
-    sessionStorageSpy.mockImplementation(() => {
+    const errorStorage = new InMemoryStorageService();
+    vi.spyOn(errorStorage, 'getItem').mockImplementation(() => {
       throw new Error('Storage error');
+    });
+
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        {provide: LoggerService, useValue: loggerService},
+        {provide: SessionStorageService, useValue: errorStorage},
+      ]
     });
 
     const StoreClass = createPaginatedSearchStore({
@@ -157,7 +158,7 @@ describe('PaginatedSearchStore', () => {
       initialSort: {column: 'name', direction: 'asc'}
     });
 
-    const newStore = new StoreClass();
+    const newStore = TestBed.runInInjectionContext(() => new StoreClass());
 
     // Should still initialize with default values
     expect(newStore.searchTerm()).toBe('');

@@ -1,6 +1,8 @@
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
 import {inject} from '@angular/core';
 import {LoggerService} from '../../services/logger';
+import {SessionStorageService} from '../../shared/storage/session-storage.service';
+import {StorageService} from '../../shared/storage/storage.interface';
 
 export type SidenavState = {
   menuItemsCollapsedState: Record<string, boolean>;
@@ -15,11 +17,11 @@ const initialState: SidenavState = {
 };
 
 /**
- * Loads sidenav state from sessionStorage
+ * Loads sidenav state from storage
  */
-function loadStateFromSession(logger: LoggerService): SidenavState {
+function loadStateFromSession(logger: LoggerService, storage: StorageService): SidenavState {
   try {
-    const stored = sessionStorage.getItem(STORAGE_KEY);
+    const stored = storage.getItem(STORAGE_KEY);
     if (stored) {
       const loadedState: SidenavState = {...initialState, ...JSON.parse(stored)};
       logger.debug('Loaded sidenav state from sessionStorage', loadedState, STORAGE_KEY);
@@ -33,14 +35,14 @@ function loadStateFromSession(logger: LoggerService): SidenavState {
 }
 
 /**
- * Saves sidenav state to sessionStorage
+ * Saves sidenav state to storage
  */
-function saveStateToSession(state: SidenavState, logger: LoggerService): void {
+function saveStateToSession(state: SidenavState, logger: LoggerService, storage: StorageService): void {
   try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    storage.setItem(STORAGE_KEY, JSON.stringify(state));
     logger.debug('Saved sidenav state to sessionStorage', state, STORAGE_KEY);
   } catch (error) {
-    // SessionStorage can fail if:
+    // Storage can fail if:
     // - Storage quota exceeded
     // - Privacy mode/incognito blocks storage
     // - Browser doesn't support sessionStorage
@@ -56,13 +58,14 @@ export const SidenavStore = signalStore(
   withState(initialState),
   withMethods((store) => {
     const logger = inject(LoggerService);
+    const storage = inject(SessionStorageService);
 
     const saveCurrentState = () => {
       const state: SidenavState = {
         menuItemsCollapsedState: store.menuItemsCollapsedState(),
         isSidenavCollapsed: store.isSidenavCollapsed(),
       };
-      saveStateToSession(state, logger);
+      saveStateToSession(state, logger, storage);
     };
 
     return {
@@ -151,7 +154,8 @@ export const SidenavStore = signalStore(
   withHooks({
     onInit(store) {
       const logger = inject(LoggerService);
-      const savedState = loadStateFromSession(logger);
+      const storage = inject(SessionStorageService);
+      const savedState = loadStateFromSession(logger, storage);
       patchState(store, savedState);
     },
   })

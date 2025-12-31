@@ -7,9 +7,9 @@ import {
   NgbDropdownMenu,
   NgbDropdownItem,
 } from '@ng-bootstrap/ng-bootstrap';
-import { ThemeService } from '../../services/theme.service';
-import { AuthService } from '../../auth/auth.service';
-import { UserService } from '../../services/user.service';
+import { ThemeService } from '../../services/theme-service';
+import { AuthService } from '../../auth/auth-service';
+import { UserService } from '../../services/user-service';
 
 @Component({
   selector: 'app-user-profile',

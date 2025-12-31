@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Core Ledger UI is a fund accounting application built with Angular 21. It provides comprehensive financial management features including fund management, portfolio tracking, transactions, NAV calculation, chart of accounts, journal entries, posting periods, and financial reporting.
+Core Ledger UI is a fund accounting ABOR (Accounting Book of Records) application built with Angular 21. It provides comprehensive financial management features including fund management, portfolio tracking, securities management, transactions, NAV calculation, chart of accounts, journal entries, posting periods, and financial reporting.
+
+The application uses modern Angular patterns with standalone components, signals for state management, OnPush change detection, and Auth0 OIDC authentication.
 
 ## Development Commands
 
@@ -41,20 +43,43 @@ ng generate directive directives/my-directive
 ### Routing & Lazy Loading
 
 The application uses a two-level routing structure:
-1. Top-level routes in `src/app/app.routes.ts` define feature modules with lazy loading
-2. Feature-level routes (e.g., `funds.routes.ts`) define child routes within features
+1. **Top-level routes** in `src/app/app.routes.ts` define feature modules with lazy loading
+2. **Feature-level routes** (e.g., `funds.routes.ts`) define child routes within features
 
 All routes use `loadComponent` for individual components or `loadChildren` for feature modules with child routes. This ensures optimal bundle splitting and performance.
 
 Route data includes `breadcrumb` property used by `BreadCrumbService` to generate navigation breadcrumbs automatically.
 
+**Authentication Guards:**
+Routes are protected using `autoLoginPartialRoutesGuard` from `angular-auth-oidc-client`. The `/login` route is public; all other routes require authentication.
+
+### Authentication
+
+The application uses **Auth0 OIDC** authentication via `angular-auth-oidc-client`:
+
+- **AuthService** (`src/app/auth/auth-service.ts`): Main authentication service
+  - Uses `toSignal()` to convert OIDC observables to signals
+  - Exposes `isLoggedIn` and `userProfile` computed signals
+  - Uses `effect()` to reactively fetch user data from backend on login
+  - Provides `login()` and `logout()` methods
+- **Auth Configuration**: `src/app/auth/auth.config.ts` contains OIDC settings
+- **Auth Guard**: `src/app/auth/auth.guard.ts` for custom route protection
+- **UserService** (`src/app/services/user-service.ts`): Manages user data from backend database
+
 ### State Management
 
 The application uses Angular signals for state management (@ngrx/signals):
+
+**Service-Level State (Signal Pattern):**
 - Services expose read-only signals via `.asReadonly()`
-- Private signals prefixed with `_` (e.g., `_toasts`)
+- Private signals prefixed with `_` (e.g., `_currentTheme`)
 - Use `signal()`, `computed()`, and `toSignal()` for reactive state
-- Example pattern: see `ToastService` (src/app/services/toast-service.ts)
+- Example: `ThemeService` (src/app/services/theme-service.ts), `ToastService` (src/app/services/toast-service.ts)
+
+**Store Pattern (@ngrx/signals):**
+- Feature stores use `signalStore` from `@ngrx/signals`
+- Reusable store factories for common patterns (e.g., `createPaginatedSearchStore`)
+- Example: `src/app/shared/stores/paginated-search-store.ts` - creates stores with search/sort/pagination state and session storage persistence
 
 ### API Integration
 
@@ -79,17 +104,41 @@ export class MyService {
 }
 ```
 
-Key services:
-- **ToastService**: Global toast notifications (success/warning/error/info)
+Key services in `src/app/services/`:
+- **ToastService**: Global toast notifications (success/warning/error/info) using signals
 - **BreadCrumbService**: Automatic breadcrumb generation from route data
-- **FundService** / **AccountService**: API integration for domain entities
+- **ThemeService**: Dark/light theme management with localStorage persistence
+- **UserService**: User data management and API integration
+- **MenuService**: Navigation menu state management
+- **LoggerService**: Structured logging with context
+- **FundService**: Fund entity API integration
+- **AccountService**: Chart of accounts API integration
+- **SecurityService**: Securities/instruments API integration
 
 ### Layout Components
 
 Core layout components in `src/app/layout/`:
-- **sidenav**: Main navigation sidebar
-- **bread-crumb-component**: Breadcrumb navigation
+- **sidenav**: Main navigation sidebar with collapsible menu
+- **breadcrumb**: Breadcrumb navigation (automatically generated from route data)
+- **page-header**: Consistent page header across features
+- **user-profile**: User profile display and menu
 - **toasts-container**: Global toast notification display
+
+### Shared Utilities
+
+**Storage Abstraction** (`src/app/shared/storage/`):
+- `StorageService` interface: Abstraction over browser storage APIs
+- `SessionStorageService`: Session storage implementation
+- Used for testing and flexibility (allows mock implementations)
+
+**Reusable Stores** (`src/app/shared/stores/`):
+- `createPaginatedSearchStore()`: Factory function for creating stores with search, pagination, and sorting
+- Includes automatic session storage persistence
+- Used by list views (e.g., fund list, account list)
+
+**Testing Utilities** (`src/app/testing/`):
+- `InMemoryStorageService`: Mock storage for tests
+- `test-helpers.ts`: Shared test utilities and helpers
 
 ### Features Structure
 
@@ -104,6 +153,7 @@ Example feature structure (Funds):
 features/funds/
 ├── funds.routes.ts       # Child routes
 ├── funds.ts              # Feature shell component (if needed)
+├── funds-store.ts        # Feature-specific store
 ├── fund-list.ts          # List view
 ├── fund-details.ts       # Detail view
 ├── fund-form/
@@ -111,12 +161,74 @@ features/funds/
 └── share-classes.ts      # Related feature
 ```
 
+**Available Features:**
+- `admin`: Administrative functions
+- `administration`: System administration
+- `balances-reports`: Account balances and reporting
+- `chart-of-accounts`: Chart of accounts management
+- `dashboard`: Main dashboard and overview
+- `funds`: Fund management and share classes
+- `journal-entries`: Journal entry creation and management
+- `login`: Authentication and login
+- `nav`: Net Asset Value (NAV) calculation
+- `portfolio`: Portfolio holdings and positions
+- `posting-periods`: Accounting period management
+- `pricing-valuation`: Securities pricing and valuation
+- `profile`: User profile management
+- `reports`: Financial reporting
+- `transactions`: Transaction management
+
 ### Models
 
-TypeScript interfaces and types in `src/app/models/`:
-- Domain models (e.g., `fund.model.ts`, `account.model.ts`)
-- Request/response DTOs (`CreateFund`, `UpdateFund`, `PaginatedResponse<T>`)
-- Enum-like models (e.g., `account_type.model.ts`)
+TypeScript interfaces and types in `src/app/models/` (kebab-case naming):
+- Domain models: `fund.model.ts`, `account.model.ts`, `security.model.ts`, `user.model.ts`
+- Enum-like models: `account-type.model.ts`, `security-type.model.ts`
+- Request/response DTOs: `import-b3-response.model.ts`
+- Shared types: `menu-item.model.ts`
+
+**Naming Convention:** Use kebab-case for model files (e.g., `account-type.model.ts`, not `account_type.model.ts`)
+
+### Directives
+
+Custom directives in `src/app/directives/` (kebab-case naming):
+- **sortable.directive.ts**: Table column sorting functionality
+- **only-numbers.directive.ts**: Input restriction to numeric values only
+
+**Naming Convention:** Use kebab-case for directive files (e.g., `only-numbers.directive.ts`)
+
+## Technology Stack
+
+### Core Framework
+- **Angular 21.0** with TypeScript 5.9
+- **Standalone Components**: No NgModules (default in Angular 21)
+- **@angular/build**: Application builder with Vite
+- **RxJS 7.8**: Reactive programming
+
+### UI & Styling
+- **Bootstrap 5.3.8**: UI component framework
+- **@ng-bootstrap/ng-bootstrap 20.0**: Angular Bootstrap components
+- **Bootstrap Icons 1.13.1**: Icon library
+- **IBM Plex Fonts 6.4.1**: Custom typography (Sans and Mono variants)
+- **SCSS**: Stylesheet preprocessor
+
+### State Management & Data
+- **@ngrx/signals 21.0**: Signal-based state management
+- **angular-auth-oidc-client 21.0**: Auth0 OIDC authentication
+- **ngx-echarts 6.0 / echarts 6.0**: Interactive charts and visualizations
+
+### Development Tools
+- **Vitest 4.0.8**: Unit testing framework
+- **@vitest/coverage-v8 4.0.16**: Code coverage
+- **jsdom 27.1.0**: DOM implementation for tests
+- **@angular/cli 21.0.4**: Angular CLI
+- **npm 11.6.2**: Package manager
+- **Prettier**: Code formatting (printWidth: 100, singleQuote: true)
+
+### Build Configuration
+- **Bundle size budgets**:
+  - Initial bundle: 500kB warning, 1MB error
+  - Component styles: 4kB warning, 8kB error
+- **Development server**: Proxies `/api/**` to `https://localhost:7109`
 
 ## Code Standards & Conventions
 
@@ -155,19 +267,131 @@ TypeScript interfaces and types in `src/app/models/`:
 
 ### File Organization
 
-- Relative imports from component files (e.g., `./my-component.html`, `./my-component.scss`)
+**Directory Structure:**
+```
+src/app/
+├── auth/                    # Authentication module (OIDC)
+├── config/                  # Configuration (API URL, etc.)
+├── directives/              # Shared directives (kebab-case.directive.ts)
+├── features/                # Feature modules (lazy-loaded)
+│   ├── admin/
+│   ├── administration/
+│   ├── balances-reports/
+│   ├── chart-of-accounts/
+│   ├── dashboard/
+│   ├── funds/
+│   ├── journal-entries/
+│   ├── login/
+│   ├── nav/
+│   ├── portfolio/
+│   ├── posting-periods/
+│   ├── pricing-valuation/
+│   ├── profile/
+│   ├── reports/
+│   └── transactions/
+├── layout/                  # Layout components
+│   ├── breadcrumb/
+│   ├── page-header/
+│   ├── sidenav/
+│   ├── toasts-container/
+│   └── user-profile/
+├── models/                  # TypeScript interfaces (kebab-case.model.ts)
+├── services/                # Global singleton services
+├── shared/                  # Shared utilities
+│   ├── storage/            # Storage abstraction layer
+│   └── stores/             # Reusable store factories
+├── testing/                # Test utilities and mocks
+├── app.ts                  # Root component
+├── app.routes.ts           # Top-level routes
+└── app.html                # Root template
+```
+
+**Naming Conventions:**
+- Components: PascalCase class, kebab-case files (e.g., `fund-list.ts` exports `FundList`)
+- Services: PascalCase class, kebab-case files (e.g., `toast-service.ts` exports `ToastService`)
+- Directives: PascalCase class with `Directive` suffix, kebab-case files (e.g., `only-numbers.directive.ts`)
+- Models: kebab-case files with `.model.ts` suffix (e.g., `account-type.model.ts`)
+- Routes: kebab-case with `.routes.ts` suffix (e.g., `funds.routes.ts` exports `FUNDS_ROUTES`)
+
+**File Co-location:**
 - Components, services, directives have co-located `.spec.ts` test files
-- Shared directives in `src/app/directives/`
-- Shared services in `src/app/services/`
+- Component templates and styles use relative imports (e.g., `./fund-list.html`, `./fund-list.scss`)
+- Test files use the same base name with `.spec.ts` extension
+
+## Key Architectural Patterns
+
+### Signal-Based Services Pattern
+```typescript
+@Injectable({ providedIn: 'root' })
+export class ThemeService {
+  // Private writable signal
+  private readonly _currentTheme = signal<'light' | 'dark'>('dark');
+
+  // Public read-only signal
+  readonly currentTheme = this._currentTheme.asReadonly();
+
+  // Computed signal for derived state
+  readonly isDarkMode = computed(() => this._currentTheme() === 'dark');
+}
+```
+
+### Store Factory Pattern
+```typescript
+// Create reusable store with configuration
+export const FundsStore = createPaginatedSearchStore({
+  storageKey: 'funds-search',
+  initialSort: { column: 'name', direction: 'asc' },
+  defaultPageSize: 15,
+});
+```
+
+### Authentication with Effects
+```typescript
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private readonly authState = toSignal(this.oidcSecurityService.isAuthenticated$);
+  readonly isLoggedIn = computed(() => this.authState()?.isAuthenticated ?? false);
+
+  constructor() {
+    // Reactive effect: run side effects when signals change
+    effect(() => {
+      if (this.isLoggedIn()) {
+        // Fetch additional user data
+        this.userService.fetchCurrentUser().subscribe(...);
+      }
+    });
+  }
+}
+```
+
+### Storage Abstraction Pattern
+```typescript
+// Interface for testing and flexibility
+export interface StorageService {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): void;
+  removeItem(key: string): void;
+  clear(): void;
+}
+
+// Inject the interface, not the implementation
+private readonly storage = inject(SessionStorageService);
+```
 
 ## Testing
 
-Tests use Vitest 4.0. Test files use `.spec.ts` extension and are co-located with source files.
+Tests use **Vitest 4.0.8**. Test files use `.spec.ts` extension and are co-located with source files.
 
-Configuration:
+**Configuration:**
 - TypeScript strict mode enabled
-- Vitest configured via Angular CLI
+- Vitest configured via Angular CLI (`@angular/build:unit-test`)
 - Tests run with `ng test` or `npm test`
+- Code coverage with `@vitest/coverage-v8`
+
+**Testing Utilities:**
+- `InMemoryStorageService`: Mock storage implementation for tests
+- `test-helpers.ts`: Shared test utilities and helpers
+- Use jsdom for DOM operations in tests
 
 ## TypeScript Configuration
 

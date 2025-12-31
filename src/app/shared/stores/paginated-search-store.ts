@@ -1,6 +1,8 @@
 import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
 import {inject} from '@angular/core';
 import {LoggerService} from '../../services/logger';
+import {SessionStorageService} from '../storage/session-storage.service';
+import {StorageService} from '../storage/storage.interface';
 
 export type PaginatedSearchState = {
   searchTerm: string;
@@ -33,9 +35,9 @@ export function createPaginatedSearchStore(config: PaginatedSearchStoreConfig) {
     sortDirection: initialSort.direction,
   };
 
-  function loadStateFromSession(logger: LoggerService): PaginatedSearchState {
+  function loadStateFromSession(logger: LoggerService, storage: StorageService): PaginatedSearchState {
     try {
-      const stored = sessionStorage.getItem(storageKey);
+      const stored = storage.getItem(storageKey);
       if (stored) {
         const loadedState = {...initialState, ...JSON.parse(stored)};
         logger.debug('Loaded state from sessionStorage', loadedState, storageKey);
@@ -48,9 +50,9 @@ export function createPaginatedSearchStore(config: PaginatedSearchStoreConfig) {
     return initialState;
   }
 
-  function saveStateToSession(state: PaginatedSearchState, logger: LoggerService): void {
+  function saveStateToSession(state: PaginatedSearchState, logger: LoggerService, storage: StorageService): void {
     try {
-      sessionStorage.setItem(storageKey, JSON.stringify(state));
+      storage.setItem(storageKey, JSON.stringify(state));
       logger.debug('Saved state to sessionStorage', state, storageKey);
     } catch (error) {
       logger.warn('Failed to save state to sessionStorage', error, storageKey);
@@ -61,6 +63,7 @@ export function createPaginatedSearchStore(config: PaginatedSearchStoreConfig) {
     withState(initialState),
     withMethods((store) => {
       const logger = inject(LoggerService);
+      const storage = inject(SessionStorageService);
 
       const saveCurrentState = () => {
         const state: PaginatedSearchState = {
@@ -70,7 +73,7 @@ export function createPaginatedSearchStore(config: PaginatedSearchStoreConfig) {
           sortColumn: store.sortColumn(),
           sortDirection: store.sortDirection(),
         };
-        saveStateToSession(state, logger);
+        saveStateToSession(state, logger, storage);
       };
 
       return {
@@ -103,7 +106,8 @@ export function createPaginatedSearchStore(config: PaginatedSearchStoreConfig) {
     withHooks({
       onInit(store) {
         const logger = inject(LoggerService);
-        const savedState = loadStateFromSession(logger);
+        const storage = inject(SessionStorageService);
+        const savedState = loadStateFromSession(logger, storage);
         patchState(store, savedState);
       },
     })

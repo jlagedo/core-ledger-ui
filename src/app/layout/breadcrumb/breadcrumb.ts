@@ -3,14 +3,14 @@ import {BreadCrumbService} from '../../services/bread-crumb-service';
 import {RouterLink} from '@angular/router';
 
 @Component({
-  selector: 'app-bread-crumb-component',
+  selector: 'app-breadcrumb',
   imports: [
     RouterLink
   ],
-  templateUrl: './bread-crumb-component.html',
-  styleUrl: './bread-crumb-component.scss',
+  templateUrl: './breadcrumb.html',
+  styleUrl: './breadcrumb.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BreadCrumbComponent {
+export class BreadcrumbComponent {
   breadcrumbService = inject(BreadCrumbService);
 }

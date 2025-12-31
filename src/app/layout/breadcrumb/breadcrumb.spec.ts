@@ -1,19 +1,19 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {Sidenav} from './sidenav';
+import {BreadcrumbComponent} from './breadcrumb';
 import {provideTestDependencies} from '../../testing/test-helpers';
 
-describe('Sidenav', () => {
-  let component: Sidenav;
-  let fixture: ComponentFixture<Sidenav>;
+describe('BreadcrumbComponent', () => {
+  let component: BreadcrumbComponent;
+  let fixture: ComponentFixture<BreadcrumbComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Sidenav],
+      imports: [BreadcrumbComponent],
       providers: provideTestDependencies(),
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(Sidenav);
+    fixture = TestBed.createComponent(BreadcrumbComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

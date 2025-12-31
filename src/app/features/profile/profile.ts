@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PageHeader } from '../../layout/page-header/page-header';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../auth/auth-service';
 
 @Component({
   selector: 'app-profile',

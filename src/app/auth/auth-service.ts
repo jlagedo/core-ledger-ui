@@ -1,7 +1,7 @@
 import { Injectable, inject, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { UserService } from '../services/user.service';
+import { UserService } from '../services/user-service';
 
 export interface UserProfile {
   name: string;

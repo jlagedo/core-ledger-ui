@@ -9,7 +9,7 @@ import {
   PaginatedResponse,
   UpdateAccount
 } from '../models/account.model';
-import {AccountType} from '../models/account_type.model';
+import {AccountType} from '../models/account-type.model';
 import {API_URL} from '../config/api.config';
 import {LoggerService} from './logger';
 

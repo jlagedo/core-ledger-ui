@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserProfile } from './user-profile';
-import { ThemeService } from '../../services/theme.service';
-import { signal } from '@angular/core';
+import { ThemeService } from '../../services/theme-service';
+import { provideTestDependencies } from '../../testing/test-helpers';
 
 describe('UserProfile', () => {
   let component: UserProfile;
@@ -10,7 +10,8 @@ describe('UserProfile', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserProfile]
+      imports: [UserProfile],
+      providers: provideTestDependencies(),
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserProfile);
@@ -44,16 +45,16 @@ describe('UserProfile', () => {
       fixture.componentRef.setInput('isCollapsed', false);
       fixture.detectChanges();
 
-      const buttons = fixture.nativeElement.querySelectorAll('button');
-      expect(buttons.length).toBe(2); // Profile + Theme toggle
+      const themeToggle = fixture.nativeElement.querySelector('[aria-label*="Switch to"]');
+      expect(themeToggle).toBeTruthy();
     });
 
     it('should hide theme toggle when collapsed', () => {
       fixture.componentRef.setInput('isCollapsed', true);
       fixture.detectChanges();
 
-      const buttons = fixture.nativeElement.querySelectorAll('button');
-      expect(buttons.length).toBe(1); // Only profile button
+      const themeToggle = fixture.nativeElement.querySelector('[aria-label*="Switch to"]');
+      expect(themeToggle).toBeFalsy();
     });
   });
 
@@ -108,8 +109,7 @@ describe('UserProfile', () => {
       fixture.detectChanges();
 
       const toggleSpy = vi.spyOn(themeService, 'toggleTheme');
-      const buttons = fixture.nativeElement.querySelectorAll('button');
-      const themeButton = buttons[1]; // Second button is theme toggle
+      const themeButton = fixture.nativeElement.querySelector('[aria-label*="Switch to"]');
 
       themeButton.click();
       expect(toggleSpy).toHaveBeenCalled();

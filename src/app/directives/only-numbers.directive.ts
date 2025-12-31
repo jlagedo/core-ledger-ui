@@ -7,7 +7,7 @@ import {Directive} from '@angular/core';
     '(paste)': 'onPaste($event)'
   }
 })
-export class OnlyNumbers {
+export class OnlyNumbersDirective {
 
   private readonly allowedKeys = [
     'Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Enter'
