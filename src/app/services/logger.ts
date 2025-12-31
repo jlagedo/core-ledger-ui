@@ -1,4 +1,6 @@
 import {inject, Injectable} from '@angular/core';
+import {MicroSentryService} from '@micro-sentry/angular';
+import {Severity} from '@micro-sentry/core';
 import {ToastService} from './toast-service';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
@@ -16,6 +18,7 @@ export interface LogEntry {
 })
 export class LoggerService {
   private toastService = inject(ToastService);
+  private microSentry = inject(MicroSentryService);
 
   // In production, this would be configurable via environment
   private readonly logLevel: LogLevel = 'debug';
@@ -74,6 +77,10 @@ export class LoggerService {
       validationErrors: httpError.error?.errors,
     };
 
+    // Send to Sentry with enhanced context
+    this.sendHttpErrorToSentry(operation, errorMessage, errorData);
+
+    // Also log locally
     this.error(errorMessage, errorData, operation);
 
     if (showToast) {
@@ -103,9 +110,8 @@ export class LoggerService {
       this.logToConsole(entry);
     }
 
-    // In production, you would send logs to a logging service
-    // e.g., Application Insights, Sentry, LogRocket, etc.
-    // this.sendToLoggingService(entry);
+    // Send errors and warnings to Sentry
+    this.sendToSentry(entry);
   }
 
   private shouldLog(level: LogLevel): boolean {
@@ -132,8 +138,95 @@ export class LoggerService {
     }
   }
 
-  // Placeholder for production logging
-  // private sendToLoggingService(entry: LogEntry) {
-  //   // Send to Application Insights, Sentry, etc.
-  // }
+  private sendToSentry(entry: LogEntry) {
+    // Only send errors and warnings to Sentry
+    if (entry.level !== 'error' && entry.level !== 'warn') {
+      return;
+    }
+
+    try {
+      // Use withScope to add context for this specific log entry
+      this.microSentry.withScope((scope) => {
+        // Add context as tags
+        if (entry.context) {
+          scope.setTag('context', entry.context);
+        }
+
+        // Add level as tag
+        scope.setTag('logLevel', entry.level);
+
+        // Add any additional data as extras
+        if (entry.data) {
+          scope.setExtra('data', JSON.stringify(entry.data));
+        }
+
+        // Add timestamp
+        scope.setExtra('timestamp', entry.timestamp.toISOString());
+
+        // For errors, if data is an Error object, report it directly
+        // Otherwise, capture as a message
+        if (entry.level === 'error' && entry.data instanceof Error) {
+          scope.report(entry.data);
+        } else {
+          const severity = entry.level === 'error' ? Severity.error : Severity.warning;
+          scope.captureMessage(entry.message, severity);
+        }
+      });
+    } catch (error) {
+      // Prevent logging errors from breaking the application
+      console.error('Failed to send log to Sentry:', error);
+    }
+  }
+
+  private sendHttpErrorToSentry(
+    operation: string,
+    message: string,
+    errorData: {
+      status?: number;
+      errorCode?: string;
+      message?: string;
+      correlationId?: string;
+      traceId?: string;
+      validationErrors?: Record<string, string[]>;
+    }
+  ) {
+    try {
+      this.microSentry.withScope((scope) => {
+        // Add operation context
+        scope.setTag('operation', operation);
+        scope.setTag('errorType', 'http');
+
+        // Add HTTP status as tag for easier filtering
+        if (errorData.status) {
+          scope.setTag('httpStatus', errorData.status.toString());
+        }
+
+        // Add error code if available
+        if (errorData.errorCode) {
+          scope.setTag('errorCode', errorData.errorCode);
+        }
+
+        // Add correlation/trace IDs as tags for tracing
+        if (errorData.correlationId) {
+          scope.setExtra('correlationId', errorData.correlationId);
+        }
+        if (errorData.traceId) {
+          scope.setExtra('traceId', errorData.traceId);
+        }
+
+        // Add validation errors if present
+        if (errorData.validationErrors) {
+          scope.setExtra('validationErrors', JSON.stringify(errorData.validationErrors));
+        }
+
+        // Add all error data as extras
+        scope.setExtra('httpErrorData', JSON.stringify(errorData));
+
+        // Capture the error message
+        scope.captureMessage(message, Severity.error);
+      });
+    } catch (error) {
+      console.error('Failed to send HTTP error to Sentry:', error);
+    }
+  }
 }
