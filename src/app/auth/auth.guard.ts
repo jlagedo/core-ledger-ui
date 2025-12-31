@@ -1,19 +1,19 @@
 import { inject } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
-import { map, take } from 'rxjs';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { AuthService } from './auth-service';
 
+/**
+ * Universal auth guard that works with both OIDC and mock authentication.
+ * Uses AuthService which abstracts the underlying auth mechanism.
+ */
 export const authGuard: CanActivateFn = () => {
-  const oidcSecurityService = inject(OidcSecurityService);
+  const authService = inject(AuthService);
   const router = inject(Router);
 
-  return oidcSecurityService.isAuthenticated$.pipe(
-    take(1),
-    map(({ isAuthenticated }) => {
-      if (isAuthenticated) {
-        return true;
-      }
-      return router.createUrlTree(['/login']);
-    })
-  );
+  // Use signal-based check (synchronous and works with both auth modes)
+  if (authService.isLoggedIn()) {
+    return true;
+  }
+
+  return router.createUrlTree(['/login']);
 };

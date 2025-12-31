@@ -1,6 +1,6 @@
 <div [attr.aria-label]="store.isSidenavCollapsed() ? 'Collapsed sidenav' : 'Expanded sidenav'"
      [style.width]="store.isSidenavCollapsed() ? '70px' : '220px'"
-     class="d-flex flex-column flex-shrink-0 p-3 transition-all border-end"
+     class="d-flex flex-column flex-shrink-0 p-3 transition-all border-end emerald-radial-bg "
      style="height: 100vh;">
 
   <!-- Logo & Toggle Section -->
@@ -11,8 +11,8 @@
        [attr.role]="store.isSidenavCollapsed() ? 'button' : null"
        [class.cursor-pointer]="store.isSidenavCollapsed()" [routerLink]="store.isSidenavCollapsed() ? null : '/dashboard'"
        class="d-flex align-items-center text-white text-decoration-none" tabindex="0">
-      <img [class.me-2]="!store.isSidenavCollapsed()" alt="Fluxo Logo" height="32" src="apple-touch-icon.png"
-           width="32">
+      <img [class.me-2]="!store.isSidenavCollapsed()" alt="Fluxo Logo" height="32" ngSrc="apple-touch-icon.png"
+           width="32" class="img-fluid">
       @if (!store.isSidenavCollapsed()) {
         <span class="fs-4 numeric">Core</span>
       }

@@ -8,16 +8,32 @@ import {provideMicroSentry} from '@micro-sentry/angular';
 import {routes} from './app.routes';
 import {authConfig} from './auth/auth.config';
 import {environment} from '../environments/environment';
+import {mockAuthInterceptor} from './auth/mock-auth.interceptor';
+import {MockAuthService} from './auth/mock-auth.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor()])),
+    // Conditional HTTP interceptor based on mock auth flag
+    provideHttpClient(
+      withInterceptors([
+        environment.auth.useMock ? mockAuthInterceptor : authInterceptor()
+      ])
+    ),
+    // Conditionally provide MockAuthService only when useMock is true
+    ...(environment.auth.useMock ? [MockAuthService] : []),
+    // Always provide OIDC (needed for types even in mock mode)
     provideAuth(authConfig),
+    // Conditional auth initializer
     provideAppInitializer(() => {
-      const oidcSecurityService = inject(OidcSecurityService);
-      return firstValueFrom(oidcSecurityService.checkAuth());
+      if (environment.auth.useMock) {
+        const mockAuthService = inject(MockAuthService);
+        return firstValueFrom(mockAuthService.checkAuth());
+      } else {
+        const oidcSecurityService = inject(OidcSecurityService);
+        return firstValueFrom(oidcSecurityService.checkAuth());
+      }
     }),
     // Configure Sentry from environment
     provideMicroSentry({

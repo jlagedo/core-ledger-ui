@@ -2,6 +2,15 @@
   display: contents;
 }
 
+.emerald-radial-bg {
+
+
+  background-image: radial-gradient(
+      circle 500px at 50% 300px,
+      rgba(16, 185, 129, 0.35),
+      transparent
+  );
+}
 // Force dark sidenav in both light and dark themes
 // This provides consistent navigation appearance across theme switches
 .d-flex.flex-column {

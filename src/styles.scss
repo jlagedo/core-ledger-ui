@@ -117,3 +117,14 @@
   border-radius: 12px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
+
+.glass-round {
+  background: rgba(255, 255, 255, 0.08); /* transparent background */
+  backdrop-filter: blur(20px);           /* blur behind the element */
+  -webkit-backdrop-filter: blur(20px);   /* Safari support */
+
+  border-radius: 50px;                   /* round border */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); /* soft blur shadow */
+}

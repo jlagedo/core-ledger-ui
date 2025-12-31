@@ -14,6 +14,8 @@ export const environment = {
 
   // Auth0 / OIDC Configuration
   auth: {
+    useMock: false, // Mock auth must NEVER be enabled in production
+    mockUser: 'admin', // Only used when useMock: true
     authority: '', // TODO: Production Auth0 authority URL
     clientId: '', // TODO: Production Auth0 client ID
     scope: 'openid profile email offline_access',

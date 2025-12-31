@@ -4,10 +4,11 @@ import { NgbCollapse, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { UserProfile } from '../user-profile/user-profile';
 import { MenuService } from '../../services/menu-service';
 import { SidenavStore } from './sidenav-store';
+import {NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-sidenav',
-  imports: [RouterModule, NgbCollapse, NgbTooltip, UserProfile],
+  imports: [RouterModule, NgbCollapse, NgbTooltip, UserProfile, NgOptimizedImage],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

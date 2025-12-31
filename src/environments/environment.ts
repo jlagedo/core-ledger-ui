@@ -14,6 +14,8 @@ export const environment = {
 
   // Auth0 / OIDC Configuration
   auth: {
+    useMock: true, // Enable mock authentication for local development
+    mockUser: 'admin', // Mock user role: admin, fund-manager, trader, analyst
     authority: 'https://dev-7yj4txd3qg4xsckj.us.auth0.com',
     clientId: 'PDPnT19fdBAv5VLjg3OR4U6N5wqkGohT',
     scope: 'openid profile email offline_access',
