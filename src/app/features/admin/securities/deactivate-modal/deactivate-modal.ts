@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {Security} from '../../../../models/security.model';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
@@ -7,6 +7,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
   imports: [],
   templateUrl: './deactivate-modal.html',
   styleUrl: './deactivate-modal.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeactivateModal {
   activeModal = inject(NgbActiveModal);

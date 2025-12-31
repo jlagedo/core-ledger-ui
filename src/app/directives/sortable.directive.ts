@@ -1,11 +1,11 @@
-import {Directive, Input, output} from '@angular/core';
+import {Directive, input, output, signal} from '@angular/core';
 
 export type SortDirection = 'asc' | 'desc' | '';
 
-const rotate: { [key: string]: SortDirection } = {
+const rotate: {[key: string]: SortDirection} = {
   asc: 'desc',
   desc: '',
-  '': 'asc'
+  '': 'asc',
 };
 
 export interface SortEvent {
@@ -16,23 +16,23 @@ export interface SortEvent {
 @Directive({
   selector: 'th[sortable]',
   host: {
-    '[class.asc]': 'direction === "asc"',
-    '[class.desc]': 'direction === "desc"',
-    '(click)': 'rotate()',
+    '[class.asc]': 'direction() === "asc"',
+    '[class.desc]': 'direction() === "desc"',
+    '(click)': 'onRotate()',
     '[style.cursor]': '"pointer"',
   },
 })
 export class SortableDirective {
-  // Using @Input instead of input() because components programmatically set these values
-  // via viewChildren, which requires mutable properties
-  @Input() sortable = '';
-  @Input() direction: SortDirection = '';
+  // Signal-based inputs (Angular 21 best practice)
+  readonly sortable = input<string>('');
+  readonly direction = signal<SortDirection>('');
 
-  // output() works fine for events
-  sort = output<SortEvent>();
+  // Event output
+  readonly sort = output<SortEvent>();
 
-  rotate() {
-    this.direction = rotate[this.direction];
-    this.sort.emit({column: this.sortable, direction: this.direction});
+  onRotate() {
+    const newDirection = rotate[this.direction()];
+    this.direction.set(newDirection);
+    this.sort.emit({column: this.sortable(), direction: newDirection});
   }
 }

@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SecurityService} from '../../../../services/security';
@@ -12,6 +12,7 @@ import {PageHeader} from '../../../../layout/page-header/page-header';
   imports: [ReactiveFormsModule, PageHeader],
   templateUrl: './security-form.html',
   styleUrl: './security-form.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecurityForm implements OnInit {
   securityId = signal<number | null>(null);

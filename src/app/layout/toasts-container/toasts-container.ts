@@ -1,14 +1,13 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {ToastService} from '../../services/toast-service';
 import {NgbToast} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-toasts-container',
-  imports: [
-    NgbToast
-  ],
+  imports: [NgbToast],
   templateUrl: './toasts-container.html',
   styleUrl: './toasts-container.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'toast-container position-fixed top-0 end-0 p-3',
     style: 'z-index: 1050',

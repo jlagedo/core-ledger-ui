@@ -59,10 +59,10 @@ export class FundList {
       const sortDirection = this.store.sortDirection();
 
       for (const header of headers) {
-        if (header.sortable === sortColumn) {
-          header.direction = sortDirection;
+        if (header.sortable() === sortColumn) {
+          header.direction.set(sortDirection);
         } else {
-          header.direction = '';
+          header.direction.set('');
         }
       }
     });
@@ -75,8 +75,8 @@ export class FundList {
 
   onSort({column, direction}: SortEvent): void {
     for (const header of this.headers()) {
-      if (header.sortable !== column) {
-        header.direction = '';
+      if (header.sortable() !== column) {
+        header.direction.set('');
       }
     }
 

@@ -1,4 +1,4 @@
-import {Component, computed, DestroyRef, effect, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal} from '@angular/core';
 import {AccountService} from "../../services/account";
 import {AccountsByTypeReportDto} from '../../models/account.model';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
@@ -21,7 +21,8 @@ echarts.use([PieChart, GridComponent, CanvasRenderer]);
   imports: [NgxEchartsDirective, CommonModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
-  providers: [provideEchartsCore({echarts})]
+  providers: [provideEchartsCore({echarts})],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Dashboard {
   accountService = inject(AccountService);

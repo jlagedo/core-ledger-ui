@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -6,6 +6,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
   imports: [],
   templateUrl: './import-b3-modal.html',
   styleUrl: './import-b3-modal.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportB3Modal {
   activeModal = inject(NgbActiveModal);
