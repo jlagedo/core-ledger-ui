@@ -78,14 +78,33 @@ npm start
 
 ## 💻 Development
 
+### Environment Configurations
+
+The application provides multiple development configurations to support different authentication modes:
+
+| Configuration | Auth Mode | Default | Command | Use Case |
+|--------------|-----------|---------|---------|----------|
+| **local-noauth** | Mock Authentication | ✅ Yes | `npm start` | Local development without Auth0 dependency |
+| **local-auth** | Real Auth0 | No | `npm run start:auth` | Testing with real Auth0 integration |
+| **development** | Real Auth0 | No | `ng serve --configuration=development` | Standard development mode |
+| **production** | Real Auth0 | No | `ng build --configuration=production` | Production builds |
+
+**Default Configuration:** The application now defaults to `local-noauth` for faster local development without requiring Auth0 setup.
+
 ### Development Server
 
 Start a local development server with live reload:
 
 ```bash
-ng serve
-# or
+# Start with mock authentication (default)
 npm start
+# or
+ng serve
+
+# Start with real Auth0 authentication
+npm run start:auth
+# or
+ng serve --configuration=local-auth
 ```
 
 The application will automatically reload when you change any source files.
@@ -173,16 +192,29 @@ The system includes four pre-configured user roles:
 
 #### Enabling Mock Auth
 
-Configure mock authentication in your environment file:
+**Quick Start:** The application defaults to mock authentication with the `local-noauth` configuration:
+
+```bash
+# Mock auth is enabled by default
+npm start
+```
+
+**Customizing Mock User:** Edit `src/environments/environment.local-noauth.ts` to change the mock user:
 
 ```typescript
-// src/environments/environment.development.ts
+// src/environments/environment.local-noauth.ts
 export const environment = {
   auth: {
     useMock: true,        // Enable mock auth
-    mockUser: 'admin'     // Choose user role
+    mockUser: 'admin'     // Choose user role: admin, fund-manager, trader, analyst
   }
 };
+```
+
+**Switching to Real Auth0:** Use the `local-auth` configuration:
+
+```bash
+npm run start:auth
 ```
 
 **⚠️ Important:** Mock authentication is only available in development mode and will throw an error if used in production.
@@ -278,7 +310,11 @@ Build artifacts will be stored in the `dist/` directory. The production build op
 Automatically rebuild on file changes:
 
 ```bash
+# Watch mode with mock authentication (default)
 npm run watch
+
+# Watch mode with real Auth0 authentication
+npm run watch:auth
 ```
 
 ## 📏 Code Standards

@@ -4,8 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:auth": "ng serve --configuration=local-auth",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "watch": "ng build --watch --configuration local-noauth",
+    "watch:auth": "ng build --watch --configuration local-auth",
     "test": "ng test",
     "generate-tokens": "tsx tools/generate-dev-token.ts"
   },

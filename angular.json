@@ -83,9 +83,31 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
+            },
+            "local-auth": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local-auth.ts"
+                }
+              ]
+            },
+            "local-noauth": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local-noauth.ts"
+                }
+              ]
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "local-noauth"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
@@ -98,9 +120,15 @@
             },
             "development": {
               "buildTarget": "core-ledger-ui:build:development"
+            },
+            "local-auth": {
+              "buildTarget": "core-ledger-ui:build:local-auth"
+            },
+            "local-noauth": {
+              "buildTarget": "core-ledger-ui:build:local-noauth"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "local-noauth"
         },
         "test": {
           "builder": "@angular/build:unit-test"
