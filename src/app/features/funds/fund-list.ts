@@ -1,12 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
   effect,
   inject,
   signal,
-  viewChildren
+  TemplateRef,
+  ViewChild
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
@@ -17,20 +17,18 @@ import {
   NgbDropdown,
   NgbDropdownItem,
   NgbDropdownMenu,
-  NgbDropdownToggle,
-  NgbPagination
+  NgbDropdownToggle
 } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
-import { SortableDirective, SortEvent } from '../../directives/sortable.directive';
 import { FundsStore } from './funds-store';
-import { ToastService } from '../../services/toast-service';
 import { LoggerService } from '../../services/logger';
 import { PageHeader } from '../../layout/page-header/page-header';
+import { DataGrid } from '../../shared/components/data-grid/data-grid';
+import { ColumnDefinition } from '../../shared/components/data-grid/column-definition.model';
 
 @Component({
   selector: 'app-fund-list',
-  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, DatePipe, PageHeader],
-  providers: [FundsStore],
+  imports: [RouterLink, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, NgbDropdownItem, PageHeader, DataGrid],
+  providers: [FundsStore, DatePipe],
   templateUrl: './fund-list.html',
   styleUrl: './fund-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,58 +37,62 @@ export class FundList {
   store = inject(FundsStore);
   fundService = inject(FundService);
   destroyRef = inject(DestroyRef);
-  toastService = inject(ToastService);
   logger = inject(LoggerService);
+  datePipe = inject(DatePipe);
 
   fundsResponse = signal<PaginatedResponse<Fund> | null>(null);
-  activeRowId = signal<number | null>(null);
 
-  collectionSize = computed(() => this.fundsResponse()?.totalCount ?? 0);
+  // Column definitions for data grid
+  columns: ColumnDefinition<Fund>[] = [
+    {
+      key: 'code',
+      label: 'Code',
+      sortable: true,
+      sortKey: 'Code',
+      align: 'end',
+      cellClass: 'numeric font-monospace fw-bold'
+    },
+    {
+      key: 'name',
+      label: 'Name',
+      sortable: true,
+      sortKey: 'Name',
+      align: 'start'
+    },
+    {
+      key: 'baseCurrency',
+      label: 'Base Currency',
+      sortable: true,
+      sortKey: 'BaseCurrency',
+      align: 'center'
+    },
+    {
+      key: 'inceptionDate',
+      label: 'Inception Date',
+      sortable: true,
+      sortKey: 'InceptionDate',
+      align: 'center',
+      cellClass: 'text-muted',
+      formatter: (value) => this.datePipe.transform(value as string, 'shortDate') || ''
+    },
+    {
+      key: 'valuationFrequencyDescription',
+      label: 'Valuation Frequency',
+      sortable: true,
+      sortKey: 'ValuationFrequency',
+      align: 'center'
+    }
+  ];
 
-  headers = viewChildren(SortableDirective);
+  @ViewChild('actionsTemplate', { static: true }) actionsTemplate!: TemplateRef<any>;
 
   constructor() {
     effect(() => {
       this.loadFunds();
     });
-
-    effect(() => {
-      const headers = this.headers();
-      const sortColumn = this.store.sortColumn();
-      const sortDirection = this.store.sortDirection();
-
-      for (const header of headers) {
-        if (header.sortable() === sortColumn) {
-          header.direction.set(sortDirection);
-        } else {
-          header.direction.set('');
-        }
-      }
-    });
   }
 
-  onSearch(value: string): void {
-    this.store.setSearchTerm(value.trim());
-    this.loadFunds();
-  }
-
-  onSort({ column, direction }: SortEvent): void {
-    for (const header of this.headers()) {
-      if (header.sortable() !== column) {
-        header.direction.set('');
-      }
-    }
-
-    if (direction === '') {
-      this.store.resetSort();
-    } else {
-      this.store.setSort(column || 'Name', direction);
-    }
-
-    this.loadFunds();
-  }
-
-  public loadFunds(): void {
+  loadFunds(): void {
     const search = this.store.searchTerm();
     const filter = search ? `name=${search}` : undefined;
     const offset = (this.store.page() - 1) * this.store.pageSize();
@@ -107,26 +109,5 @@ export class FundList {
         next: response => this.fundsResponse.set(response),
         error: err => this.logger.logHttpError('load funds', err, 'Failed to load funds. Please try again.')
       });
-  }
-
-  onPageSizeChange(newSize: number): void {
-    this.store.setPageSize(newSize);
-    this.loadFunds();
-  }
-
-  setActiveRow(fundId: number): void {
-    this.activeRowId.set(fundId);
-  }
-
-  clearActiveRow(): void {
-    this.activeRowId.set(null);
-  }
-
-  onDropdownOpenChange(isOpen: boolean, fundId: number): void {
-    if (isOpen) {
-      this.setActiveRow(fundId);
-    } else {
-      this.clearActiveRow();
-    }
   }
 }

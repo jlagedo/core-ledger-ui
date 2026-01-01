@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { FundList } from './fund-list';
-import { provideTestDependencies, createMockPaginatedResponse } from '../../testing/test-helpers';
+import { provideTestDependencies } from '../../testing/test-helpers';
 
 describe('FundList', () => {
   let component: FundList;
@@ -22,92 +22,29 @@ describe('FundList', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('state management', () => {
-    it('should have initial empty fundsResponse', () => {
-      expect(component.fundsResponse()).toBeNull();
-    });
-
-    it('should calculate collectionSize from fundsResponse', () => {
-      expect(component.collectionSize()).toBe(0);
-
-      const mockResponse = createMockPaginatedResponse([], 50, 15, 0);
-      component.fundsResponse.set(mockResponse);
-
-      expect(component.collectionSize()).toBe(50);
-    });
+  it('should have initial empty fundsResponse', () => {
+    expect(component.fundsResponse()).toBeNull();
   });
 
-  describe('search functionality', () => {
-    it('should trim search value and reload', () => {
-      vi.spyOn(component.store, 'setSearchTerm');
-      vi.spyOn(component, 'loadFunds');
+  it('should have column definitions for fund data', () => {
+    expect(component.columns).toBeDefined();
+    expect(component.columns.length).toBe(5); // code, name, baseCurrency, inceptionDate, valuationFrequency
 
-      component.onSearch('  test  ');
-
-      expect(component.store.setSearchTerm).toHaveBeenCalledWith('test');
-      expect(component.loadFunds).toHaveBeenCalled();
-    });
-
-    it('should handle empty search term', () => {
-      vi.spyOn(component.store, 'setSearchTerm');
-      vi.spyOn(component, 'loadFunds');
-
-      component.onSearch('');
-
-      expect(component.store.setSearchTerm).toHaveBeenCalledWith('');
-      expect(component.loadFunds).toHaveBeenCalled();
-    });
+    // Verify column keys
+    expect(component.columns[0].key).toBe('code');
+    expect(component.columns[1].key).toBe('name');
+    expect(component.columns[2].key).toBe('baseCurrency');
+    expect(component.columns[3].key).toBe('inceptionDate');
+    expect(component.columns[4].key).toBe('valuationFrequencyDescription');
   });
 
-  describe('sorting functionality', () => {
-    it('should reset sort when direction is empty', () => {
-      vi.spyOn(component.store, 'resetSort');
-      vi.spyOn(component, 'loadFunds');
-
-      component.onSort({ column: 'name', direction: '' });
-
-      expect(component.store.resetSort).toHaveBeenCalled();
-      expect(component.loadFunds).toHaveBeenCalled();
-    });
-
-    it('should set sort when direction is provided', () => {
-      vi.spyOn(component.store, 'setSort');
-      vi.spyOn(component, 'loadFunds');
-
-      component.onSort({ column: 'name', direction: 'asc' });
-
-      expect(component.store.setSort).toHaveBeenCalledWith('name', 'asc');
-      expect(component.loadFunds).toHaveBeenCalled();
-    });
-
-    it('should handle descending sort', () => {
-      vi.spyOn(component.store, 'setSort');
-
-      component.onSort({ column: 'id', direction: 'desc' });
-
-      expect(component.store.setSort).toHaveBeenCalledWith('id', 'desc');
-    });
+  it('should have sortable columns', () => {
+    const sortableColumns = component.columns.filter(col => col.sortable);
+    expect(sortableColumns.length).toBe(5); // All columns are sortable
   });
 
-  describe('pagination functionality', () => {
-    it('should change page size and reload', () => {
-      vi.spyOn(component.store, 'setPageSize');
-      vi.spyOn(component, 'loadFunds');
-
-      component.onPageSizeChange(50);
-
-      expect(component.store.setPageSize).toHaveBeenCalledWith(50);
-      expect(component.loadFunds).toHaveBeenCalled();
-    });
-
-    it('should handle various page sizes', () => {
-      vi.spyOn(component.store, 'setPageSize');
-
-      component.onPageSizeChange(25);
-      expect(component.store.setPageSize).toHaveBeenCalledWith(25);
-
-      component.onPageSizeChange(100);
-      expect(component.store.setPageSize).toHaveBeenCalledWith(100);
-    });
+  it('should have date formatter for inceptionDate column', () => {
+    const inceptionDateColumn = component.columns.find(col => col.key === 'inceptionDate');
+    expect(inceptionDateColumn?.formatter).toBeDefined();
   });
 });

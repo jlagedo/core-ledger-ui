@@ -1,0 +1,223 @@
+<!-- Search Controls Row (if searchable) -->
+@if (searchable()) {
+<div class="row align-items-center mb-3 g-3">
+  <div class="col-12 col-md-4">
+    <div class="input-group">
+      <span class="input-group-text bg-body-secondary border-secondary">
+        <i class="bi bi-search"></i>
+      </span>
+      <input
+        #searchInput
+        type="text"
+        class="form-control bg-body border-secondary"
+        [placeholder]="searchPlaceholder()"
+        [value]="store().searchTerm()"
+        (keydown.enter)="onSearch(searchInput.value)"
+        aria-label="Search data"
+      />
+    </div>
+  </div>
+
+  <div class="col-12 col-md-4 text-center">
+    <span class="text-secondary small fw-medium">
+      <i class="bi bi-collection me-2"></i>{{ collectionSize() }} total items
+    </span>
+  </div>
+
+  <div class="col-12 col-md-4 d-flex justify-content-md-end">
+    <label for="pageSizeSelect" class="visually-hidden">Items per page</label>
+    <select
+      id="pageSizeSelect"
+      class="form-select bg-body border-secondary w-auto"
+      [ngModel]="store().pageSize()"
+      (ngModelChange)="onPageSizeChange($event)"
+    >
+      @for (size of pageSizeOptions(); track size) {
+      <option [ngValue]="size">{{ size }} items per page</option>
+      }
+    </select>
+  </div>
+</div>
+}
+
+<!-- Data Table -->
+<div class="table-responsive rounded-3 border border-tertiary data-table">
+  <table class="table table-sm table-striped table-hover align-middle fs-6 mb-0">
+    <!-- Table Head -->
+    <thead class="table-light">
+      <tr>
+        <!-- Selection Checkbox Column -->
+        @if (selectable()) {
+        <th scope="col" class="text-center" style="width: 50px">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            [checked]="selectionState().allSelected"
+            [indeterminate]="selectionState().indeterminate"
+            (change)="toggleSelectAll()"
+            [attr.aria-label]="
+              selectionState().allSelected ? 'Deselect all items' : 'Select all items'
+            "
+          />
+        </th>
+        }
+
+        <!-- Data Columns -->
+        @for (column of columns(); track column.key) { @if (column.sortable) {
+        <th
+          scope="col"
+          [sortable]="getSortKey(column)"
+          (sort)="onSort($event)"
+          [class]="'text-' + (column.align || 'start') + ' fw-bold ' + (column.headerClass || '')"
+          [class.d-none]="column.hideOnMobile"
+          [class.d-md-table-cell]="column.hideOnMobile"
+          [style.min-width]="column.minWidth || null"
+        >
+          {{ column.label }}
+        </th>
+        } @else {
+        <th
+          scope="col"
+          [class]="'text-' + (column.align || 'start') + ' fw-bold ' + (column.headerClass || '')"
+          [class.d-none]="column.hideOnMobile"
+          [class.d-md-table-cell]="column.hideOnMobile"
+          [style.min-width]="column.minWidth || null"
+        >
+          {{ column.label }}
+        </th>
+        } }
+
+        <!-- Row Actions Column -->
+        @if (rowActionsTemplate()) {
+        <th scope="col" class="text-end fw-bold">Actions</th>
+        }
+      </tr>
+    </thead>
+
+    <!-- Table Body with @defer for loading states -->
+    <tbody class="table-group-divider">
+      @defer (on immediate) { @if (errorMessage()) {
+      <!-- Error State -->
+      <tr>
+        <td
+          [attr.colspan]="
+            columns().length + (selectable() ? 1 : 0) + (rowActionsTemplate() ? 1 : 0)
+          "
+          class="text-center text-danger py-5"
+        >
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          {{ errorMessage() }}
+        </td>
+      </tr>
+      } @else if (currentPageItems().length === 0) {
+      <!-- Empty State -->
+      <tr>
+        <td
+          [attr.colspan]="
+            columns().length + (selectable() ? 1 : 0) + (rowActionsTemplate() ? 1 : 0)
+          "
+          class="text-center text-muted py-5"
+        >
+          <i class="bi bi-inbox me-2"></i>
+          {{ emptyMessage() }}
+        </td>
+      </tr>
+      } @else {
+      <!-- Data Rows -->
+      @for (item of currentPageItems(); track getItemId(item); let idx = $index) {
+      <tr
+        class="align-middle cursor-pointer"
+        [class.table-primary]="activeRowId() === getItemId(item)"
+        (click)="onRowClick(item)"
+      >
+        <!-- Selection Checkbox -->
+        @if (selectable()) {
+        <td class="text-center" (click)="$event.stopPropagation()">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            [checked]="isItemSelected(item)"
+            (change)="toggleItemSelection(item)"
+            [attr.aria-label]="'Select item ' + (idx + 1)"
+          />
+        </td>
+        }
+
+        <!-- Data Cells -->
+        @for (column of columns(); track column.key) {
+        <td
+          [class]="'text-' + (column.align || 'start') + ' ' + (column.cellClass || '')"
+          [class.d-none]="column.hideOnMobile"
+          [class.d-md-table-cell]="column.hideOnMobile"
+        >
+          @if (column.template) {
+          <!-- Custom Template -->
+          <ng-container
+            [ngTemplateOutlet]="column.template"
+            [ngTemplateOutletContext]="getCellContext(item, column, idx)"
+          >
+          </ng-container>
+          } @else {
+          <!-- Default or Formatted Value -->
+          {{ getFormattedValue(item, column) }} }
+        </td>
+        }
+
+        <!-- Row Actions -->
+        @if (rowActionsTemplate()) {
+        <td class="text-end">
+          <div class="table-row-actions" (click)="$event.stopPropagation()">
+            <ng-container
+              [ngTemplateOutlet]="rowActionsTemplate()!"
+              [ngTemplateOutletContext]="{ $implicit: item }"
+            >
+            </ng-container>
+          </div>
+        </td>
+        } </tr>
+      } } } @loading {
+      <!-- Loading State -->
+      <tr>
+        <td
+          [attr.colspan]="
+            columns().length + (selectable() ? 1 : 0) + (rowActionsTemplate() ? 1 : 0)
+          "
+          class="text-center py-5"
+        >
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading data...</span>
+          </div>
+          <div class="mt-2 text-muted">Loading data...</div>
+        </td>
+      </tr>
+      } @error {
+      <!-- Defer Error State -->
+      <tr>
+        <td
+          [attr.colspan]="
+            columns().length + (selectable() ? 1 : 0) + (rowActionsTemplate() ? 1 : 0)
+          "
+          class="text-center text-danger py-5"
+        >
+          <i class="bi bi-exclamation-triangle-fill me-2"></i> Failed to load data.
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+
+  <!-- Pagination Controls -->
+  <div class="d-flex justify-content-center align-items-center px-3 py-2 small text-secondary">
+    <ngb-pagination
+      [collectionSize]="collectionSize()"
+      [page]="store().page()"
+      [pageSize]="store().pageSize()"
+      [maxSize]="5"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      (pageChange)="onPageChange($event)"
+      aria-label="Data grid pagination"
+    >
+    </ngb-pagination>
+  </div>
+</div>

@@ -1,0 +1,309 @@
+import {
+  Component,
+  ChangeDetectionStrategy,
+  input,
+  output,
+  signal,
+  computed,
+  effect,
+  viewChildren,
+  TemplateRef,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
+import { SortableDirective, SortEvent } from '../../../directives/sortable.directive';
+import { ColumnDefinition, CellTemplateContext, SelectionState } from './column-definition.model';
+import { createPaginatedSearchStore } from '../../stores/paginated-search-store';
+
+/**
+ * Paginated response interface
+ */
+export interface PaginatedResponse<T> {
+  items: T[];
+  totalCount: number;
+  limit: number;
+  offset: number;
+}
+
+/**
+ * Reusable data grid component with pagination, sorting, search, and row selection
+ *
+ * @template T - The type of data being displayed in the grid
+ *
+ * @example
+ * ```typescript
+ * columns: ColumnDefinition<Fund>[] = [
+ *   { key: 'code', label: 'Code', sortable: true, align: 'end' },
+ *   { key: 'name', label: 'Name', sortable: true },
+ * ];
+ * ```
+ *
+ * ```html
+ * <app-data-grid
+ *   [store]="store"
+ *   [data]="fundsResponse()"
+ *   [columns]="columns"
+ *   [searchable]="true"
+ *   (refresh)="loadFunds()">
+ * </app-data-grid>
+ * ```
+ */
+@Component({
+  selector: 'app-data-grid',
+  templateUrl: './data-grid.html',
+  styleUrl: './data-grid.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, FormsModule, NgbPagination, SortableDirective],
+})
+export class DataGrid<T> {
+  // Required inputs
+  /** Store instance from createPaginatedSearchStore */
+  store = input.required<InstanceType<ReturnType<typeof createPaginatedSearchStore>>>();
+
+  /** Paginated data response */
+  data = input.required<PaginatedResponse<T> | null>();
+
+  /** Column definitions for the grid */
+  columns = input.required<ColumnDefinition<T>[]>();
+
+  // Optional inputs with defaults
+  /** Whether data is currently loading */
+  loading = input<boolean>(false);
+
+  /** Whether to show search input */
+  searchable = input<boolean>(true);
+
+  /** Whether to show row selection checkboxes */
+  selectable = input<boolean>(false);
+
+  /** Placeholder text for search input */
+  searchPlaceholder = input<string>('Search...');
+
+  /** Message to display when no data available */
+  emptyMessage = input<string>('No data available');
+
+  /** Error message to display (if any) */
+  errorMessage = input<string | null>(null);
+
+  /** Template for row actions column */
+  rowActionsTemplate = input<TemplateRef<{ $implicit: T }> | null>(null);
+
+  /** Available page size options */
+  pageSizeOptions = input<number[]>([15, 50, 100]);
+
+  // Outputs
+  /** Emitted when data should be refreshed */
+  refresh = output<void>();
+
+  /** Emitted when a row is clicked */
+  rowClick = output<T>();
+
+  /** Emitted when selection changes */
+  selectionChange = output<T[]>();
+
+  // Internal signals for state management
+  /** Active row ID for highlighting */
+  private readonly _activeRowId = signal<number | string | null>(null);
+  readonly activeRowId = this._activeRowId.asReadonly();
+
+  /** Selected items set */
+  private readonly _selectedItems = signal<Set<T>>(new Set());
+
+  /** Selected items as array */
+  readonly selectedItemsArray = computed(() => Array.from(this._selectedItems()));
+
+  /** Selection state computed from selected items */
+  readonly selectionState = computed<SelectionState<T>>(() => {
+    const currentPageItems = this.data()?.items || [];
+    const selected = this._selectedItems();
+    const selectedCount = currentPageItems.filter((item) => selected.has(item)).length;
+
+    return {
+      selectedItems: Array.from(selected),
+      allSelected: selectedCount > 0 && selectedCount === currentPageItems.length,
+      indeterminate: selectedCount > 0 && selectedCount < currentPageItems.length,
+    };
+  });
+
+  /** Total count from paginated response */
+  readonly collectionSize = computed(() => this.data()?.totalCount ?? 0);
+
+  /** Current page items */
+  readonly currentPageItems = computed(() => this.data()?.items ?? []);
+
+  /** Sortable header directives */
+  headers = viewChildren(SortableDirective);
+
+  constructor() {
+    // Effect: Sync sort state from store to header directives
+    effect(() => {
+      const headers = this.headers();
+      const sortColumn = this.store().sortColumn();
+      const sortDirection = this.store().sortDirection();
+
+      for (const header of headers) {
+        if (header.sortable() === sortColumn) {
+          header.direction.set(sortDirection);
+        } else {
+          header.direction.set('');
+        }
+      }
+    });
+
+    // Effect: Emit selection changes
+    effect(() => {
+      const selected = this.selectedItemsArray();
+      this.selectionChange.emit(selected);
+    });
+  }
+
+  /**
+   * Handle search input
+   */
+  onSearch(value: string): void {
+    this.store().setSearchTerm(value.trim());
+    this.refresh.emit();
+  }
+
+  /**
+   * Handle column sort
+   */
+  onSort({ column, direction }: SortEvent): void {
+    // Reset other headers
+    for (const header of this.headers()) {
+      if (header.sortable() !== column) {
+        header.direction.set('');
+      }
+    }
+
+    // Update store
+    if (direction === '') {
+      this.store().resetSort();
+    } else {
+      this.store().setSort(column, direction);
+    }
+
+    this.refresh.emit();
+  }
+
+  /**
+   * Handle page change
+   */
+  onPageChange(page: number): void {
+    this.store().setPage(page);
+    this.refresh.emit();
+  }
+
+  /**
+   * Handle page size change
+   */
+  onPageSizeChange(newSize: number): void {
+    this.store().setPageSize(newSize);
+    this.refresh.emit();
+  }
+
+  /**
+   * Handle row click
+   */
+  onRowClick(item: T): void {
+    const itemId = this.getItemId(item);
+    this._activeRowId.set(itemId);
+    this.rowClick.emit(item);
+  }
+
+  /**
+   * Toggle select all items on current page
+   */
+  toggleSelectAll(): void {
+    const state = this.selectionState();
+    const currentItems = this.currentPageItems();
+    const updated = new Set(this._selectedItems());
+
+    if (state.allSelected) {
+      // Deselect all items on current page
+      currentItems.forEach((item) => updated.delete(item));
+    } else {
+      // Select all items on current page
+      currentItems.forEach((item) => updated.add(item));
+    }
+
+    this._selectedItems.set(updated);
+  }
+
+  /**
+   * Toggle selection of individual item
+   */
+  toggleItemSelection(item: T): void {
+    const updated = new Set(this._selectedItems());
+
+    if (updated.has(item)) {
+      updated.delete(item);
+    } else {
+      updated.add(item);
+    }
+
+    this._selectedItems.set(updated);
+  }
+
+  /**
+   * Check if item is selected
+   */
+  isItemSelected(item: T): boolean {
+    return this._selectedItems().has(item);
+  }
+
+  /**
+   * Clear all selections
+   */
+  clearSelection(): void {
+    this._selectedItems.set(new Set());
+  }
+
+  /**
+   * Get cell value for a column
+   */
+  getCellValue(item: T, column: ColumnDefinition<T>): unknown {
+    return item[column.key];
+  }
+
+  /**
+   * Get formatted cell value (using formatter if available)
+   */
+  getFormattedValue(item: T, column: ColumnDefinition<T>): string {
+    const value = this.getCellValue(item, column);
+
+    if (column.formatter) {
+      return column.formatter(value, item);
+    }
+
+    return value != null ? String(value) : '';
+  }
+
+  /**
+   * Get sort key for column (uses sortKey if defined, otherwise key)
+   */
+  getSortKey(column: ColumnDefinition<T>): string {
+    return column.sortKey ?? String(column.key);
+  }
+
+  /**
+   * Get template context for cell
+   */
+  getCellContext(item: T, column: ColumnDefinition<T>, index: number): CellTemplateContext<T> {
+    return {
+      $implicit: item,
+      value: this.getCellValue(item, column),
+      column,
+      index,
+    };
+  }
+
+  /**
+   * Get unique ID for item (attempts to use id property, falls back to JSON stringify)
+   */
+  getItemId(item: T): number | string {
+    const itemWithId = item as unknown as { id?: number | string };
+    return itemWithId.id ?? JSON.stringify(item);
+  }
+}
