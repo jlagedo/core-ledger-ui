@@ -8,7 +8,7 @@ import { Fund, ValuationFrequency } from '../../models/fund.model';
 export const MOCK_FUNDS: Fund[] = [
     {
         id: 1,
-        code: 'FUND001',
+        code: 'FUND01',
         name: 'Global Equity Growth Fund',
         baseCurrency: 'USD',
         inceptionDate: '2020-01-15',
@@ -19,7 +19,7 @@ export const MOCK_FUNDS: Fund[] = [
     },
     {
         id: 2,
-        code: 'FUND002',
+        code: 'FUND02',
         name: 'Fixed Income Bond Portfolio',
         baseCurrency: 'EUR',
         inceptionDate: '2019-06-01',
@@ -30,7 +30,7 @@ export const MOCK_FUNDS: Fund[] = [
     },
     {
         id: 3,
-        code: 'FUND003',
+        code: 'FUND03',
         name: 'Emerging Markets Opportunities',
         baseCurrency: 'USD',
         inceptionDate: '2021-03-10',
@@ -40,7 +40,7 @@ export const MOCK_FUNDS: Fund[] = [
     },
     {
         id: 4,
-        code: 'FUND004',
+        code: 'FUND04',
         name: 'Sustainable Energy & Technology',
         baseCurrency: 'GBP',
         inceptionDate: '2022-09-01',
@@ -51,7 +51,7 @@ export const MOCK_FUNDS: Fund[] = [
     },
     {
         id: 5,
-        code: 'FUND005',
+        code: 'FUND05',
         name: 'Asia-Pacific Growth',
         baseCurrency: 'JPY',
         inceptionDate: '2018-11-20',
@@ -62,7 +62,7 @@ export const MOCK_FUNDS: Fund[] = [
     },
     {
         id: 6,
-        code: 'FUND-SPECIAL',
+        code: 'FUNDSP',
         name: 'Fund with Special Characters: Â£$€¥ & "Quotes"',
         baseCurrency: 'CHF',
         inceptionDate: '2023-01-01',
@@ -72,8 +72,8 @@ export const MOCK_FUNDS: Fund[] = [
     },
     {
         id: 7,
-        code: 'FUND007',
-        name: 'Very Long Fund Name That Tests UI Constraints And Demonstrates How The System Handles Extended Text Fields Beyond Normal Expectations',
+        code: 'FUND07',
+        name: 'Very Long Fund Name That Tests UI Constraints And Demonstrates How The System Handles Extended Text Fields Beyond Normal Expect',
         baseCurrency: 'USD',
         inceptionDate: '2024-01-01',
         valuationFrequency: ValuationFrequency.Daily,
@@ -82,7 +82,7 @@ export const MOCK_FUNDS: Fund[] = [
     },
     {
         id: 8,
-        code: 'LUX-REIT',
+        code: 'LUXREI',
         name: 'Luxembourg Real Estate Investment Trust',
         baseCurrency: 'EUR',
         inceptionDate: '2017-05-15',
@@ -93,7 +93,7 @@ export const MOCK_FUNDS: Fund[] = [
     },
     {
         id: 9,
-        code: 'BALANCED-MIX',
+        code: 'BALMIX',
         name: 'Balanced Multi-Asset Portfolio',
         baseCurrency: 'CAD',
         inceptionDate: '2020-07-01',
@@ -103,7 +103,7 @@ export const MOCK_FUNDS: Fund[] = [
     },
     {
         id: 10,
-        code: 'CRYPTO-FUTURE',
+        code: 'CRYPTOF',
         name: 'Digital Assets & Blockchain Innovation',
         baseCurrency: 'USD',
         inceptionDate: '2023-06-15',
