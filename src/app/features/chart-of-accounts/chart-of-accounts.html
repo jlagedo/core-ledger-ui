@@ -1,9 +1,9 @@
 <app-page-header title="Chart of Accounts">
-  <button class="btn btn-sm btn-secondary">
-    <i class="bi bi-funnel"></i> Filters
+  <button class="btn btn-sm btn-secondary" aria-label="Filter accounts">
+    <i class="bi bi-funnel" aria-hidden="true"></i> Filters
   </button>
-  <button class="btn btn-sm btn-secondary">
-    <i class="bi bi-download"></i> Export
+  <button class="btn btn-sm btn-secondary" aria-label="Export accounts to CSV">
+    <i class="bi bi-download" aria-hidden="true"></i> Export
   </button>
   <button aria-label="Create new account" class="btn btn-sm btn-primary" routerLink="/chart-of-accounts/new">
     <i class="bi bi-plus-lg me-1"></i> New Account
@@ -23,10 +23,9 @@
             <span class="input-group-text bg-body-secondary border-secondary">
               <i class="bi bi-search"></i>
             </span>
-            <input #searchInput (keydown.enter)="onSearch(searchInput.value)"
-                   [value]="store.searchTerm()" aria-label="Search accounts by description"
-                   class="form-control bg-body border-secondary"
-                   placeholder="Search accounts..." type="text">
+            <input #searchInput (keydown.enter)="onSearch(searchInput.value)" [value]="store.searchTerm()"
+              aria-label="Search accounts by description" class="form-control bg-body border-secondary"
+              placeholder="Search accounts..." type="text">
           </div>
         </div>
 
@@ -34,9 +33,8 @@
 
         <div class="col-4 d-flex justify-content-end">
 
-          <select (ngModelChange)="onPageSizeChange($event)"
-                  [ngModel]="store.pageSize()" class="form-select form-select-sm bg-body border-secondary"
-                  style="width: 180px">
+          <select (ngModelChange)="onPageSizeChange($event)" [ngModel]="store.pageSize()"
+            class="form-select form-select-sm bg-body border-secondary" style="width: 180px">
             <option [ngValue]="15">15 items per page</option>
             <option [ngValue]="50">50 items per page</option>
             <option [ngValue]="100">100 items per page</option>
@@ -50,67 +48,66 @@
         <table class="table table-sm table-hover align-middle">
 
           <thead class="text-secondary text-uppercase small fw-semibold">
-          <tr>
-            <th (sort)="onSort($event)" class="text-end" scope="col" sortable="code">#</th>
-            <th (sort)="onSort($event)" class="text-start" scope="col" sortable="name">Name</th>
-            <th (sort)="onSort($event)" class="text-center" scope="col" sortable="typeid">Type</th>
-            <th (sort)="onSort($event)" class="text-center" scope="col" sortable="status">Status</th>
-            <th (sort)="onSort($event)" class="text-center" scope="col" sortable="normalbalance">Normal Balance</th>
-            <th class="text-end" scope="col">Actions</th>
-          </tr>
+            <tr>
+              <th (sort)="onSort($event)" class="text-end" scope="col" sortable="code">#</th>
+              <th (sort)="onSort($event)" class="text-start" scope="col" sortable="name">Name</th>
+              <th (sort)="onSort($event)" class="text-center" scope="col" sortable="typeid">Type</th>
+              <th (sort)="onSort($event)" class="text-center" scope="col" sortable="status">Status</th>
+              <th (sort)="onSort($event)" class="text-center" scope="col" sortable="normalbalance">Normal Balance</th>
+              <th class="text-end" scope="col">Actions</th>
+            </tr>
           </thead>
 
           <tbody class="table-group-divider">
 
             @defer (on immediate) {
-              @for (account of accountsResponse()?.items; track account.id) {
-                <tr class="align-middle">
+            @for (account of accountsResponse()?.items; track account.id) {
+            <tr class="align-middle">
 
-                  <td class="text-end">
-                    <span class="numeric">{{ account.code }}</span>
-                  </td>
+              <td class="text-end">
+                <span class="numeric">{{ account.code }}</span>
+              </td>
 
-                  <td class="text-start">{{ account.name }}</td>
-                  <td class="text-center">{{ account.typeDescription }}</td>
-                  <td class="text-center">{{ account.statusDescription }}</td>
-                  <td class="text-center">{{ account.normalBalanceDescription }}</td>
+              <td class="text-start">{{ account.name }}</td>
+              <td class="text-center">{{ account.typeDescription }}</td>
+              <td class="text-center">{{ account.statusDescription }}</td>
+              <td class="text-center">{{ account.normalBalanceDescription }}</td>
 
-                  <td class="text-end">
+              <td class="text-end">
 
-                    <div class="d-inline-block" container="body" ngbDropdown>
-                      <button class="btn btn-sm btn-secondary" ngbDropdownToggle>
-                        <i class="bi bi-three-dots-vertical"></i>
-                      </button>
+                <div class="d-inline-block" container="body" ngbDropdown>
+                  <button class="btn btn-sm btn-secondary" ngbDropdownToggle
+                    aria-label="Account actions for {{ account.name }}">
+                    <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                  </button>
 
-                      <div ngbDropdownMenu>
-                        <button ngbDropdownItem>View</button>
-                        <button ngbDropdownItem>Edit</button>
-                        <button
-                          (click)="openDeactivateModal(account)"
-                          class="text-danger"
-                          ngbDropdownItem
-                        >
-                          Deactivate
-                        </button>
-                      </div>
-                    </div>
+                  <div ngbDropdownMenu>
+                    <button ngbDropdownItem>View</button>
+                    <button ngbDropdownItem>Edit</button>
+                    <button (click)="openDeactivateModal(account)" class="text-danger" ngbDropdownItem>
+                      Deactivate
+                    </button>
+                  </div>
+                </div>
 
-                  </td>
-                </tr>
-              }
+              </td>
+            </tr>
+            }
             } @loading {
-              <tr>
-                <td class="text-center py-5" colspan="6">
-                  <div class="spinner-border text-primary" role="status"></div>
-                  <div class="mt-2 text-muted">Loading accounts…</div>
-                </td>
-              </tr>
+            <tr>
+              <td class="text-center py-5" colspan="6">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading accounts...</span>
+                </div>
+                <div class="mt-2 text-muted">Loading accounts…</div>
+              </td>
+            </tr>
             } @error {
-              <tr>
-                <td class="text-center text-danger py-5" colspan="6">
-                  Failed to load accounts.
-                </td>
-              </tr>
+            <tr>
+              <td class="text-center text-danger py-5" colspan="6">
+                Failed to load accounts.
+              </td>
+            </tr>
             }
 
           </tbody>
@@ -119,8 +116,8 @@
         <div class="d-flex justify-content-between align-items-center px-2 py-3 small text-secondary">
 
           <ngb-pagination (pageChange)="store.setPage($event); loadAccounts()" [boundaryLinks]="true"
-                          [collectionSize]="collectionSize()" [maxSize]="5" [pageSize]="store.pageSize()"
-                          [page]="store.page()" [rotate]="true">
+            [collectionSize]="collectionSize()" [maxSize]="5" [pageSize]="store.pageSize()" [page]="store.page()"
+            [rotate]="true">
           </ngb-pagination>
 
         </div>
