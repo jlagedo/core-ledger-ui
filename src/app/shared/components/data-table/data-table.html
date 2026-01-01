@@ -36,7 +36,7 @@
         <td class="text-end">
           <ng-container
             [ngTemplateOutlet]="actionsTemplate()!"
-            [ngTemplateOutletContext]="getCellContext(item, columns()[0], $index)" />
+            [ngTemplateOutletContext]="{$implicit: item, column: 'actions', index: $index}" />
         </td>
         }
       </tr>

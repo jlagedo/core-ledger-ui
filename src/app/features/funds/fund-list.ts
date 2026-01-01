@@ -130,8 +130,4 @@ export class FundList {
     this.store.setPageSize(newSize);
     this.loadFunds();
   }
-
-  onDropdownOpenChange(isOpen: boolean): void {
-    // Handle dropdown state if needed
-  }
 }

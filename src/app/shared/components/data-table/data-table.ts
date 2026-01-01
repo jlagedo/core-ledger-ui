@@ -109,7 +109,12 @@ export class DataTable<T extends Record<string, any>> {
     if (direction === '') {
       this.store().resetSort();
     } else {
-      this.store().setSort(column || '', direction);
+      // Column should always be defined when direction is set
+      if (!column) {
+        console.warn('Sort event triggered without a column name');
+        return;
+      }
+      this.store().setSort(column, direction);
     }
 
     this.reload.emit();
@@ -155,7 +160,8 @@ export class DataTable<T extends Record<string, any>> {
     let value: any = item;
 
     for (const key of keys) {
-      if (value == null) return '';
+      // Explicit null/undefined check for safe property access
+      if (value === null || value === undefined) return '';
       value = value[key];
     }
 
