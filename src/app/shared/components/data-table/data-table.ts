@@ -129,7 +129,10 @@ export class DataTable<T> {
     if (direction === '') {
       this.store().resetSort();
     } else {
-      this.store().setSort(column || '', direction);
+      // Validate column exists before sorting
+      if (column) {
+        this.store().setSort(column, direction);
+      }
     }
 
     this.reload.emit();

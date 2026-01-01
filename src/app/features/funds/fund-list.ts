@@ -131,11 +131,6 @@ export class FundList {
     this.loadFunds();
   }
 
-  onDropdownOpenChange(isOpen: boolean, fundId: number): void {
-    // Active row is now managed internally by the DataTable component
-    // No need to manage it here anymore
-  }
-
   trackByFundId(index: number, fund: Fund): number {
     return fund.id;
   }

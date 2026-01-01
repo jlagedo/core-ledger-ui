@@ -71,8 +71,7 @@
               [attr.aria-label]="'Edit fund ' + fund.name" (click)="$event.stopPropagation()">
               <i class="bi bi-pencil" aria-hidden="true"></i>
             </button>
-            <div class="btn-group btn-group-sm" container="body" ngbDropdown role="group"
-              (openChange)="onDropdownOpenChange($event, fund.id)">
+            <div class="btn-group btn-group-sm" container="body" ngbDropdown role="group">
               <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
                 ngbDropdownToggle [attr.aria-label]="'More actions for fund ' + fund.name"
                 (click)="$event.stopPropagation()">
