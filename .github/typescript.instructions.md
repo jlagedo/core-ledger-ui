@@ -17,7 +17,7 @@ applyTo: "**/*.ts,**/*.tsx"
 - Use signals for local component state: `signal()`, `computed()`, `toSignal()`
 - Services expose read-only signals via `.asReadonly()`
 - Use `@ngrx/signals` for feature stores
-- DO NOT use `mutate` on signals, use `update` or `set` instead
+- Prefer `update()` or `set()` for signal modifications; use `mutate()` for targeted object/array changes
 - Keep state transformations pure and predictable
 
 ## Services Pattern
