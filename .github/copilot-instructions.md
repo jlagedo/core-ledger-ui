@@ -7,11 +7,13 @@ Core Ledger UI is a fund accounting ABOR (Accounting Book of Records) applicatio
 
 ## Development Commands
 
-- `npm start` - Start dev server with **mock authentication** (default, no Auth0 needed)
+- `npm start` - Start dev server with **mock authentication** (default, no Auth0 needed for local development)
 - `npm run start:auth` - Start with real Auth0 authentication
-- `npm test` - Run Vitest tests
+- `npm test` - Run Vitest tests (not Jasmine/Karma)
 - `npm run watch` - Watch mode with auto-rebuild
-- Development server: http://localhost:4200/ (proxy to backend: https://localhost:7109)
+- Development server: http://localhost:4200/ (proxies `/api/**` to backend: https://localhost:7109)
+
+**Note:** The proxy configuration in `src/proxy.conf.json` automatically forwards all `/api/**` requests to the backend. Always use `/api` as the base path, never hardcode backend URLs.
 
 ## TypeScript Best Practices
 
@@ -67,10 +69,14 @@ Core Ledger UI is a fund accounting ABOR (Accounting Book of Records) applicatio
 ## Authentication
 
 - Uses Auth0 OIDC via `angular-auth-oidc-client`
-- **Mock authentication available** for development: set `environment.auth.useMock = true` (default in `local-noauth`)
+- **Mock authentication available** for development: set `environment.auth.useMock = true` (default in `environment.local-noauth.ts`)
+- **Two authentication modes** configured in `app.config.ts`:
+  - Mock mode: uses `MockAuthService` and `mockAuthInterceptor`
+  - Real Auth0: uses `OidcSecurityService` and `authInterceptor()`
 - `AuthService` uses `toSignal()` to convert OIDC observables to signals
 - `UserService` fetches user data from backend on login (via reactive `effect()`)
 - Mock users: admin, fund-manager, trader, analyst (see `src/app/auth/mock-users.ts`)
+- All routes protected with `authGuard` (except `/login`)
 
 ## Services Pattern
 
@@ -101,11 +107,20 @@ features/<feature>/
     └── <feature>-form.ts      # Form component
 ```
 
+## Configuration & Environment
+
+- Environment files in `src/environments/` define configuration per deployment target
+- Use `ENVIRONMENT` injection token to access environment config (never import directly)
+- Use `API_URL` injection token for backend URL (from `src/app/config/api.config.ts`)
+- Environment includes: API URL, log level, Sentry config, Auth0 config, toast delays, pagination defaults, storage keys, and feature flags
+- Mock authentication flag (`environment.auth.useMock`) switches between mock and real Auth0
+
 ## Testing
 
 - Uses Vitest (not Jasmine/Karma)
 - Test files: `*.spec.ts`
 - Mock utilities: `src/app/testing/test-helpers.ts`, `InMemoryStorageService`
+- Use `provideTestDependencies()` helper to provide common test providers (router, HTTP, OIDC)
 
 ## Templates
 
@@ -120,3 +135,4 @@ features/<feature>/
 - Use `LoggerService` for structured logging with context (debug/info/warn/error)
 - Automatic Sentry integration for error tracking
 - Use `ToastService` for user-facing notifications (success/error/warning/info)
+- Toast delays configured per type in environment config
