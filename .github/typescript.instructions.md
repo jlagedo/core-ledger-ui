@@ -6,7 +6,7 @@ applyTo: "**/*.ts,**/*.tsx"
 
 ## Component Development
 
-- Use standalone components (default in Angular 21+, don't explicitly set `standalone: true`)
+- Use standalone components (default in Angular 21+)
 - Use `input()` and `output()` functions instead of decorators
 - Use `computed()` for derived state
 - Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator

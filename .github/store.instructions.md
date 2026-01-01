@@ -51,10 +51,11 @@ export class ThemeService {
 - ✅ Use `toSignal()` to convert observables to signals
 - ✅ Expose read-only signals via `.asReadonly()`
 - ✅ Use `update()` or `set()` to modify signal values
+- ✅ Use `mutate()` for targeted changes to objects/arrays within signals
 - ✅ Keep state transformations pure and predictable
 
 ### DON'T
-- ❌ Use `mutate()` on signals (deprecated pattern)
+- ❌ Use signals for deeply nested object mutations without `update()` or `set()`
 - ❌ Expose writable signals directly from services
 - ❌ Mix signals and BehaviorSubject in the same feature
 - ❌ Use signals for async operations (use observables + toSignal)
