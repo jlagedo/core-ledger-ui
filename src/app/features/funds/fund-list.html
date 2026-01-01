@@ -44,100 +44,58 @@
         </div>
       </div>
 
-      <div class="table-responsive rounded-3 border border-tertiary data-table">
+      <!-- Data Table with custom cell and action templates -->
+      <app-data-table
+        [columns]="columns"
+        [items]="funds()"
+        [store]="store"
+        [collectionSize]="collectionSize()"
+        [trackBy]="trackByFundId"
+        (reload)="loadFunds()">
 
-        <table class="table table-sm table-striped table-hover align-middle fs-6">
+        <!-- Custom cell template for special formatting -->
+        <ng-template #cellTemplate let-fund let-column="column" let-value="value">
+          @if (column.key === 'code') {
+            <strong class="numeric">{{ value }}</strong>
+          } @else if (column.key === 'inceptionDate') {
+            <span class="text-muted">{{ value }}</span>
+          } @else {
+            {{ value }}
+          }
+        </ng-template>
 
-          <thead class="table-light">
-            <tr>
-              <th (sort)="onSort($event)" class="text-end fw-bold" scope="col" sortable="Code">Code</th>
-              <th (sort)="onSort($event)" class="text-start fw-bold" scope="col" sortable="Name">Name</th>
-              <th (sort)="onSort($event)" class="text-center fw-bold" scope="col" sortable="BaseCurrency">Base Currency
-              </th>
-              <th (sort)="onSort($event)" class="text-center fw-bold" scope="col" sortable="InceptionDate">Inception
-                Date</th>
-              <th (sort)="onSort($event)" class="text-center fw-bold" scope="col" sortable="ValuationFrequency">
-                Valuation Frequency</th>
-              <th class="text-end fw-bold" scope="col">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody class="table-group-divider">
-
-            @defer (on immediate) {
-            @for (fund of fundsResponse()?.items; track fund.id) {
-            <tr class="align-middle cursor-pointer" [class.table-primary]="activeRowId() === fund.id"
-              (click)="setActiveRow(fund.id)">
-
-              <td class="text-end">
-                <strong class="numeric">{{ fund.code }}</strong>
-              </td>
-              <td class="text-start">{{ fund.name }}</td>
-              <td class="text-center">{{ fund.baseCurrency }}</td>
-              <td class="text-center text-muted">{{ fund.inceptionDate | date: 'shortDate' }}</td>
-              <td class="text-center">{{ fund.valuationFrequencyDescription }}</td>
-
-              <td class="text-end">
-                <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Fund actions">
-                  <button type="button" class="btn btn-secondary" [routerLink]="['/funds', fund.id, 'edit']"
-                    [attr.aria-label]="'Edit fund ' + fund.name" (click)="$event.stopPropagation()">
-                    <i class="bi bi-pencil" aria-hidden="true"></i>
-                  </button>
-                  <div class="btn-group btn-group-sm" container="body" ngbDropdown role="group"
-                    (openChange)="onDropdownOpenChange($event, fund.id)">
-                    <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
-                      ngbDropdownToggle [attr.aria-label]="'More actions for fund ' + fund.name"
-                      (click)="$event.stopPropagation()">
-                      <span class="visually-hidden">Toggle Dropdown</span>
-                    </button>
-                    <div ngbDropdownMenu>
-                      <button type="button" [routerLink]="['/funds', fund.id]" ngbDropdownItem>
-                        <i class="bi bi-eye me-2"></i>View Details
-                      </button>
-                      <hr class="dropdown-divider">
-                      <button type="button" ngbDropdownItem>
-                        <i class="bi bi-toggle-on me-2"></i>Manage Fund Status
-                      </button>
-                      <button type="button" ngbDropdownItem>
-                        <i class="bi bi-clock-history me-2"></i>Audit Log
-                      </button>
-                      <button type="button" ngbDropdownItem>
-                        <i class="bi bi-download me-2"></i>Export Fund Information
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            }
-            } @loading {
-            <tr>
-              <td class="text-center py-5" colspan="7">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="visually-hidden">Loading funds...</span>
-                </div>
-                <div class="mt-2 text-muted">Loading funds…</div>
-              </td>
-            </tr>
-            } @error {
-            <tr>
-              <td class="text-center text-danger py-5" colspan="7">
-                Failed to load funds.
-              </td>
-            </tr>
-            }
-
-          </tbody>
-        </table>
-
-        <div class="d-flex justify-content-center align-items-center px-3 py-2 small text-secondary">
-          <ngb-pagination (pageChange)="store.setPage($event); loadFunds()" [boundaryLinks]="true"
-            [collectionSize]="collectionSize()" [maxSize]="5" [pageSize]="store.pageSize()" [page]="store.page()"
-            [rotate]="true">
-          </ngb-pagination>
-        </div>
-
-      </div>
+        <!-- Custom actions template -->
+        <ng-template #actionsTemplate let-fund>
+          <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Fund actions">
+            <button type="button" class="btn btn-secondary" [routerLink]="['/funds', fund.id, 'edit']"
+              [attr.aria-label]="'Edit fund ' + fund.name" (click)="$event.stopPropagation()">
+              <i class="bi bi-pencil" aria-hidden="true"></i>
+            </button>
+            <div class="btn-group btn-group-sm" container="body" ngbDropdown role="group">
+              <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                ngbDropdownToggle [attr.aria-label]="'More actions for fund ' + fund.name"
+                (click)="$event.stopPropagation()">
+                <span class="visually-hidden">Toggle Dropdown</span>
+              </button>
+              <div ngbDropdownMenu>
+                <button type="button" [routerLink]="['/funds', fund.id]" ngbDropdownItem>
+                  <i class="bi bi-eye me-2"></i>View Details
+                </button>
+                <hr class="dropdown-divider">
+                <button type="button" ngbDropdownItem>
+                  <i class="bi bi-toggle-on me-2"></i>Manage Fund Status
+                </button>
+                <button type="button" ngbDropdownItem>
+                  <i class="bi bi-clock-history me-2"></i>Audit Log
+                </button>
+                <button type="button" ngbDropdownItem>
+                  <i class="bi bi-download me-2"></i>Export Fund Information
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </app-data-table>
 
     </div>
   </div>
