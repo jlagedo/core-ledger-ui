@@ -1,0 +1,104 @@
+<div class="table-responsive rounded-3 border border-tertiary data-table">
+  <table class="table table-sm table-striped table-hover align-middle fs-6">
+    
+    <!-- Table Header -->
+    <thead class="table-light">
+      <tr>
+        @for (column of columns(); track column.key) {
+          @if (column.sortable) {
+            <th
+              (sort)="onSort($event)"
+              [sortable]="column.key"
+              [class]="getAlignClass(column.align) + ' fw-bold'"
+              scope="col">
+              {{ column.label }}
+            </th>
+          } @else {
+            <th [class]="getAlignClass(column.align) + ' fw-bold'" scope="col">
+              {{ column.label }}
+            </th>
+          }
+        }
+        
+        @if (actionsTemplate()) {
+          <th class="text-end fw-bold" scope="col">Actions</th>
+        }
+      </tr>
+    </thead>
+
+    <!-- Table Body -->
+    <tbody class="table-group-divider">
+      @defer (on immediate) {
+        @for (item of items(); track trackBy()($index, item)) {
+          <tr
+            class="align-middle cursor-pointer"
+            [class.table-primary]="isRowActive(item, $index)"
+            (click)="setActiveRow(item, $index)">
+            
+            @for (column of columns(); track column.key) {
+              <td [class]="getAlignClass(column.align)">
+                @if (cellTemplate()) {
+                  <ng-container
+                    *ngTemplateOutlet="
+                      cellTemplate()!;
+                      context: {
+                        $implicit: item,
+                        column: column,
+                        value: getCellValue(item, column),
+                        index: $index
+                      }
+                    ">
+                  </ng-container>
+                } @else {
+                  {{ getFormattedValue(item, column) }}
+                }
+              </td>
+            }
+
+            @if (actionsTemplate()) {
+              <td class="text-end">
+                <ng-container
+                  *ngTemplateOutlet="
+                    actionsTemplate()!;
+                    context: {
+                      $implicit: item,
+                      index: $index
+                    }
+                  ">
+                </ng-container>
+              </td>
+            }
+          </tr>
+        }
+      } @loading {
+        <tr>
+          <td class="text-center py-5" [attr.colspan]="getColspan()">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">{{ loadingMessage() }}</span>
+            </div>
+            <div class="mt-2 text-muted">{{ loadingMessage() }}</div>
+          </td>
+        </tr>
+      } @error {
+        <tr>
+          <td class="text-center text-danger py-5" [attr.colspan]="getColspan()">
+            {{ errorMessage() }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center align-items-center px-3 py-2 small text-secondary">
+    <ngb-pagination
+      (pageChange)="onPageChange($event)"
+      [boundaryLinks]="true"
+      [collectionSize]="collectionSize()"
+      [maxSize]="5"
+      [pageSize]="store().pageSize()"
+      [page]="store().page()"
+      [rotate]="true">
+    </ngb-pagination>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+// Data table component styles
+.data-table {
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  // Ensure active rows are highlighted properly
+  .table-primary {
+    --bs-table-bg: var(--bs-primary-bg-subtle);
+    --bs-table-color: var(--bs-body-color);
+  }
+}
