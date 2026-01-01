@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "ignoreDependencies": [
+    "@ibm/plex",
+    "bootstrap",
+    "bootstrap-icons",
+    "@vitest/coverage-v8",
+    "source-map-explorer",
+    "ts-node",
+    "@micro-sentry/core"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "angular": {
+    "entry": [
+      "src/main.ts"
+    ]
+  }
+}
