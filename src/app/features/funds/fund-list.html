@@ -12,8 +12,6 @@
 
 <main class="container-fluid">
 
-  <!--  <app-breadcrumb/>-->
-
   <div class="card bg-body-tertiary border-0 shadow-sm rounded-4  border-top">
     <div class="card-body p-3">
 
@@ -88,8 +86,9 @@
               <td class="text-end">
 
                 <div class="d-inline-block table-row-actions" container="body" ngbDropdown>
-                  <button class="btn btn-sm small btn-secondary p-0 m-0" ngbDropdownToggle>
-                    <i class="bi bi-three-dots-vertical"></i>
+                  <button class="btn btn-sm small btn-secondary p-0 m-0" ngbDropdownToggle
+                    [attr.aria-label]="'Actions for fund ' + fund.name">
+                    <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
                   </button>
 
                   <div ngbDropdownMenu>

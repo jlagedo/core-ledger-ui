@@ -1,0 +1,10 @@
+{
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.classAttributes": ["class", "ngClass", "[class]", "[ngClass]"],
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "explicit"
+  }
+}

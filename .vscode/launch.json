@@ -3,18 +3,41 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "ng serve",
-      "type": "chrome",
+      "name": "Start Dev Server (Mock Auth)",
+      "type": "node",
       "request": "launch",
-      "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200/"
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "serverReadyAction": {
+        "pattern": "Local:.*(https?://\\S+|http://\\S+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
     },
     {
-      "name": "ng test",
-      "type": "chrome",
+      "name": "Start Dev Server (Real Auth)",
+      "type": "node",
       "request": "launch",
-      "preLaunchTask": "npm: test",
-      "url": "http://localhost:9876/debug.html"
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:auth"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "serverReadyAction": {
+        "pattern": "Local:.*(https?://\\S+|http://\\S+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
+    },
+    {
+      "name": "Run Vitest Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

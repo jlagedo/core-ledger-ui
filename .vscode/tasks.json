@@ -3,37 +3,110 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "npm: start",
       "type": "npm",
       "script": "start",
       "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "problemMatcher": {
         "owner": "typescript",
         "pattern": "$tsc",
         "background": {
           "activeOnStart": true,
           "beginsPattern": {
-            "regexp": "Changes detected"
+            "regexp": "(⠋|⠙|⠹|⠸|⠼|⠴|⠦|⠧|⠇|⠏) (Building|Compiling)"
           },
           "endsPattern": {
-            "regexp": "bundle generation (complete|failed)"
+            "regexp": "(Compiled successfully|Application bundle generation (complete|failed)|Build at:)"
           }
         }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
       }
     },
     {
+      "label": "npm: start:auth",
       "type": "npm",
-      "script": "test",
+      "script": "start:auth",
       "isBackground": true,
+      "group": "build",
       "problemMatcher": {
         "owner": "typescript",
         "pattern": "$tsc",
         "background": {
           "activeOnStart": true,
           "beginsPattern": {
-            "regexp": "Changes detected"
+            "regexp": "(⠋|⠙|⠹|⠸|⠼|⠴|⠦|⠧|⠇|⠏) (Building|Compiling)"
           },
           "endsPattern": {
-            "regexp": "bundle generation (complete|failed)"
+            "regexp": "(Compiled successfully|Application bundle generation (complete|failed)|Build at:)"
+          }
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "npm: test",
+      "type": "npm",
+      "script": "test",
+      "isBackground": true,
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "vitest",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^\\s*(?:FAIL|ERROR)\\s+(.+?):(\\d+):(\\d+)\\s+-\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "DEV",
+          "endsPattern": "(Test Files|Watching for file changes)"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "npm: build",
+      "type": "npm",
+      "script": "build",
+      "group": "build",
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "npm: watch",
+      "type": "npm",
+      "script": "watch",
+      "isBackground": true,
+      "group": "build",
+      "problemMatcher": {
+        "owner": "typescript",
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": {
+            "regexp": "(⠋|⠙|⠹|⠸|⠼|⠴|⠦|⠧|⠇|⠏) (Building|Compiling)"
+          },
+          "endsPattern": {
+            "regexp": "(Compiled successfully|Application bundle generation (complete|failed)|Build at:)"
           }
         }
       }
