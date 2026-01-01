@@ -36,6 +36,7 @@
         <div class="card-body p-4">
           <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Active Accounts by Type</h6>
           <div [options]="chartOption()" class="w-100 mb-2" echarts style="height: 260px;"></div>
+          <!-- Note: echarts requires explicit height in pixels for rendering -->
         </div>
       </div>
     </div>

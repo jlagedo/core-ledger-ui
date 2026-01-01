@@ -1,9 +1,9 @@
 <div class="d-flex flex-nowrap">
   @if (isLoggedIn()) {
-    <app-sidenav (sidenavToggle)="onSidenavToggle($event)" />
+  <app-sidenav (sidenavToggle)="onSidenavToggle($event)" />
   }
 
-  <main class="flex-fill p-0 transition-all" style="overflow-y: auto; height: 100vh">
+  <main class="flex-fill p-0 transition-all overflow-y-auto vh-100">
     <router-outlet />
   </main>
 </div>

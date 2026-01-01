@@ -32,9 +32,9 @@
         <div class="col-4 text-center">{{ collectionSize() }} total accounts</div>
 
         <div class="col-4 d-flex justify-content-end">
-
-          <select (ngModelChange)="onPageSizeChange($event)" [ngModel]="store.pageSize()"
-            class="form-select form-select-sm bg-body border-secondary" style="width: 180px">
+          <label for="accountsPageSize" class="visually-hidden">Items per page</label>
+          <select id="accountsPageSize" (ngModelChange)="onPageSizeChange($event)" [ngModel]="store.pageSize()"
+            class="form-select form-select-sm bg-body border-secondary" style="width: 180px;">
             <option [ngValue]="15">15 items per page</option>
             <option [ngValue]="50">50 items per page</option>
             <option [ngValue]="100">100 items per page</option>

@@ -1,15 +1,15 @@
 .modal-header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom-color: var(--bs-modal-border-color);
 }
 
 .modal-footer {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--bs-modal-border-color);
 }
 
 dl {
   dt {
     font-weight: 600;
-    color: #6c757d;
+    color: var(--bs-secondary);
   }
 
   dd {

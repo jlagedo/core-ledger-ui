@@ -69,10 +69,10 @@ th[sortable].asc:before {
   }
 }
 
-// Dropdown menu styling
+// Dropdown menu styling with Bootstrap semantic variables
 .dropdown-menu {
   --bs-dropdown-bg: rgba(var(--bs-body-bg-rgb), 0.5);
   backdrop-filter: blur(10px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15), 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: var(--bs-box-shadow-lg);
+  border-color: var(--bs-border-color-translucent);
 }

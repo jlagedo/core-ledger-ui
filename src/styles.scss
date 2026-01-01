@@ -3,17 +3,29 @@
 ------------------------------------------------------------ */
 
 @use "bootstrap/scss/bootstrap" with (
-  /* Typography - Font change only */
+  /* Typography */
   $font-family-sans-serif: ('IBM Plex Sans', system-ui, -apple-system, sans-serif),
   $headings-font-family: ('IBM Plex Sans', sans-serif),
   $enable-dark-mode: true,
-  $primary: #00A86B,
-  $secondary: #4F6F6A,
-  $dark: #1E2A28,
+
+  /* Semantic colors */
+  $primary: #0096D6,
+  $secondary: #4F6A8A,
+  $dark: #1E2536,
   $light: #F3F5F4,
+
+  /* Typography */
   $font-size-base: 0.85rem,
-  /* Light mode background */
-  $body-bg: #F8F9FA);
+
+  /* Light mode colors */
+  $body-bg: #ffffff,
+  $body-color: #212529,
+
+  /* Dark mode colors (Bootstrap 5 best practice) */
+  $body-bg-dark: #0a0f1a,
+  $body-color-dark: #e9ecef,
+  $body-secondary-bg-dark: #1a1f2e,
+  $body-tertiary-bg-dark: #12161f);
 
 /* ------------------------------------------------------------
    2. CSS imports (must come AFTER @use)
@@ -21,19 +33,32 @@
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
 /* ------------------------------------------------------------
-   Background gradients for light and dark themes
+   Custom theme enhancements (following Bootstrap 5 patterns)
 ------------------------------------------------------------ */
+
+/* Light theme: Subtle gradient using CSS variables */
 body {
-  background: #ffffff;
-  background-image: radial-gradient(125% 125% at 50% 90%, #ffffff 40%, #10b981 100%);
-  background-attachment: fixed;
-  background-size: 100% 100%;
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(125% 125% at 50% 90%, #ffffff 40%, rgba(59, 130, 246, 0.08) 100%);
+  pointer-events: none;
+}
+
+/* Dark theme: Arctic aurora effect with proper contrast */
 [data-bs-theme="dark"] {
-  body {
-    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34, 197, 94, 0.25), transparent 70%), #000000;
-    background-attachment: fixed;
+  color-scheme: dark;
+
+  body::before {
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59, 130, 246, 0.15), transparent 70%), #0a0f1a;
   }
 }
 
@@ -127,10 +152,16 @@ body {
 }
 
 .glass {
-  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+[data-bs-theme="dark"] .glass {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .glass-round {
@@ -147,4 +178,9 @@ body {
 
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   /* soft blur shadow */
+}
+
+// Custom utility classes
+.cursor-pointer {
+  cursor: pointer;
 }

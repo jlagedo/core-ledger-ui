@@ -1,43 +1,30 @@
-<div
-  [class.justify-content-center]="isCollapsed()"
-  [class.justify-content-between]="!isCollapsed()"
-  class="d-flex align-items-center p-3 glass-round"
->
+<div [class.justify-content-center]="isCollapsed()" [class.justify-content-between]="!isCollapsed()"
+  class="d-flex align-items-center p-3 glass-round">
   <!-- User Avatar with Dropdown -->
   <div ngbDropdown container="body" placement="top-start">
-    <button
-      ngbDropdownToggle
-      [attr.aria-label]="'User profile'"
-      class="btn btn-link text-white p-0 border-0"
-    >
+    <button ngbDropdownToggle [attr.aria-label]="'User profile'" class="btn btn-link text-white p-0 border-0">
       @if (userProfile()?.picture) {
-        <img
-          [src]="userProfile()!.picture"
-          [alt]="userProfile()!.name"
-          class="rounded-circle"
-          width="32"
-          height="32"
-          referrerpolicy="no-referrer"
-        />
+      <img [src]="userProfile()!.picture" [alt]="userProfile()!.name" class="rounded-circle" width="32" height="32"
+        referrerpolicy="no-referrer" />
       } @else {
-        <i class="bi bi-person-circle" style="font-size: 1.5rem"></i>
+      <i class="bi bi-person-circle fs-2"></i>
       }
     </button>
 
     <div ngbDropdownMenu class="shadow-sm">
       @if (userProfile()) {
-        <div class="px-3 py-2 border-bottom">
-          <div class="fw-semibold">{{ displayName() }}</div>
-          <small class="text-body-secondary d-block">{{ userProfile()!.email }}</small>
-          @if (currentUser()) {
-            <div class="mt-2">
-              <small class="badge bg-primary me-1">ID: {{ currentUser()!.id }}</small>
-              <small class="text-body-secondary d-block mt-1">
-                Last login: {{ currentUser()!.lastLoginAt | date: 'short' }}
-              </small>
-            </div>
-          }
+      <div class="px-3 py-2 border-bottom">
+        <div class="fw-semibold">{{ displayName() }}</div>
+        <small class="text-body-secondary d-block">{{ userProfile()!.email }}</small>
+        @if (currentUser()) {
+        <div class="mt-2">
+          <small class="badge bg-primary me-1">ID: {{ currentUser()!.id }}</small>
+          <small class="text-body-secondary d-block mt-1">
+            Last login: {{ currentUser()!.lastLoginAt | date: 'short' }}
+          </small>
         </div>
+        }
+      </div>
       }
       <button ngbDropdownItem routerLink="/profile">
         <i class="bi bi-person me-2"></i>View Profile
@@ -50,16 +37,9 @@
 
   <!-- Theme Toggle (hidden when collapsed) -->
   @if (!isCollapsed()) {
-    <button
-      (click)="toggleTheme()"
-      [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
-      class="btn btn-link text-white p-0"
-      type="button"
-    >
-      <i
-        [class]="isDarkMode() ? 'bi bi-sun-fill' : 'bi bi-moon-fill'"
-        style="font-size: 1.25rem"
-      ></i>
-    </button>
+  <button (click)="toggleTheme()" [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+    class="btn btn-link text-white p-0" type="button">
+    <i [class]="isDarkMode() ? 'bi bi-sun-fill' : 'bi bi-moon-fill'" class="fs-4"></i>
+  </button>
   }
 </div>
