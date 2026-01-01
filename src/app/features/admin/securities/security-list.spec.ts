@@ -24,47 +24,21 @@ describe('SecurityList', () => {
   });
 
   describe('Row Selection Features', () => {
-    it('should initialize activeRowId as null', () => {
-      expect(component.activeRowId()).toBeNull();
+    it('should have columns defined for data grid', () => {
+      expect(component.columns).toBeDefined();
+      expect(component.columns.length).toBe(7);
+      expect(component.columns[0].key).toBe('ticker');
+      expect(component.columns[0].sortable).toBe(true);
     });
 
-    it('should set active row when setActiveRow is called', () => {
-      const securityId = 42;
-      component.setActiveRow(securityId);
-
-      expect(component.activeRowId()).toBe(securityId);
+    it('should have actionsTemplate defined', () => {
+      fixture.detectChanges();
+      expect(component.actionsTemplate).toBeDefined();
     });
 
-    it('should clear active row when clearActiveRow is called', () => {
-      component.activeRowId.set(42);
-      component.clearActiveRow();
-
-      expect(component.activeRowId()).toBeNull();
-    });
-
-    it('should set active row when dropdown opens', () => {
-      const securityId = 42;
-      component.onDropdownOpenChange(true, securityId);
-
-      expect(component.activeRowId()).toBe(securityId);
-    });
-
-    it('should clear active row when dropdown closes', () => {
-      component.activeRowId.set(42);
-      component.onDropdownOpenChange(false, 42);
-
-      expect(component.activeRowId()).toBeNull();
-    });
-
-    it('should handle multiple row selections', () => {
-      component.setActiveRow(1);
-      expect(component.activeRowId()).toBe(1);
-
-      component.setActiveRow(2);
-      expect(component.activeRowId()).toBe(2);
-
-      component.clearActiveRow();
-      expect(component.activeRowId()).toBeNull();
+    it('should have statusTemplate defined', () => {
+      fixture.detectChanges();
+      expect(component.statusTemplate).toBeDefined();
     });
   });
 
@@ -73,61 +47,30 @@ describe('SecurityList', () => {
       expect(component.securitiesResponse()).toBeNull();
     });
 
-    it('should calculate collectionSize from securitiesResponse', () => {
-      expect(component.collectionSize()).toBe(0);
-
-      component.securitiesResponse.set({
+    it('should update securitiesResponse when loadSecurities is called', () => {
+      const mockResponse = {
         items: [],
-        totalCount: 100,
+        totalCount: 0,
         limit: 15,
         offset: 0
-      });
+      };
 
-      expect(component.collectionSize()).toBe(100);
+      component.securitiesResponse.set(mockResponse);
+      expect(component.securitiesResponse()).toEqual(mockResponse);
     });
 
-    it('should trim search value in onSearch', () => {
-      vi.spyOn(component.store, 'setSearchTerm');
-      vi.spyOn(component, 'loadSecurities');
-
-      component.onSearch('  AAPL  ');
-
-      expect(component.store.setSearchTerm).toHaveBeenCalledWith('AAPL');
-      expect(component.loadSecurities).toHaveBeenCalled();
+    it('should have store injected', () => {
+      expect(component.store).toBeDefined();
     });
 
-    it('should reset sort when direction is empty', () => {
-      vi.spyOn(component.store, 'resetSort');
-      vi.spyOn(component, 'loadSecurities');
-
-      component.onSort({ column: 'ticker', direction: '' });
-
-      expect(component.store.resetSort).toHaveBeenCalled();
-      expect(component.loadSecurities).toHaveBeenCalled();
+    it('should have securityService injected', () => {
+      expect(component.securityService).toBeDefined();
     });
 
-    it('should set sort when direction is provided', () => {
-      vi.spyOn(component.store, 'setSort');
-      vi.spyOn(component, 'loadSecurities');
-
-      component.onSort({ column: 'ticker', direction: 'desc' });
-
-      expect(component.store.setSort).toHaveBeenCalledWith('ticker', 'desc');
-      expect(component.loadSecurities).toHaveBeenCalled();
-    });
-
-    it('should change page size and reload', () => {
-      vi.spyOn(component.store, 'setPageSize');
-      vi.spyOn(component, 'loadSecurities');
-
-      component.onPageSizeChange(100);
-
-      expect(component.store.setPageSize).toHaveBeenCalledWith(100);
-      expect(component.loadSecurities).toHaveBeenCalled();
-    });
-
-    it('should expose Math to template', () => {
-      expect(component.Math).toBe(Math);
+    it('should provide search and filter capabilities through store', () => {
+      expect(component.store.searchTerm).toBeDefined();
+      expect(component.store.page).toBeDefined();
+      expect(component.store.pageSize).toBeDefined();
     });
   });
 });

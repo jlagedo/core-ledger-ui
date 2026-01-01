@@ -1,12 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
   effect,
   inject,
   signal,
-  viewChildren
+  TemplateRef,
+  ViewChild,
+  AfterViewInit
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
@@ -18,22 +19,21 @@ import {
   NgbDropdownItem,
   NgbDropdownMenu,
   NgbDropdownToggle,
-  NgbModal,
-  NgbPagination
+  NgbModal
 } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
-import { SortableDirective, SortEvent } from '../../../directives/sortable.directive';
 import { SecuritiesStore } from './securities-store';
 import { DeactivateModal } from './deactivate-modal/deactivate-modal';
 import { ImportB3Modal } from './import-b3-modal/import-b3-modal';
 import { ToastService } from '../../../services/toast-service';
 import { LoggerService } from '../../../services/logger';
 import { PageHeader } from '../../../layout/page-header/page-header';
+import { DataGrid } from '../../../shared/components/data-grid/data-grid';
+import { ColumnDefinition } from '../../../shared/components/data-grid/column-definition.model';
 
 @Component({
   selector: 'app-security-list',
-  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, DatePipe, PageHeader],
-  providers: [SecuritiesStore],
+  imports: [RouterLink, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, NgbDropdownItem, PageHeader, DataGrid],
+  providers: [SecuritiesStore, DatePipe],
   templateUrl: './security-list.html',
   styleUrl: './security-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,58 +45,83 @@ export class SecurityList {
   modal = inject(NgbModal);
   toastService = inject(ToastService);
   logger = inject(LoggerService);
+  datePipe = inject(DatePipe);
 
   securitiesResponse = signal<PaginatedResponse<Security> | null>(null);
-  activeRowId = signal<number | null>(null);
 
-  collectionSize = computed(() => this.securitiesResponse()?.totalCount ?? 0);
+  // Column definitions for data grid
+  columns: ColumnDefinition<Security>[] = [
+    {
+      key: 'ticker',
+      label: 'Ticker',
+      sortable: true,
+      sortKey: 'Ticker',
+      align: 'start',
+      cellClass: 'fw-bold'
+    },
+    {
+      key: 'name',
+      label: 'Name',
+      sortable: true,
+      sortKey: 'Name',
+      align: 'start'
+    },
+    {
+      key: 'isin',
+      label: 'ISIN',
+      sortable: false,
+      align: 'center',
+      formatter: (value) => ((value as string | null) || 'N/A')
+    },
+    {
+      key: 'typeDescription',
+      label: 'Type',
+      sortable: true,
+      sortKey: 'Type',
+      align: 'center'
+    },
+    {
+      key: 'currency',
+      label: 'Currency',
+      sortable: true,
+      sortKey: 'Currency',
+      align: 'center'
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      sortable: true,
+      sortKey: 'Status',
+      align: 'center',
+      cellClass: 'text-center'
+    },
+    {
+      key: 'createdAt',
+      label: 'Created At',
+      sortable: true,
+      sortKey: 'CreatedAt',
+      align: 'center',
+      formatter: (value) => this.datePipe.transform(value as string, 'shortDate') || ''
+    }
+  ];
 
-  headers = viewChildren(SortableDirective);
-
-  // Expose Math to template
-  Math = Math;
+  @ViewChild('actionsTemplate', { static: true }) actionsTemplate!: TemplateRef<any>;
+  @ViewChild('statusTemplate', { static: false }) statusTemplate!: TemplateRef<any>;
 
   constructor() {
     effect(() => {
       this.loadSecurities();
     });
-
-    effect(() => {
-      const headers = this.headers();
-      const sortColumn = this.store.sortColumn();
-      const sortDirection = this.store.sortDirection();
-
-      for (const header of headers) {
-        if (header.sortable() === sortColumn) {
-          header.direction.set(sortDirection);
-        } else {
-          header.direction.set('');
-        }
-      }
-    });
   }
 
-  onSearch(value: string): void {
-    this.store.setSearchTerm(value.trim());
-    this.loadSecurities();
-  }
-
-  onSort({ column, direction }: SortEvent): void {
-    // Reset other headers
-    for (const header of this.headers()) {
-      if (header.sortable() !== column) {
-        header.direction.set('');
+  ngAfterViewInit(): void {
+    // Update status column template after view initialization
+    if (this.statusTemplate) {
+      const statusColumn = this.columns.find(col => col.key === 'status');
+      if (statusColumn) {
+        statusColumn.template = this.statusTemplate;
       }
     }
-
-    // If direction is empty, reset to default sorting
-    if (direction === '') {
-      this.store.resetSort();
-    } else {
-      this.store.setSort(column || 'ticker', direction);
-    }
-
-    this.loadSecurities();
   }
 
   public loadSecurities(): void {
@@ -116,11 +141,6 @@ export class SecurityList {
         next: response => this.securitiesResponse.set(response),
         error: err => this.logger.logHttpError('load securities', err, 'Failed to load securities. Please try again.')
       });
-  }
-
-  onPageSizeChange(newSize: number): void {
-    this.store.setPageSize(newSize);
-    this.loadSecurities();
   }
 
   openDeactivateModal(security: Security): void {
@@ -179,21 +199,5 @@ export class SecurityList {
         // Modal dismissed
       }
     );
-  }
-
-  setActiveRow(securityId: number): void {
-    this.activeRowId.set(securityId);
-  }
-
-  clearActiveRow(): void {
-    this.activeRowId.set(null);
-  }
-
-  onDropdownOpenChange(isOpen: boolean, securityId: number): void {
-    if (isOpen) {
-      this.setActiveRow(securityId);
-    } else {
-      this.clearActiveRow();
-    }
   }
 }

@@ -1,15 +1,16 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
   effect,
   inject,
   signal,
-  viewChildren
+  TemplateRef,
+  ViewChild
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import { Account, PaginatedResponse } from '../../models/account.model';
 import { AccountService } from '../../services/account';
 import {
@@ -17,21 +18,20 @@ import {
   NgbDropdownItem,
   NgbDropdownMenu,
   NgbDropdownToggle,
-  NgbModal,
-  NgbPagination
+  NgbModal
 } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
-import { SortableDirective, SortEvent } from '../../directives/sortable.directive';
 import { ChartOfAccountsStore } from './chart-of-accounts-store';
 import { DeactivateModal } from './deactivate-modal/deactivate-modal';
 import { ToastService } from '../../services/toast-service';
 import { LoggerService } from '../../services/logger';
 import { PageHeader } from '../../layout/page-header/page-header';
+import { DataGrid } from '../../shared/components/data-grid/data-grid';
+import { ColumnDefinition } from '../../shared/components/data-grid/column-definition.model';
 
 @Component({
   selector: 'app-chart-of-accounts',
-  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, PageHeader],
-  providers: [ChartOfAccountsStore],
+  imports: [RouterLink, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, NgbDropdownItem, PageHeader, DataGrid],
+  providers: [ChartOfAccountsStore, DatePipe],
   templateUrl: './chart-of-accounts.html',
   styleUrl: './chart-of-accounts.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,55 +43,56 @@ export class ChartOfAccounts {
   modal = inject(NgbModal);
   toastService = inject(ToastService);
   logger = inject(LoggerService);
+  datePipe = inject(DatePipe);
 
   accountsResponse = signal<PaginatedResponse<Account> | null>(null);
-  activeRowId = signal<number | null>(null);
 
-  collectionSize = computed(() => this.accountsResponse()?.totalCount ?? 0);
+  // Column definitions for data grid
+  columns: ColumnDefinition<Account>[] = [
+    {
+      key: 'code',
+      label: '#',
+      sortable: true,
+      sortKey: 'Code',
+      align: 'end',
+      cellClass: 'numeric font-monospace'
+    },
+    {
+      key: 'name',
+      label: 'Name',
+      sortable: true,
+      sortKey: 'Name',
+      align: 'start'
+    },
+    {
+      key: 'typeDescription',
+      label: 'Type',
+      sortable: true,
+      sortKey: 'TypeId',
+      align: 'center'
+    },
+    {
+      key: 'statusDescription',
+      label: 'Status',
+      sortable: true,
+      sortKey: 'Status',
+      align: 'center'
+    },
+    {
+      key: 'normalBalanceDescription',
+      label: 'Normal Balance',
+      sortable: true,
+      sortKey: 'NormalBalance',
+      align: 'center'
+    }
+  ];
 
-  headers = viewChildren(SortableDirective);
+  @ViewChild('actionsTemplate', { static: true }) actionsTemplate!: TemplateRef<any>;
 
   constructor() {
     effect(() => {
       this.loadAccounts();
     });
-
-    effect(() => {
-      const headers = this.headers();
-      const sortColumn = this.store.sortColumn();
-      const sortDirection = this.store.sortDirection();
-
-      for (const header of headers) {
-        if (header.sortable() === sortColumn) {
-          header.direction.set(sortDirection);
-        } else {
-          header.direction.set('');
-        }
-      }
-    });
-  }
-
-  onSearch(value: string): void {
-    this.store.setSearchTerm(value.trim());
-    this.loadAccounts();
-  }
-
-  onSort({ column, direction }: SortEvent): void {
-    // Reset other headers
-    for (const header of this.headers()) {
-      if (header.sortable() !== column) {
-        header.direction.set('');
-      }
-    }
-
-    // If direction is empty, reset to default sorting
-    if (direction === '') {
-      this.store.resetSort();
-    } else {
-      this.store.setSort(column || 'code', direction);
-    }
-
-    this.loadAccounts();
   }
 
   public loadAccounts(): void {
@@ -111,11 +112,6 @@ export class ChartOfAccounts {
         next: response => this.accountsResponse.set(response),
         error: err => this.logger.logHttpError('load accounts', err, 'Failed to load accounts. Please try again.')
       });
-  }
-
-  onPageSizeChange(newSize: number): void {
-    this.store.setPageSize(newSize);
-    this.loadAccounts();
   }
 
   openDeactivateModal(account: Account): void {
@@ -145,21 +141,5 @@ export class ChartOfAccounts {
         // Modal dismissed
       }
     );
-  }
-
-  setActiveRow(accountId: number): void {
-    this.activeRowId.set(accountId);
-  }
-
-  clearActiveRow(): void {
-    this.activeRowId.set(null);
-  }
-
-  onDropdownOpenChange(isOpen: boolean, accountId: number): void {
-    if (isOpen) {
-      this.setActiveRow(accountId);
-    } else {
-      this.clearActiveRow();
-    }
   }
 }

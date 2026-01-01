@@ -15,134 +15,47 @@
 </app-page-header>
 
 <main class="container-lg px-3 px-md-4">
-
   <div class="card bg-body-tertiary border-0 shadow-sm rounded-4 border-top bg-opacity-50">
     <div class="card-body p-3 p-md-4">
 
-      <div class="row g-3 align-items-center mb-3">
+      <app-data-grid [store]="store" [data]="securitiesResponse()" [columns]="columns" [searchable]="true"
+        [searchPlaceholder]="'Search securities...'" [emptyMessage]="'No securities found'"
+        [rowActionsTemplate]="actionsTemplate" (refresh)="loadSecurities()">
+      </app-data-grid>
 
-        <div class="col-12 col-md-4">
-          <div class="input-group">
-            <span class="input-group-text bg-body-secondary border-secondary">
-              <i class="bi bi-search"></i>
-            </span>
-            <input #searchInput (keydown.enter)="onSearch(searchInput.value)" [value]="store.searchTerm()"
-              aria-label="Search securities by name" class="form-control bg-body border-secondary"
-              placeholder="Search securities..." type="text">
+      <!-- Status badge template -->
+      <ng-template #statusTemplate let-value>
+        @if (value === 1) {
+        <span class="badge bg-success">Active</span>
+        } @else {
+        <span class="badge bg-secondary">Inactive</span>
+        }
+      </ng-template>
+
+      <!-- Actions template for each row -->
+      <ng-template #actionsTemplate let-security>
+        <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Security actions">
+          <button type="button" class="btn btn-secondary" [routerLink]="['/admin/securities', security.id, 'edit']"
+            [attr.aria-label]="'Edit security ' + security.ticker">
+            <i class="bi bi-pencil" aria-hidden="true"></i>
+          </button>
+          <div class="btn-group btn-group-sm" container="body" ngbDropdown role="group">
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" ngbDropdownToggle
+              [attr.aria-label]="'More actions for security ' + security.ticker">
+              <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <div ngbDropdownMenu>
+              <button type="button" [routerLink]="['/admin/securities', security.id]" ngbDropdownItem>
+                <i class="bi bi-eye me-2"></i>View Details
+              </button>
+              <hr class="dropdown-divider">
+              <button type="button" (click)="openDeactivateModal(security)" class="text-danger" ngbDropdownItem>
+                <i class="bi bi-trash me-2"></i>Deactivate
+              </button>
+            </div>
           </div>
         </div>
-
-        <div class="col-12 col-md-4 text-center">
-          <span class="text-secondary small fw-medium">
-            <i class="bi bi-bookmark me-2"></i>{{ collectionSize() }} total securities
-          </span>
-        </div>
-
-        <div class="col-12 col-md-4 d-flex justify-content-md-end">
-          <label for="securitiesPageSize" class="visually-hidden">Items per page</label>
-          <select id="securitiesPageSize" (ngModelChange)="onPageSizeChange($event)" [ngModel]="store.pageSize()"
-            class="form-select bg-body border-secondary w-100">
-            <option [ngValue]="15">15 items per page</option>
-            <option [ngValue]="50">50 items per page</option>
-            <option [ngValue]="100">100 items per page</option>
-          </select>
-
-        </div>
-      </div>
-
-      <div class="table-responsive rounded-3 border border-tertiary data-table">
-        <table class="table table-sm table-striped table-hover align-middle fs-6">
-
-          <thead class="table-light">
-            <tr>
-              <th (sort)="onSort($event)" class="text-start fw-bold" scope="col" sortable="ticker">Ticker</th>
-              <th (sort)="onSort($event)" class="text-start fw-bold" scope="col" sortable="name">Name</th>
-              <th class="text-center fw-bold" scope="col">ISIN</th>
-              <th (sort)="onSort($event)" class="text-center fw-bold" scope="col" sortable="type">Type</th>
-              <th (sort)="onSort($event)" class="text-center fw-bold" scope="col" sortable="currency">Currency</th>
-              <th (sort)="onSort($event)" class="text-center fw-bold" scope="col" sortable="status">Status</th>
-              <th (sort)="onSort($event)" class="text-center fw-bold" scope="col" sortable="createdAt">Created At</th>
-              <th class="text-end fw-bold" scope="col">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody class="table-group-divider">
-
-            @defer (on immediate) {
-            @for (security of securitiesResponse()?.items; track security.id) {
-            <tr class="align-middle cursor-pointer" [class.table-primary]="activeRowId() === security.id"
-              (click)="setActiveRow(security.id)">
-
-              <td class="text-start"><strong>{{ security.ticker }}</strong></td>
-              <td class="text-start">{{ security.name }}</td>
-              <td class="text-center">{{ security.isin || 'N/A' }}</td>
-              <td class="text-center">{{ security.typeDescription }}</td>
-              <td class="text-center">{{ security.currency }}</td>
-              <td class="text-center">
-                @if (security.status === 1) {
-                <span class="badge bg-success">Active</span>
-                } @else {
-                <span class="badge bg-secondary">Inactive</span>
-                }
-              </td>
-              <td class="text-center">{{ security.createdAt | date: 'shortDate' }}</td>
-
-              <td class="text-end">
-                <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Security actions">
-                  <button type="button" class="btn btn-secondary"
-                    [routerLink]="['/admin/securities', security.id, 'edit']"
-                    [attr.aria-label]="'Edit security ' + security.ticker" (click)="$event.stopPropagation()">
-                    <i class="bi bi-pencil" aria-hidden="true"></i>
-                  </button>
-                  <div class="btn-group btn-group-sm" container="body" ngbDropdown role="group"
-                    (openChange)="onDropdownOpenChange($event, security.id)">
-                    <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
-                      ngbDropdownToggle [attr.aria-label]="'More actions for security ' + security.ticker"
-                      (click)="$event.stopPropagation()">
-                      <span class="visually-hidden">Toggle Dropdown</span>
-                    </button>
-                    <div ngbDropdownMenu>
-                      <button type="button" [routerLink]="['/admin/securities', security.id]" ngbDropdownItem>
-                        <i class="bi bi-eye me-2"></i>View Details
-                      </button>
-                      <hr class="dropdown-divider">
-                      <button type="button" (click)="openDeactivateModal(security)" class="text-danger" ngbDropdownItem>
-                        <i class="bi bi-trash me-2"></i>Deactivate
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            }
-            } @loading {
-            <tr>
-              <td class="text-center py-5" colspan="8">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="visually-hidden">Loading securities...</span>
-                </div>
-                <div class="mt-2 text-muted">Loading securities…</div>
-              </td>
-            </tr>
-            } @error {
-            <tr>
-              <td class="text-center text-danger py-5" colspan="8">
-                Failed to load securities.
-              </td>
-            </tr>
-            }
-
-          </tbody>
-        </table>
-
-        <div class="d-flex justify-content-center align-items-center px-3 py-2 small text-secondary">
-          <ngb-pagination (pageChange)="store.setPage($event); loadSecurities()" [boundaryLinks]="true"
-            [collectionSize]="collectionSize()" [maxSize]="5" [pageSize]="store.pageSize()" [page]="store.page()"
-            [rotate]="true">
-          </ngb-pagination>
-        </div>
-
-      </div>
+      </ng-template>
 
     </div>
   </div>
