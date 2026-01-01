@@ -81,6 +81,11 @@ export function provideTestDependencies(): (Provider | EnvironmentProviders)[] {
           scope: 'openid profile email',
           audience: 'test-api',
         },
+        api: {
+          useMock: false, // Tests use HttpTestingController, not mock interceptor
+          mockDelayMs: 0,
+          mockErrorRate: 0,
+        },
         toast: {
           defaultDelay: 3000,
           successDelay: 3000,

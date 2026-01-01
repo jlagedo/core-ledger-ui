@@ -22,6 +22,13 @@ export const environment = {
     audience: 'https://core-ledger-api',
   },
 
+  // API Mock Configuration
+  api: {
+    useMock: false, // Use real API with Auth0 authentication
+    mockDelayMs: 0,
+    mockErrorRate: 0,
+  },
+
   // Toast Notification Delays (milliseconds)
   toast: {
     defaultDelay: 10000,

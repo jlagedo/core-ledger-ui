@@ -93,6 +93,108 @@ export class MyService {
 - API calls return Observables with typed interfaces from `src/app/models/`
 - All models use kebab-case naming (e.g., `account-type.model.ts`)
 
+## Mock API System (REQUIRED)
+
+**IMPORTANT**: All API implementations MUST include corresponding mock data to support offline development.
+
+### Requirements
+
+When implementing any new API endpoint or entity:
+
+1. **Create Mock Data File** in `src/app/api/mock-data/`:
+   - Follow naming convention: `<entity-name>.mock.ts`
+   - Export as `MOCK_<ENTITY_NAME>` constant
+   - Include realistic data with edge cases (special characters, nulls, long text, etc.)
+   - Add JSDoc comment with `@internal` tag
+
+2. **Update Mock Data Index**:
+   - Add export to `src/app/api/mock-data/index.ts`
+   - Ensure barrel export follows alphabetical order
+
+3. **Update MockApiService**:
+   - Add Map storage for the new entity in `src/app/api/mock-api.service.ts`
+   - Update `getDataMapForUrl()` method with URL pattern
+   - Update `getNextIdForUrl()` for auto-increment IDs
+   - Update `reset()` method to include new entity
+
+4. **Create Production Stub**:
+   - Add corresponding export to `src/app/api/mock-data.production.ts`
+   - Use `createProductionProxy()` helper to ensure safety
+
+5. **Write Tests**:
+   - Test CRUD operations in `mock-api.service.spec.ts`
+   - Test interceptor routing in `mock-api.interceptor.spec.ts`
+
+### Mock Data Best Practices
+
+- **Realistic Data**: Use actual formats, realistic values, and production-like data
+- **Edge Cases**: Include special characters, empty strings, nulls, maximum lengths
+- **Variety**: Multiple records with different statuses, types, and values
+- **Relationships**: Ensure foreign keys match related entities (e.g., fundId references actual fund)
+- **Timestamps**: Use ISO 8601 format (`2024-12-01T14:30:00Z`)
+- **Comments**: Document unusual or edge-case data with comments
+
+### Example Mock Data File
+
+```typescript
+import { Entity } from '../../models/entity.model';
+
+/**
+ * Mock entity data for local development and testing.
+ * Includes edge cases: special characters, nulls, various statuses.
+ * @internal
+ */
+export const MOCK_ENTITIES: Entity[] = [
+  {
+    id: 1,
+    name: 'Standard Entity',
+    status: EntityStatus.Active,
+    createdAt: '2020-01-15T10:00:00Z',
+    updatedAt: '2024-12-01T14:30:00Z',
+  },
+  {
+    id: 2,
+    name: 'Entity with Special Chars: €$£¥ & "Quotes"',
+    status: EntityStatus.Active,
+    createdAt: '2023-06-15T12:00:00Z',
+    updatedAt: '2024-06-15T12:00:00Z',
+  },
+  {
+    id: 3,
+    name: 'Very Long Name That Tests UI Constraints And Demonstrates How System Handles Extended Text',
+    status: EntityStatus.Inactive,
+    createdAt: '2024-01-01T00:00:00Z',
+  },
+];
+```
+
+### Mock API Configuration
+
+Environment files control mock API behavior:
+
+```typescript
+api: {
+  useMock: true,          // Enable mock API (false in production)
+  mockDelayMs: 300,       // Network latency simulation
+  mockErrorRate: 0,       // Random error rate (0-1, 0.1 = 10%)
+}
+```
+
+### Testing with Mock Data
+
+```typescript
+// In component tests
+TestBed.configureTestingModule({
+  providers: [
+    provideHttpClient(withInterceptors([mockApiInterceptor])),
+    MockApiService,
+    { provide: ENVIRONMENT, useValue: { api: { useMock: true } } },
+  ],
+});
+```
+
+**See `documentation/mock-api.md` for complete documentation.**
+
 ## Feature Module Structure
 
 Features in `src/app/features/<feature-name>/` follow this pattern:

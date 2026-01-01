@@ -70,6 +70,10 @@
                 {
                   "replace": "src/app/auth/mock-tokens.ts",
                   "with": "src/app/auth/mock-tokens.production.ts"
+                },
+                {
+                  "replace": "src/app/api/mock-data/index.ts",
+                  "with": "src/app/api/mock-data.production.ts"
                 }
               ]
             },

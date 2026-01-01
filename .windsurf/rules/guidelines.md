@@ -57,3 +57,64 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## Mock API System (REQUIRED)
+
+**IMPORTANT**: All API implementations MUST include corresponding mock data to support offline development.
+
+### Requirements for New API Endpoints
+
+When implementing any new API endpoint or entity:
+
+1. **Create Mock Data File** in `src/app/api/mock-data/`:
+   - Naming: `<entity-name>.mock.ts`
+   - Export as `MOCK_<ENTITY_NAME>` constant
+   - Include realistic data with edge cases (special characters, nulls, long text)
+   - Add JSDoc with `@internal` tag
+
+2. **Update Mock Data Index**: Add export to `src/app/api/mock-data/index.ts`
+
+3. **Update MockApiService** in `src/app/api/mock-api.service.ts`:
+   - Add Map storage for entity
+   - Update `getDataMapForUrl()` with URL pattern
+   - Update `getNextIdForUrl()` for auto-increment IDs
+   - Update `reset()` method
+
+4. **Create Production Stub**: Add export to `src/app/api/mock-data.production.ts`
+
+5. **Write Tests**: Test CRUD operations and interceptor routing
+
+### Mock Data Best Practices
+
+- **Realistic Data**: Use actual formats, production-like values
+- **Edge Cases**: Special characters, empty strings, nulls, max lengths
+- **Variety**: Multiple records with different statuses/types
+- **Relationships**: Foreign keys must reference actual entities
+- **Timestamps**: ISO 8601 format (`2024-12-01T14:30:00Z`)
+
+### Example
+
+```typescript
+import { Entity } from '../../models/entity.model';
+
+/**
+ * Mock entity data for local development and testing.
+ * @internal
+ */
+export const MOCK_ENTITIES: Entity[] = [
+  {
+    id: 1,
+    name: 'Standard Entity',
+    status: EntityStatus.Active,
+    createdAt: '2020-01-15T10:00:00Z',
+  },
+  {
+    id: 2,
+    name: 'Entity with Special Chars: €$£¥',
+    status: EntityStatus.Active,
+    createdAt: '2023-06-15T12:00:00Z',
+  },
+];
+```
+
+**See `documentation/mock-api.md` for complete documentation.**

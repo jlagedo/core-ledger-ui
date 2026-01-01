@@ -1,5 +1,5 @@
-import {InjectionToken} from '@angular/core';
-import {environment} from '../../environments/environment';
+import { InjectionToken } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -22,6 +22,13 @@ export interface Environment {
     clientId: string;
     scope: string;
     audience: string;
+  };
+
+  // API Mock Configuration
+  api?: {
+    useMock: boolean;
+    mockDelayMs?: number;
+    mockErrorRate?: number;
   };
 
   // Toast Notification Delays (milliseconds)
