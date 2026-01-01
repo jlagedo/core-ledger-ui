@@ -27,10 +27,52 @@ th[sortable].asc:before {
 }
 
 .table-row-actions {
-  opacity: 0;
-  transition: opacity 0.4s ease-in-out;
+  opacity: 0.5;
+  transition: opacity 0.2s ease-in-out;
 }
 
-.table-hover tbody tr:hover .table-row-actions {
+// Enhanced visibility on row interaction
+.table-hover tbody tr:hover .table-row-actions,
+.table-hover tbody tr:focus-within .table-row-actions,
+.table-row-actions:focus-within {
   opacity: 1;
+}
+
+// Ensure keyboard navigation works
+.table-row-actions button:focus {
+  opacity: 1;
+}
+
+// Mobile: ensure buttons are visible
+@media (max-width: 768px) {
+  .table-row-actions {
+    opacity: 1;
+  }
+}
+
+// Split button width and styling
+.btn-group.table-row-actions {
+  min-width: 80px;
+
+  .btn {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    flex: 1;
+    min-width: 40px;
+  }
+
+  // Ensure proper border radius on split button
+  .btn:last-child,
+  .dropdown-toggle {
+    border-top-right-radius: var(--bs-btn-border-radius);
+    border-bottom-right-radius: var(--bs-btn-border-radius);
+  }
+}
+
+// Dropdown menu styling
+.dropdown-menu {
+  --bs-dropdown-bg: rgba(var(--bs-body-bg-rgb), 0.5);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15), 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }

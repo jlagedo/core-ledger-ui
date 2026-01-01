@@ -66,7 +66,10 @@
 
             @defer (on immediate) {
             @for (fund of fundsResponse()?.items; track fund.id) {
-            <tr class="align-middle">
+            <tr class="align-middle" 
+                [class.table-primary]="activeRowId() === fund.id"
+                (click)="setActiveRow(fund.id)"
+                style="cursor: pointer;">
 
               <td class="text-end">
                 <strong class="numeric">{{ fund.code }}</strong>
@@ -77,14 +80,39 @@
               <td class="text-center">{{ fund.valuationFrequencyDescription }}</td>
 
               <td class="text-end">
-                <div class="table-row-actions" container="body" ngbDropdown>
-                  <button type="button" class="btn btn-sm btn-secondary" ngbDropdownToggle
-                    [attr.aria-label]="'Actions for fund ' + fund.name">
-                    <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Fund actions">
+                  <button type="button" class="btn btn-secondary" 
+                    [routerLink]="['/funds', fund.id, 'edit']"
+                    [attr.aria-label]="'Edit fund ' + fund.name"
+                    (click)="$event.stopPropagation()">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
                   </button>
-                  <div ngbDropdownMenu>
-                    <button type="button" [routerLink]="['/funds', fund.id]" ngbDropdownItem>View</button>
-                    <button type="button" ngbDropdownItem>Edit</button>
+                  <div class="btn-group btn-group-sm" 
+                    container="body" 
+                    ngbDropdown 
+                    role="group"
+                    (openChange)="onDropdownOpenChange($event, fund.id)">
+                    <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" 
+                      ngbDropdownToggle
+                      [attr.aria-label]="'More actions for fund ' + fund.name"
+                      (click)="$event.stopPropagation()">
+                      <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <div ngbDropdownMenu>
+                      <button type="button" [routerLink]="['/funds', fund.id]" ngbDropdownItem>
+                        <i class="bi bi-eye me-2"></i>View Details
+                      </button>
+                      <hr class="dropdown-divider">
+                      <button type="button" ngbDropdownItem>
+                        <i class="bi bi-toggle-on me-2"></i>Manage Fund Status
+                      </button>
+                      <button type="button" ngbDropdownItem>
+                        <i class="bi bi-clock-history me-2"></i>Audit Log
+                      </button>
+                      <button type="button" ngbDropdownItem>
+                        <i class="bi bi-download me-2"></i>Export Fund Information
+                      </button>
+                    </div>
                   </div>
                 </div>
               </td>

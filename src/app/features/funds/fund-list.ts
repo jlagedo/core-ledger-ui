@@ -8,11 +8,11 @@ import {
   signal,
   viewChildren
 } from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {RouterLink} from '@angular/router';
-import {DatePipe} from '@angular/common';
-import {Fund, PaginatedResponse} from '../../models/fund.model';
-import {FundService} from '../../services/fund';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
+import { Fund, PaginatedResponse } from '../../models/fund.model';
+import { FundService } from '../../services/fund';
 import {
   NgbDropdown,
   NgbDropdownItem,
@@ -20,12 +20,12 @@ import {
   NgbDropdownToggle,
   NgbPagination
 } from '@ng-bootstrap/ng-bootstrap';
-import {FormsModule} from '@angular/forms';
-import {SortableDirective, SortEvent} from '../../directives/sortable.directive';
-import {FundsStore} from './funds-store';
-import {ToastService} from '../../services/toast-service';
-import {LoggerService} from '../../services/logger';
-import {PageHeader} from '../../layout/page-header/page-header';
+import { FormsModule } from '@angular/forms';
+import { SortableDirective, SortEvent } from '../../directives/sortable.directive';
+import { FundsStore } from './funds-store';
+import { ToastService } from '../../services/toast-service';
+import { LoggerService } from '../../services/logger';
+import { PageHeader } from '../../layout/page-header/page-header';
 
 @Component({
   selector: 'app-fund-list',
@@ -43,6 +43,7 @@ export class FundList {
   logger = inject(LoggerService);
 
   fundsResponse = signal<PaginatedResponse<Fund> | null>(null);
+  activeRowId = signal<number | null>(null);
 
   collectionSize = computed(() => this.fundsResponse()?.totalCount ?? 0);
 
@@ -73,7 +74,7 @@ export class FundList {
     this.loadFunds();
   }
 
-  onSort({column, direction}: SortEvent): void {
+  onSort({ column, direction }: SortEvent): void {
     for (const header of this.headers()) {
       if (header.sortable() !== column) {
         header.direction.set('');
@@ -111,5 +112,21 @@ export class FundList {
   onPageSizeChange(newSize: number): void {
     this.store.setPageSize(newSize);
     this.loadFunds();
+  }
+
+  setActiveRow(fundId: number): void {
+    this.activeRowId.set(fundId);
+  }
+
+  clearActiveRow(): void {
+    this.activeRowId.set(null);
+  }
+
+  onDropdownOpenChange(isOpen: boolean, fundId: number): void {
+    if (isOpen) {
+      this.setActiveRow(fundId);
+    } else {
+      this.clearActiveRow();
+    }
   }
 }
