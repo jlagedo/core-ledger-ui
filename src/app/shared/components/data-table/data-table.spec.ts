@@ -18,11 +18,11 @@ describe('DataTable', () => {
   let fixture: ComponentFixture<DataTable<TestItem>>;
 
   const mockStore: DataTableStore = {
-    searchTerm: '',
-    page: 1,
-    pageSize: 15,
-    sortColumn: 'name',
-    sortDirection: 'asc',
+    searchTerm: signal(''),
+    page: signal(1),
+    pageSize: signal(15),
+    sortColumn: signal('name'),
+    sortDirection: signal('asc'),
     setSort: vi.fn(),
     resetSort: vi.fn(),
     setPage: vi.fn(),

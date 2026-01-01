@@ -82,8 +82,8 @@ export class DataTable<T extends Record<string, any>> {
     // Sync sortable directive states with store
     effect(() => {
       const headers = this.headers();
-      const sortColumn = this.store().sortColumn;
-      const sortDirection = this.store().sortDirection;
+      const sortColumn = this.store().sortColumn();
+      const sortDirection = this.store().sortDirection();
 
       for (const header of headers) {
         if (header.sortable() === sortColumn) {
