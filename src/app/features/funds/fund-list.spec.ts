@@ -35,6 +35,19 @@ describe('FundList', () => {
 
       expect(component.collectionSize()).toBe(50);
     });
+
+    it('should compute funds from fundsResponse', () => {
+      expect(component.funds()).toEqual([]);
+
+      const mockFunds = [
+        { id: 1, code: 'F001', name: 'Fund 1', baseCurrency: 'USD', inceptionDate: '2020-01-01', valuationFrequency: 1, valuationFrequencyDescription: 'Daily', createdAt: '2020-01-01' },
+        { id: 2, code: 'F002', name: 'Fund 2', baseCurrency: 'EUR', inceptionDate: '2020-02-01', valuationFrequency: 2, valuationFrequencyDescription: 'Weekly', createdAt: '2020-02-01' }
+      ];
+      const mockResponse = createMockPaginatedResponse(mockFunds, 2, 15, 0);
+      component.fundsResponse.set(mockResponse);
+
+      expect(component.funds()).toEqual(mockFunds);
+    });
   });
 
   describe('search functionality', () => {
@@ -59,36 +72,6 @@ describe('FundList', () => {
     });
   });
 
-  describe('sorting functionality', () => {
-    it('should reset sort when direction is empty', () => {
-      vi.spyOn(component.store, 'resetSort');
-      vi.spyOn(component, 'loadFunds');
-
-      component.onSort({ column: 'name', direction: '' });
-
-      expect(component.store.resetSort).toHaveBeenCalled();
-      expect(component.loadFunds).toHaveBeenCalled();
-    });
-
-    it('should set sort when direction is provided', () => {
-      vi.spyOn(component.store, 'setSort');
-      vi.spyOn(component, 'loadFunds');
-
-      component.onSort({ column: 'name', direction: 'asc' });
-
-      expect(component.store.setSort).toHaveBeenCalledWith('name', 'asc');
-      expect(component.loadFunds).toHaveBeenCalled();
-    });
-
-    it('should handle descending sort', () => {
-      vi.spyOn(component.store, 'setSort');
-
-      component.onSort({ column: 'id', direction: 'desc' });
-
-      expect(component.store.setSort).toHaveBeenCalledWith('id', 'desc');
-    });
-  });
-
   describe('pagination functionality', () => {
     it('should change page size and reload', () => {
       vi.spyOn(component.store, 'setPageSize');
@@ -108,6 +91,20 @@ describe('FundList', () => {
 
       component.onPageSizeChange(100);
       expect(component.store.setPageSize).toHaveBeenCalledWith(100);
+    });
+  });
+
+  describe('table configuration', () => {
+    it('should define columns with correct properties', () => {
+      expect(component.columns).toHaveLength(5);
+      expect(component.columns[0].key).toBe('code');
+      expect(component.columns[0].sortable).toBe(true);
+      expect(component.columns[1].key).toBe('name');
+    });
+
+    it('should provide trackBy function', () => {
+      const fund = { id: 123, code: 'F001', name: 'Test', baseCurrency: 'USD', inceptionDate: '2020-01-01', valuationFrequency: 1, valuationFrequencyDescription: 'Daily', createdAt: '2020-01-01' };
+      expect(component.trackByFundId(0, fund)).toBe(123);
     });
   });
 });
