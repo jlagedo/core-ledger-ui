@@ -30,6 +30,8 @@ Detailed instructions are organized by file type:
 - **Test files** (`**/*.spec.ts`): See `.github/testing.instructions.md`
 - **Templates & Styles** (`**/*.html`, `**/*.scss`): See `.github/styling.instructions.md`
 - **Authentication** (`src/app/auth/**/*`): See `.github/auth.instructions.md`
+- **Environment config** (`src/environments/**/*.ts`): See `.github/environment.instructions.md`
+- **State stores** (`**/*-store.ts`): See `.github/store.instructions.md`
 
 ## Core Principles
 
