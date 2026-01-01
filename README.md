@@ -10,15 +10,20 @@ https://github.com/user-attachments/assets/adb69d8a-af7b-476a-97c4-af92dab0d48c
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
+- [Quick Start](#-quick-start)
 - [Installation](#installation)
 - [Development](#development)
-  - [Development Server](#development-server)
-  - [Code Scaffolding](#code-scaffolding)
-  - [Mock Authentication](#mock-authentication-development-only)
-- [Project Structure](#project-structure)
-- [Testing](#testing)
-- [Building](#building)
-- [Code Standards](#code-standards)
+  - [For Users: Running the Application](#for-users-running-the-application)
+  - [For Developers: Development Workflow](#for-developers-development-workflow)
+    - [Environment Configurations](#environment-configurations)
+    - [Development Server](#development-server)
+    - [Code Scaffolding](#code-scaffolding)
+    - [Mock Authentication](#mock-authentication-development-only)
+- [Project Structure](#-project-structure)
+- [Testing](#-testing)
+- [Building](#-building)
+- [Code Standards](#-code-standards)
+- [Additional Resources](#-additional-resources)
 
 ## ✨ Features
 
@@ -56,6 +61,33 @@ Before you begin, ensure you have the following installed:
 npm install -g @angular/cli@21.0.4
 ```
 
+## ⚡ Quick Start
+
+Get the app running in 2 minutes:
+
+```bash
+# 1. Clone and install
+git clone <repository-url>
+cd core-ledger-ui
+npm install
+
+# 2. Start the development server
+npm start
+
+# 3. Open in browser
+# http://localhost:4200/
+
+# 4. Login with mock user (default)
+# User: admin | Password: any
+```
+
+That's it! The app runs with mock authentication by default. No Auth0 setup required.
+
+**Next steps - choose your path:**
+- **I want to use the app** → Go to [For Users: Running the Application](#for-users-running-the-application)
+- **I want to develop/test** → Go to [For Developers: Development Workflow](#for-developers-development-workflow)
+- **I want to contribute** → Go to [Code Standards](#-code-standards)
+
 ## 🚀 Installation
 
 1. Clone the repository:
@@ -78,7 +110,34 @@ npm start
 
 ## 💻 Development
 
-### Environment Configurations
+### For Users: Running the Application
+
+Simply use the Quick Start commands above. The app defaults to **mock authentication** so no Auth0 setup is needed.
+
+**Available mock users:**
+- **admin** - Full system access (13 permissions)
+- **fund-manager** - Fund & ledger management (9 permissions)
+- **trader** - Transaction & portfolio (7 permissions)
+- **analyst** - Read-only access (7 permissions)
+
+Change the mock user by editing `src/environments/environment.local-noauth.ts`:
+
+```typescript
+export const environment = {
+  auth: {
+    useMock: true,
+    mockUser: 'fund-manager'  // Change this to switch users
+  }
+};
+```
+
+Then restart the server (`npm start`) to apply changes.
+
+### For Developers: Development Workflow
+
+This section covers building, testing, and extending the application.
+
+#### Environment Configurations
 
 The application provides multiple development configurations to support different authentication modes:
 
@@ -91,7 +150,7 @@ The application provides multiple development configurations to support differen
 
 **Default Configuration:** The application now defaults to `local-noauth` for faster local development without requiring Auth0 setup.
 
-### Development Server
+##### Development Server
 
 Start a local development server with live reload:
 
@@ -109,7 +168,7 @@ ng serve --configuration=local-auth
 
 The application will automatically reload when you change any source files.
 
-### Code Scaffolding
+##### Code Scaffolding
 
 Generate new components, services, and more:
 
@@ -129,7 +188,7 @@ For a complete list of available schematics:
 ng generate --help
 ```
 
-### Mock Authentication (Development Only)
+##### Mock Authentication
 
 For development and testing without requiring Auth0, the application includes a mock authentication system with JWT token generation.
 
@@ -248,6 +307,121 @@ ng build --configuration production
 
 This multi-layered approach ensures mock tokens and authentication are **completely safe** and will never reach production builds.
 
+## ⚙️ Environment Configuration
+
+### File Structure
+
+```
+src/
+├── environments/
+│   ├── environment.ts              # Default/local development
+│   ├── environment.development.ts  # Development environment
+│   └── environment.production.ts   # Production environment
+└── app/
+    └── config/
+        └── environment.config.ts   # Environment injection token
+```
+
+### Environment Files
+
+- **environment.ts** - Used when running `ng serve` without a configuration flag (default/local development)
+- **environment.development.ts** - Used when building with `--configuration development`
+- **environment.production.ts** - Used when building with `--configuration production`
+
+### Using Environment Variables
+
+#### 1. Direct Import (Simple)
+
+```typescript
+import {environment} from '../environments/environment';
+
+@Component({...})
+export class MyComponent {
+  apiUrl = environment.apiUrl;
+}
+```
+
+#### 2. Injection Token (Recommended for Services)
+
+```typescript
+import {inject} from '@angular/core';
+import {ENVIRONMENT} from '../config/environment.config';
+
+@Injectable({providedIn: 'root'})
+export class MyService {
+  private env = inject(ENVIRONMENT);
+
+  doSomething() {
+    if (this.env.production) {
+      // Production logic
+    }
+  }
+}
+```
+
+#### 3. In Providers (app.config.ts)
+
+```typescript
+import {environment} from '../environments/environment';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideMicroSentry({
+      dsn: environment.sentry.dsn,
+      environment: environment.sentry.environment,
+      release: environment.sentry.release,
+    })
+  ],
+};
+```
+
+### Running with Different Environments
+
+```bash
+# Development (local - no Sentry)
+ng serve
+# Uses: environment.ts
+
+# Development (with Sentry)
+ng serve --configuration development
+# Uses: environment.development.ts
+
+# Production Build
+ng build --configuration production
+# Uses: environment.production.ts
+
+# Development Build
+ng build --configuration development
+# Uses: environment.development.ts
+```
+
+### Environment Schema
+
+```typescript
+interface Environment {
+  production: boolean;           // Is production environment?
+  apiUrl: string;               // API base URL
+  logLevel: LogLevel;           // Logging level (debug, info, warn, error)
+  enableSentry: boolean;        // Enable/disable Sentry error tracking
+  sentry: {
+    dsn: string;                // Sentry Data Source Name
+    environment: string;        // Environment name for Sentry
+    release: string;            // Release version
+  };
+  auth?: {
+    // Auth0 or other auth configuration
+  };
+}
+```
+
+### Best Practices
+
+1. **Never commit secrets** - Use environment variables or secrets management for sensitive data
+2. **Keep structure consistent** - All environment files should have the same structure
+3. **Use TypeScript types** - Define an interface for your environment configuration
+4. **Default to safe values** - Local environment should be the safest (e.g., Sentry disabled)
+5. **Document required values** - Comment what each configuration value does
+
 ## 📁 Project Structure
 
 ```
@@ -285,9 +459,290 @@ ng test
 npm test
 ```
 
+### Test Utilities Quick Reference
+
+**Location:** `src/app/testing/test-helpers.ts`
+
+#### 1. `provideTestDependencies()`
+
+Provides all common test providers (Router, HTTP, Auth, Sentry, etc.). Use in every component or service test:
+
+```typescript
+beforeEach(async () => {
+  await TestBed.configureTestingModule({
+    imports: [MyComponent],
+    providers: [provideTestDependencies()],
+  }).compileComponents();
+});
+```
+
+#### 2. `setupLocalStorageMock()`
+
+Creates a mocked localStorage with cleanup. Use when testing services that use localStorage:
+
+```typescript
+let storageMock: ReturnType<typeof setupLocalStorageMock>;
+
+beforeEach(() => {
+  storageMock = setupLocalStorageMock();
+  TestBed.configureTestingModule({...});
+});
+
+afterEach(() => {
+  storageMock.clear();
+});
+
+// In test:
+storageMock.store.set('key', 'value');
+expect(storageMock.store.get('key')).toBe('value');
+```
+
+#### 3. `createMockService<T>()`
+
+Creates a typed mock service object:
+
+```typescript
+const mockLogger = createMockService({
+  debug: vi.fn(),
+  info: vi.fn(),
+  error: vi.fn(),
+  warn: vi.fn(),
+});
+
+TestBed.configureTestingModule({
+  providers: [
+    { provide: LoggerService, useValue: mockLogger },
+  ]
+});
+```
+
+#### 4. `expectHttpRequest()`
+
+Expects an HTTP request with cleaner syntax than `httpMock.expectOne()`:
+
+```typescript
+const req = expectHttpRequest(httpMock, 'GET', '/api/funds');
+// OR with regex:
+const req = expectHttpRequest(httpMock, 'GET', /\/api\/funds\?/);
+
+expect(req.request.url).toContain('limit=100');
+req.flush(mockResponse);
+```
+
+#### 5. `FundBuilder`
+
+Builder for creating test Fund objects:
+
+```typescript
+const fund = new FundBuilder()
+  .withId(1)
+  .withName('Test Fund')
+  .withDescription('A test fund')
+  .withBaseCurrency('USD')
+  .build();
+```
+
+#### 6. `createMockPaginatedResponse<T>()`
+
+Creates a properly typed paginated response:
+
+```typescript
+const funds = [
+  new FundBuilder().withId(1).build(),
+  new FundBuilder().withId(2).build(),
+];
+
+const response = createMockPaginatedResponse(funds, 2, 100, 0);
+
+expect(response.items.length).toBe(2);
+expect(response.totalCount).toBe(2);
+```
+
+### Common Test Patterns
+
+**Service Test with HTTP:**
+```typescript
+describe('FundService', () => {
+  let service: FundService;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: API_URL, useValue: '/api' }
+      ]
+    });
+    service = TestBed.inject(FundService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it('should get funds', () => {
+    const funds = [new FundBuilder().withId(1).build()];
+    const response = createMockPaginatedResponse(funds, 1);
+
+    service.getFunds(100, 0).subscribe(result => {
+      expect(result.items.length).toBe(1);
+    });
+
+    const req = expectHttpRequest(httpMock, 'GET', /\/api\/funds/);
+    req.flush(response);
+  });
+});
+```
+
+### Testing Best Practices
+
+#### ✅ What SHOULD be tested
+
+1. **Business Logic** - Data transformations, calculations, validation rules, state management
+2. **Services** - Method behavior, API calls (mocked), error handling, caching, state updates
+3. **Component Behavior** - Inputs/outputs, user interactions, conditional rendering, event emission
+4. **Pipes** - Pure input → output transformations
+5. **Critical Routing Flows** - Guards, redirects, role-based access
+6. **Form Logic** - Validation rules, default values, submission behavior, field interactions
+
+**Example:**
+```typescript
+it('should calculate total with tax', () => {
+  const result = service.calculateTotalWithTax(100, 0.08);
+  expect(result).toBe(108);
+});
+
+it('should emit search term when searching', () => {
+  const spy = vi.spyOn(component.search, 'emit');
+  component.onSearch('test');
+  expect(spy).toHaveBeenCalledWith('test');
+});
+```
+
+#### ❌ What should NOT be tested
+
+1. **Angular Framework Internals** - DI system, change detection, HttpClient internals, Router internals
+2. **HTML Structure or CSS** - Tag names, class names, layout details, DOM structure
+3. **Third-Party UI Components** - Angular Material, ng-bootstrap, third-party library UI
+4. **Visual Layout or Styling** - Spacing, colors, responsiveness, animations
+5. **Implementation Details** - Private methods, internal variables, specific DOM query selectors
+
+**Bad Examples to Avoid:**
+```typescript
+// ❌ DON'T test that Angular's DI works
+it('should inject service', () => {
+  expect(TestBed.inject(MyService)).toBeTruthy();
+});
+
+// ❌ DON'T test HTML structure
+it('should have main tag', () => {
+  expect(compiled.querySelector('main')).toBeTruthy();
+});
+
+// ❌ DON'T test CSS classes
+it('should have btn-primary class', () => {
+  expect(element.classList.contains('btn-primary')).toBe(true);
+});
+```
+
+**Better Alternatives:**
+```typescript
+// ✅ Test behavior, not structure
+it('should submit form when button is clicked', () => {
+  const spy = vi.spyOn(component, 'onSubmit');
+  const button = fixture.nativeElement.querySelector('[type="submit"]');
+  button.click();
+  expect(spy).toHaveBeenCalled();
+});
+```
+
+#### 🔄 Refactoring Common Anti-Patterns
+
+**Remove "should be created" tests:**
+```typescript
+// ❌ DON'T
+it('should be created', () => {
+  expect(service).toBeTruthy();
+});
+
+// ✅ DO - Focus on actual behavior
+describe('getFunds', () => {
+  it('should fetch funds with pagination', () => {
+    // Test actual behavior
+  });
+});
+```
+
+**Convert DOM structure tests to behavior tests:**
+```typescript
+// ❌ DON'T
+it('should render main layout', () => {
+  expect(compiled.querySelector('main')).toBeTruthy();
+  expect(compiled.querySelector('router-outlet')).toBeTruthy();
+});
+
+// ✅ DO
+it('should allow navigation to child routes', () => {
+  router.navigate(['/dashboard']);
+  expect(router.url).toBe('/dashboard');
+});
+```
+
+**Convert CSS class tests to state tests:**
+```typescript
+// ❌ DON'T
+it('should have asc class', () => {
+  expect(nameElement.classList.contains('asc')).toBe(true);
+});
+
+// ✅ DO
+it('should emit ascending sort event', () => {
+  component.onSort('name');
+  expect(component.sortEvent()).toEqual({ column: 'name', direction: 'asc' });
+});
+```
+
+#### 📝 Testing Checklist
+
+Before writing a test, ask yourself:
+
+- [ ] Am I testing **my business logic** or framework internals?
+- [ ] Am I testing **behavior** or implementation details?
+- [ ] Would this test break if I refactor the HTML/CSS?
+- [ ] Am I testing through the **public API** only?
+- [ ] Does this test add value or just inflate coverage?
+
+**If you answered "framework", "implementation", "yes", "no", or "inflate" to any question, reconsider the test.**
+
 ### End-to-End Tests
 
 E2E testing framework is not configured by default. Choose and configure one based on your needs (e.g., Playwright, Cypress).
+
+### For Contributors: Contributing to the Project
+
+Want to improve Core Ledger UI? Great! Here's how to contribute:
+
+**Before you start:**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Familiarize yourself with the Code Standards section below
+
+**Development workflow:**
+1. Make your changes following code standards
+2. Write tests for new features (see Testing section)
+3. Run tests to ensure nothing breaks: `npm test`
+4. Build to verify production build works: `ng build --configuration production`
+
+**Before submitting a PR:**
+- [ ] Code follows project style guide
+- [ ] Tests pass: `npm test`
+- [ ] Build succeeds: `ng build`
+- [ ] Documentation is updated (if needed)
+- [ ] Commit messages are clear and descriptive
+
+For detailed contribution guidelines, see `CONTRIBUTING.md` (if available) or create a feature branch and submit a pull request.
 
 ## 🏗️ Building
 
