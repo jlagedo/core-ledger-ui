@@ -1,0 +1,75 @@
+<div class="table-responsive rounded-3 border border-tertiary data-table">
+  <table class="table table-sm table-striped table-hover align-middle fs-6">
+    <thead class="table-light">
+      <tr>
+        @for (column of columns(); track column.key) {
+        <th
+          [class]="column.headerClass || ''"
+          scope="col"
+          [sortable]="column.sortable ? column.key : ''"
+          (sort)="onSort($event)">
+          {{ column.label }}
+        </th>
+        } @if (actionsTemplate()) {
+        <th class="text-end fw-bold" scope="col">Actions</th>
+        }
+      </tr>
+    </thead>
+
+    <tbody class="table-group-divider">
+      @defer (on immediate) { @for (item of data(); track trackByFn($index, item)) {
+      <tr
+        class="align-middle cursor-pointer"
+        [class.table-primary]="activeRowId() === item[trackBy()]"
+        (click)="setActiveRow(item)">
+        @for (column of columns(); track column.key) {
+        <td [class]="column.cellClass || ''">
+          @if (column.cellTemplate) {
+          <ng-container
+            [ngTemplateOutlet]="column.cellTemplate"
+            [ngTemplateOutletContext]="getCellContext(item, column, $index)" />
+          } @else {
+          {{ formatCellValue(item, column) }}
+          }
+        </td>
+        } @if (actionsTemplate()) {
+        <td class="text-end">
+          <ng-container
+            [ngTemplateOutlet]="actionsTemplate()!"
+            [ngTemplateOutletContext]="getCellContext(item, columns()[0], $index)" />
+        </td>
+        }
+      </tr>
+      } } @loading {
+      <tr>
+        <td class="text-center py-5" [attr.colspan]="columns().length + (actionsTemplate() ? 1 : 0)">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <div class="mt-2 text-muted">Loading data…</div>
+        </td>
+      </tr>
+      } @error {
+      <tr>
+        <td
+          class="text-center text-danger py-5"
+          [attr.colspan]="columns().length + (actionsTemplate() ? 1 : 0)">
+          Failed to load data.
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-center align-items-center px-3 py-2 small text-secondary">
+    <ngb-pagination
+      (pageChange)="onPageChange($event)"
+      [boundaryLinks]="true"
+      [collectionSize]="collectionSize()"
+      [maxSize]="5"
+      [pageSize]="store().pageSize"
+      [page]="store().page"
+      [rotate]="true">
+    </ngb-pagination>
+  </div>
+</div>

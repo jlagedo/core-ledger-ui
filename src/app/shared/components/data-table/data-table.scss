@@ -1,0 +1,16 @@
+// Data table styles
+.data-table {
+  table {
+    margin-bottom: 0;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  // Ensure sortable columns have pointer cursor
+  th[sortable]:not([sortable='']) {
+    cursor: pointer;
+    user-select: none;
+  }
+}
