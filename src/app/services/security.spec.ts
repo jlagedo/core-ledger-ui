@@ -1,11 +1,10 @@
-import {TestBed} from '@angular/core/testing';
-import {provideHttpClient} from '@angular/common/http';
-import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
-import {SecurityService} from './security';
-import {CreateSecurity, PaginatedResponse, Security, UpdateSecurity} from '../models/security.model';
-import {SecurityType} from '../models/security-type.model';
-import {API_URL} from '../config/api.config';
+import { SecurityService } from './security';
+import { CreateSecurity, PaginatedResponse, Security, UpdateSecurity } from '../models/security.model';
+import { SecurityType } from '../models/security-type.model';
+import { provideTestDependencies } from '../testing/test-helpers';
 
 describe('SecurityService', () => {
   let service: SecurityService;
@@ -14,11 +13,7 @@ describe('SecurityService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        {provide: API_URL, useValue: apiUrl}
-      ]
+      providers: [...provideTestDependencies(), provideHttpClientTesting()]
     });
     service = TestBed.inject(SecurityService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -28,13 +23,9 @@ describe('SecurityService', () => {
     httpMock.verify();
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('should get securities with pagination and filters', () => {
     const mockResponse = {
-      items: [{id: 1, ticker: 'AAPL', name: 'Apple Inc.', typeId: 1}] as unknown as Security[],
+      items: [{ id: 1, ticker: 'AAPL', name: 'Apple Inc.', typeId: 1 }] as unknown as Security[],
       totalCount: 1,
       limit: 100,
       offset: 0
@@ -58,7 +49,7 @@ describe('SecurityService', () => {
   });
 
   it('should get security by id', () => {
-    const mockSecurity = {id: 1, ticker: 'AAPL', name: 'Apple Inc.', typeId: 1} as unknown as Security;
+    const mockSecurity = { id: 1, ticker: 'AAPL', name: 'Apple Inc.', typeId: 1 } as unknown as Security;
 
     service.getSecurityById(1).subscribe(security => {
       expect(security).toEqual(mockSecurity);
@@ -70,8 +61,8 @@ describe('SecurityService', () => {
   });
 
   it('should create security', () => {
-    const createSecurity = {ticker: 'MSFT', name: 'Microsoft', typeId: 1} as unknown as CreateSecurity;
-    const mockResponse = {id: 1, ...createSecurity} as unknown as Security;
+    const createSecurity = { ticker: 'MSFT', name: 'Microsoft', typeId: 1 } as unknown as CreateSecurity;
+    const mockResponse = { id: 1, ...createSecurity } as unknown as Security;
 
     service.createSecurity(createSecurity).subscribe(security => {
       expect(security).toEqual(mockResponse);
@@ -84,7 +75,7 @@ describe('SecurityService', () => {
   });
 
   it('should update security', () => {
-    const updateSecurity = {name: 'Microsoft Corp'} as unknown as UpdateSecurity;
+    const updateSecurity = { name: 'Microsoft Corp' } as unknown as UpdateSecurity;
 
     service.updateSecurity(1, updateSecurity).subscribe();
 
@@ -113,14 +104,14 @@ describe('SecurityService', () => {
       });
 
       const req = httpMock.expectOne(`${apiUrl}/securities/1/deactivate`);
-      req.flush({message: 'Cannot deactivate'}, {status: 400, statusText: 'Bad Request'});
+      req.flush({ message: 'Cannot deactivate' }, { status: 400, statusText: 'Bad Request' });
     });
   });
 
   it('should get security types', () => {
     const mockTypes = [
-      {name: 'Stock', description: 'Common Stock'},
-      {name: 'Bond', description: 'Corporate Bond'}
+      { name: 'Stock', description: 'Common Stock' },
+      { name: 'Bond', description: 'Corporate Bond' }
     ] as unknown as SecurityType[];
 
     service.getSecurityTypes().subscribe(types => {

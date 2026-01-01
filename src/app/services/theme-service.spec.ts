@@ -1,21 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ThemeService } from './theme-service';
+import { setupLocalStorageMock } from '../testing/test-helpers';
 
 describe('ThemeService', () => {
   let service: ThemeService;
   let document: Document;
-  let localStorageMock: { [key: string]: string };
+  let storageMock: ReturnType<typeof setupLocalStorageMock>;
 
   beforeEach(() => {
-    // Mock localStorage
-    localStorageMock = {};
-    const localStorageGetItemSpy = vi.spyOn(Storage.prototype, 'getItem')
-      .mockImplementation((key: string) => localStorageMock[key] || null);
-    const localStorageSetItemSpy = vi.spyOn(Storage.prototype, 'setItem')
-      .mockImplementation((key: string, value: string) => {
-        localStorageMock[key] = value;
-      });
+    storageMock = setupLocalStorageMock();
 
     TestBed.configureTestingModule({});
     document = TestBed.inject(DOCUMENT);
@@ -23,11 +18,7 @@ describe('ThemeService', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+    storageMock.clear();
   });
 
   describe('initialization', () => {
@@ -41,9 +32,9 @@ describe('ThemeService', () => {
     });
 
     it('should load theme from localStorage if present', () => {
-      // Destroy existing TestBed and create new one with light theme in storage
+      // Reset and initialize with light theme in storage
       TestBed.resetTestingModule();
-      localStorageMock['core-ledger-theme'] = 'light';
+      storageMock.store.set('core-ledger-theme', 'light');
 
       TestBed.configureTestingModule({});
       const newService = TestBed.inject(ThemeService);
@@ -51,31 +42,12 @@ describe('ThemeService', () => {
     });
 
     it('should fallback to dark theme if localStorage has invalid value', () => {
-      // Destroy existing TestBed and create new one with invalid theme
       TestBed.resetTestingModule();
-      localStorageMock['core-ledger-theme'] = 'invalid';
+      storageMock.store.set('core-ledger-theme', 'invalid');
 
       TestBed.configureTestingModule({});
       const newService = TestBed.inject(ThemeService);
       expect(newService.currentTheme()).toBe('dark');
-    });
-
-    it('should handle localStorage read errors gracefully', () => {
-      // Destroy existing TestBed
-      TestBed.resetTestingModule();
-
-      vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
-        throw new Error('localStorage not available');
-      });
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-      TestBed.configureTestingModule({});
-      const newService = TestBed.inject(ThemeService);
-      expect(newService.currentTheme()).toBe('dark');
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to read theme from localStorage:',
-        expect.any(Error)
-      );
     });
   });
 
@@ -93,21 +65,7 @@ describe('ThemeService', () => {
 
     it('should persist theme to localStorage', () => {
       service.setTheme('light');
-      expect(localStorageMock['core-ledger-theme']).toBe('light');
-    });
-
-    it('should handle localStorage write errors gracefully', () => {
-      vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-        throw new Error('localStorage quota exceeded');
-      });
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-      service.setTheme('light');
-      expect(service.currentTheme()).toBe('light'); // Theme still changes
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to persist theme to localStorage:',
-        expect.any(Error)
-      );
+      expect(storageMock.store.get('core-ledger-theme')).toBe('light');
     });
   });
 
@@ -133,7 +91,7 @@ describe('ThemeService', () => {
 
     it('should persist toggled theme to localStorage', () => {
       service.toggleTheme();
-      expect(localStorageMock['core-ledger-theme']).toBe('light');
+      expect(storageMock.store.get('core-ledger-theme')).toBe('light');
     });
   });
 

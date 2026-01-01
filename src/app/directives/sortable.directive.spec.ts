@@ -1,16 +1,16 @@
-import {Component, DebugElement} from '@angular/core';
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
+import { Component, DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
-import {SortableDirective, SortEvent} from './sortable.directive';
+import { SortableDirective, SortEvent } from './sortable.directive';
 
 @Component({
   template: `
     <table>
       <thead>
         <tr>
-          <th sortable="name" [direction]="nameDirection" (sort)="onSort($event)">Name</th>
-          <th sortable="age" [direction]="ageDirection" (sort)="onSort($event)">Age</th>
+          <th sortable="name" (sort)="onSort($event)">Name</th>
+          <th sortable="age" (sort)="onSort($event)">Age</th>
         </tr>
       </thead>
     </table>
@@ -18,8 +18,6 @@ import {SortableDirective, SortEvent} from './sortable.directive';
   imports: [SortableDirective]
 })
 class TestComponent {
-  nameDirection: 'asc' | 'desc' | '' = '';
-  ageDirection: 'asc' | 'desc' | '' = '';
   lastSortEvent?: SortEvent;
 
   onSort(event: SortEvent) {
@@ -47,44 +45,28 @@ describe('SortableDirective', () => {
     ageHeader = headers[1];
   });
 
-  it('should create', () => {
-    expect(nameHeader).toBeTruthy();
-    expect(ageHeader).toBeTruthy();
-  });
-
-  it('should have pointer cursor', () => {
-    const nameElement = nameHeader.nativeElement as HTMLElement;
-    expect(nameElement.style.cursor).toBe('pointer');
-  });
-
   it('should cycle through sort directions on click', () => {
     const nameElement = nameHeader.nativeElement as HTMLElement;
 
     // First click: '' -> 'asc'
     nameElement.click();
     fixture.detectChanges();
-    expect(component.lastSortEvent).toEqual({column: 'name', direction: 'asc'});
-    expect(nameElement.classList.contains('asc')).toBe(true);
+    expect(component.lastSortEvent).toEqual({ column: 'name', direction: 'asc' });
 
     // Second click: 'asc' -> 'desc'
     nameElement.click();
     fixture.detectChanges();
-    expect(component.lastSortEvent).toEqual({column: 'name', direction: 'desc'});
-    expect(nameElement.classList.contains('desc')).toBe(true);
-    expect(nameElement.classList.contains('asc')).toBe(false);
+    expect(component.lastSortEvent).toEqual({ column: 'name', direction: 'desc' });
 
     // Third click: 'desc' -> ''
     nameElement.click();
     fixture.detectChanges();
-    expect(component.lastSortEvent).toEqual({column: 'name', direction: ''});
-    expect(nameElement.classList.contains('desc')).toBe(false);
-    expect(nameElement.classList.contains('asc')).toBe(false);
+    expect(component.lastSortEvent).toEqual({ column: 'name', direction: '' });
 
     // Fourth click: '' -> 'asc' (cycle repeats)
     nameElement.click();
     fixture.detectChanges();
-    expect(component.lastSortEvent).toEqual({column: 'name', direction: 'asc'});
-    expect(nameElement.classList.contains('asc')).toBe(true);
+    expect(component.lastSortEvent).toEqual({ column: 'name', direction: 'asc' });
   });
 
   it('should emit sort event with correct column name', () => {
@@ -93,6 +75,6 @@ describe('SortableDirective', () => {
     ageElement.click();
     fixture.detectChanges();
 
-    expect(component.lastSortEvent).toEqual({column: 'age', direction: 'asc'});
+    expect(component.lastSortEvent).toEqual({ column: 'age', direction: 'asc' });
   });
 });

@@ -1,6 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {Sidenav} from './sidenav';
-import {provideTestDependencies} from '../../testing/test-helpers';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { Sidenav } from './sidenav';
+import { provideTestDependencies } from '../../testing/test-helpers';
 
 describe('Sidenav', () => {
   let component: Sidenav;
@@ -9,7 +10,7 @@ describe('Sidenav', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Sidenav],
-      providers: provideTestDependencies(),
+      providers: [...provideTestDependencies(), provideHttpClientTesting()],
     })
       .compileComponents();
 

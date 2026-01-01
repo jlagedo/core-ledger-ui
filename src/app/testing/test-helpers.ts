@@ -1,29 +1,246 @@
 import { EnvironmentProviders, Provider } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
-import { provideAuth } from 'angular-auth-oidc-client';
 import { provideRouter } from '@angular/router';
 import { provideLocationMocks } from '@angular/common/testing';
+import { HttpTestingController } from '@angular/common/http/testing';
+import { vi } from 'vitest';
+import { MicroSentryService } from '@micro-sentry/angular';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { of } from 'rxjs';
+import { ENVIRONMENT } from '../config/environment.config';
+import { API_URL } from '../config/api.config';
+import { MockAuthService } from '../auth/mock-auth.service';
 
 /**
- * Provides common test providers including router, HTTP client, and OIDC authentication
- * with test configuration. Use this in test files to avoid duplication.
+ * Provides common test providers including router, HTTP client, OIDC authentication,
+ * environment config, and API URL. Use this in test files to avoid duplication.
  */
 export function provideTestDependencies(): (Provider | EnvironmentProviders)[] {
   return [
     provideRouter([]),
     provideLocationMocks(),
     provideHttpClient(),
-    provideAuth({
-      config: {
-        authority: 'https://test.auth.com',
-        redirectUrl: window.location.origin,
-        postLogoutRedirectUri: window.location.origin,
-        clientId: 'test-client-id',
-        scope: 'openid profile email',
-        responseType: 'code',
-        silentRenew: true,
-        useRefreshToken: true,
-      },
-    }),
+    {
+      provide: OidcSecurityService,
+      useValue: {
+        isAuthenticated$: of({ isAuthenticated: false }),
+        userData$: of({ userData: null }),
+        authorize: vi.fn(),
+        logoff: vi.fn(),
+        checkAuth: vi.fn().mockReturnValue(of({ isAuthenticated: false })),
+      }
+    },
+    {
+      provide: MockAuthService,
+      useValue: {
+        isAuthenticated$: of({ isAuthenticated: true }),
+        userData$: of({
+          userData: {
+            sub: 'test-user',
+            name: 'Test User',
+            email: 'test@example.com',
+            picture: 'https://via.placeholder.com/150',
+          }
+        }),
+        authorize: vi.fn(),
+        logoff: vi.fn(),
+        checkAuth: vi.fn().mockReturnValue(of({ isAuthenticated: true })),
+        getMockBackendUser: vi.fn().mockReturnValue({
+          id: '1',
+          email: 'test@example.com',
+          name: 'Test User',
+          role: 'admin',
+        }),
+      }
+    },
+    {
+      provide: MicroSentryService,
+      useValue: {
+        withScope: vi.fn(),
+        captureMessage: vi.fn(),
+        report: vi.fn(),
+      }
+    },
+    {
+      provide: ENVIRONMENT,
+      useValue: {
+        production: false,
+        apiUrl: '/api',
+        logLevel: 'debug' as const,
+        enableSentry: false,
+        sentry: {
+          dsn: '',
+          environment: 'test',
+          release: '1.0.0',
+        },
+        auth: {
+          useMock: true,
+          mockUser: 'admin',
+          authority: 'https://test.auth.com',
+          clientId: 'test-client',
+          scope: 'openid profile email',
+          audience: 'test-api',
+        },
+        toast: {
+          defaultDelay: 3000,
+          successDelay: 3000,
+          errorDelay: 5000,
+          serviceUnavailableDelay: 10000,
+        },
+        pagination: {
+          defaultPageSize: 100,
+          apiDefaultLimit: 100,
+        },
+        storage: {
+          themeKey: 'theme',
+        },
+        features: {
+          enableAdvancedReporting: true,
+        },
+      }
+    },
+    {
+      provide: API_URL,
+      useValue: '/api'
+    }
   ];
+}
+
+/**
+ * Helper to create a clean mock service with all methods as vi.fn()
+ * @param serviceMethods - Object with method names as keys and optional implementations
+ * @returns Mocked service object
+ *
+ * @example
+ * const mockLogger = createMockService({
+ *   debug: vi.fn(),
+ *   info: vi.fn(),
+ *   error: vi.fn(),
+ * });
+ */
+export function createMockService<T extends Record<string, any>>(
+  serviceMethods: Partial<Record<keyof T, any>>
+): T {
+  return serviceMethods as T;
+}
+
+/**
+ * Setup localStorage mock with proper cleanup
+ * Call in beforeEach and use the returned utilities in tests
+ *
+ * @example
+ * beforeEach(() => {
+ *   const storage = setupLocalStorageMock();
+ * });
+ *
+ * afterEach(() => {
+ *   vi.unstubAllGlobals();
+ * });
+ */
+export function setupLocalStorageMock(): {
+  store: Map<string, string>;
+  clear: () => void;
+} {
+  const store = new Map<string, string>();
+
+  vi.stubGlobal('localStorage', {
+    getItem: (key: string) => store.get(key) ?? null,
+    setItem: (key: string, value: string) => store.set(key, value),
+    removeItem: (key: string) => store.delete(key),
+    clear: () => store.clear(),
+    length: store.size,
+    key: (index: number) => Array.from(store.keys())[index] ?? null,
+  });
+
+  return {
+    store,
+    clear: () => {
+      store.clear();
+      vi.unstubAllGlobals();
+    },
+  };
+}
+
+/**
+ * Verify HTTP request was made and return the request for assertions
+ * @example
+ * const request = expectHttpRequest(httpMock, 'GET', '/api/funds');
+ * request.flush(mockResponse);
+ */
+export function expectHttpRequest(
+  httpMock: HttpTestingController,
+  method: string,
+  url: string | RegExp
+): ReturnType<typeof httpMock.expectOne> {
+  if (url instanceof RegExp) {
+    return httpMock.expectOne((req) => url.test(req.url) && req.method === method);
+  }
+  return httpMock.expectOne((req) => req.url === url && req.method === method);
+}
+
+/**
+ * Test data builders using builder pattern
+ * Use for cleaner, more readable test data creation
+ *
+ * @example
+ * const fund = new FundBuilder()
+ *   .withName('Test Fund')
+ *   .withBaseCurrency('USD')
+ *   .build();
+ */
+export class FundBuilder {
+  private data: { [key: string]: any } = {
+    id: Math.random(),
+    name: 'Test Fund',
+    description: 'Test Description',
+    baseCurrencyCode: 'USD',
+  };
+
+  withId(id: number): FundBuilder {
+    this.data['id'] = id;
+    return this;
+  }
+
+  withName(name: string): FundBuilder {
+    this.data['name'] = name;
+    return this;
+  }
+
+  withDescription(description: string): FundBuilder {
+    this.data['description'] = description;
+    return this;
+  }
+
+  withBaseCurrency(code: string): FundBuilder {
+    this.data['baseCurrencyCode'] = code;
+    return this;
+  }
+
+  build() {
+    return this.data;
+  }
+}
+
+/**
+ * Create mock paginated response
+ * @example
+ * const response = createMockPaginatedResponse(
+ *   [new FundBuilder().build()],
+ *   1,
+ *   100,
+ *   0
+ * );
+ */
+export function createMockPaginatedResponse<T>(
+  items: T[],
+  totalCount: number,
+  limit: number = 100,
+  offset: number = 0
+) {
+  return {
+    items,
+    totalCount,
+    limit,
+    offset,
+  };
 }

@@ -1,6 +1,6 @@
-/* ------------------------------------------------------------
-   1. Bootstrap must be loaded FIRST using @use
------------------------------------------------------------- */
+/* ============================================================
+   1. Bootstrap & variables must be loaded FIRST using @use
+============================================================ */
 
 @use "bootstrap/scss/bootstrap" with (
   /* Typography */
@@ -27,160 +27,267 @@
   $body-secondary-bg-dark: #1a1f2e,
   $body-tertiary-bg-dark: #12161f);
 
-/* ------------------------------------------------------------
-   2. CSS imports (must come AFTER @use)
------------------------------------------------------------- */
+/* ============================================================
+   2. Sass Variables (for reusable values)
+============================================================ */
+
+$transition-duration: 0.2s;
+$transition-duration-lg: 0.3s;
+$transition-timing: ease-in-out;
+$backdrop-blur-sm: 10px;
+$backdrop-blur-lg: 20px;
+$border-radius-round: 50px;
+$gradient-light-blue: rgba(59, 130, 246, 0.08);
+$gradient-light-blue-dark: rgba(59, 130, 246, 0.15);
+
+/* ============================================================
+   3. Sass Mixins (for reusable patterns)
+============================================================ */
+
+@mixin glass-effect($blur: $backdrop-blur-sm, $bg-opacity: 0.15) {
+  background: rgba(255, 255, 255, $bg-opacity);
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+@mixin glass-effect-dark($blur: $backdrop-blur-sm) {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+@mixin smooth-transition($property: all, $duration: $transition-duration) {
+  transition: $property $duration $transition-timing;
+}
+
+@mixin theme-aware-gradient($light-color, $dark-color) {
+  background: radial-gradient(125% 125% at 50% 90%, #ffffff 40%, $light-color 100%);
+
+  @media (prefers-color-scheme: dark) {
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, $dark-color, transparent 70%), #0a0f1a;
+  }
+}
+
+@mixin focus-visible-state($radius: 0.25rem) {
+  &:focus {
+    border-radius: $radius;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* ============================================================
+   4. CSS imports (must come AFTER @use)
+============================================================ */
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
-/* ------------------------------------------------------------
-   Custom theme enhancements (following Bootstrap 5 patterns)
------------------------------------------------------------- */
+/* ============================================================
+   5. Custom theme enhancements (following Bootstrap 5 patterns)
+============================================================ */
 
-/* Light theme: Subtle gradient using CSS variables */
 body {
   position: relative;
   min-height: 100vh;
   background-color: var(--bs-body-bg);
   color: var(--bs-body-color);
-}
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(125% 125% at 50% 90%, #ffffff 40%, rgba(59, 130, 246, 0.08) 100%);
-  pointer-events: none;
-}
-
-/* Dark theme: Arctic aurora effect with proper contrast */
-[data-bs-theme="dark"] {
-  color-scheme: dark;
-
-  body::before {
-    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59, 130, 246, 0.15), transparent 70%), #0a0f1a;
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    @include theme-aware-gradient($gradient-light-blue, $gradient-light-blue-dark);
+    pointer-events: none;
   }
 }
 
-/* ------------------------------------------------------------
-   3. Local font definitions
------------------------------------------------------------- */
+[data-bs-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* ============================================================
+   6. Local font definitions
+============================================================ */
+@mixin font-face($family, $weight, $filename) {
+  @font-face {
+    font-family: $family;
+    font-style: normal;
+    font-weight: $weight;
+    font-display: swap;
+    src: url($filename) format('woff2');
+  }
+}
+
 /* IBM Plex Sans */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('/assets/fonts/ibm-plex-sans/IBMPlexSans-Light.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/assets/fonts/ibm-plex-sans/IBMPlexSans-SemiBold.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/assets/fonts/ibm-plex-sans/IBMPlexSans-Bold.woff2') format('woff2');
-}
+@include font-face('IBM Plex Sans', 300, '/assets/fonts/ibm-plex-sans/IBMPlexSans-Light.woff2');
+@include font-face('IBM Plex Sans', 400, '/assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.woff2');
+@include font-face('IBM Plex Sans', 500, '/assets/fonts/ibm-plex-sans/IBMPlexSans-Medium.woff2');
+@include font-face('IBM Plex Sans', 600, '/assets/fonts/ibm-plex-sans/IBMPlexSans-SemiBold.woff2');
+@include font-face('IBM Plex Sans', 700, '/assets/fonts/ibm-plex-sans/IBMPlexSans-Bold.woff2');
 
 /* IBM Plex Mono */
-@font-face {
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('/assets/fonts/ibm-plex-mono/IBMPlexMono-Light.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/assets/fonts/ibm-plex-mono/IBMPlexMono-Regular.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/assets/fonts/ibm-plex-mono/IBMPlexMono-Medium.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/assets/fonts/ibm-plex-mono/IBMPlexMono-SemiBold.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/assets/fonts/ibm-plex-mono/IBMPlexMono-Bold.woff2') format('woff2');
-}
+@include font-face('IBM Plex Mono', 300, '/assets/fonts/ibm-plex-mono/IBMPlexMono-Light.woff2');
+@include font-face('IBM Plex Mono', 400, '/assets/fonts/ibm-plex-mono/IBMPlexMono-Regular.woff2');
+@include font-face('IBM Plex Mono', 500, '/assets/fonts/ibm-plex-mono/IBMPlexMono-Medium.woff2');
+@include font-face('IBM Plex Mono', 600, '/assets/fonts/ibm-plex-mono/IBMPlexMono-SemiBold.woff2');
+@include font-face('IBM Plex Mono', 700, '/assets/fonts/ibm-plex-mono/IBMPlexMono-Bold.woff2');
 
 .numeric {
   font-family: 'IBM Plex Mono', monospace;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-}
+/* ============================================================
+   7. Glass morphism effects
+============================================================ */
 
-[data-bs-theme="dark"] .glass {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
+.glass {
+  @include glass-effect(0.15);
+
+  [data-bs-theme="dark"] & {
+    @include glass-effect-dark();
+  }
 }
 
 .glass-round {
   background: rgba(255, 255, 255, 0.08);
-  /* transparent background */
-  backdrop-filter: blur(20px);
-  /* blur behind the element */
-  -webkit-backdrop-filter: blur(20px);
-  /* Safari support */
-
-  border-radius: 50px;
-  /* round border */
+  backdrop-filter: blur($backdrop-blur-lg);
+  -webkit-backdrop-filter: blur($backdrop-blur-lg);
+  border-radius: $border-radius-round;
   border: 1px solid rgba(255, 255, 255, 0.2);
-
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  /* soft blur shadow */
 }
 
-// Custom utility classes
+/* ============================================================
+   8. Utility classes
+============================================================ */
+
 .cursor-pointer {
   cursor: pointer;
+}
+
+/* ============================================================
+   9. DATA TABLE STYLES
+   Paginated/sortable tables with row selection
+============================================================ */
+
+.data-table {
+  .numeric {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Sortable headers */
+  th[sortable] {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    @include smooth-transition(background-color);
+
+    &:hover {
+      background-color: rgba(var(--bs-primary-rgb), 0.05);
+    }
+
+    /* Sort indicators */
+    &.desc:before,
+    &.asc:before {
+      content: '';
+      display: inline-block;
+      margin-right: 0.5em;
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+    }
+
+    &.desc:before {
+      border-top: 4px solid;
+    }
+
+    &.asc:before {
+      border-bottom: 4px solid;
+    }
+  }
+
+  /* Row actions with progressive disclosure */
+  .table-row-actions {
+    opacity: 0.5;
+    @include smooth-transition(opacity);
+
+    &:focus-within {
+      opacity: 1;
+    }
+
+    button:focus {
+      opacity: 1;
+    }
+  }
+
+  /* Enhanced visibility on row interaction */
+  .table-hover tbody tr {
+
+    &:hover .table-row-actions,
+    &:focus-within .table-row-actions {
+      opacity: 1;
+    }
+  }
+
+  /* Mobile: ensure buttons are visible */
+  @media (max-width: 768px) {
+    .table-row-actions {
+      opacity: 1;
+    }
+  }
+
+  /* Split button group styling for table actions */
+  .btn-group.table-row-actions {
+    min-width: 80px;
+
+    .btn {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      flex: 1;
+      min-width: 40px;
+
+      &:last-child,
+      &.dropdown-toggle {
+        border-top-right-radius: var(--bs-btn-border-radius);
+        border-bottom-right-radius: var(--bs-btn-border-radius);
+      }
+    }
+  }
+
+  /* Dropdown menu styling */
+  .dropdown-menu {
+    --bs-dropdown-bg: rgba(var(--bs-body-bg-rgb), 0.95);
+    backdrop-filter: blur($backdrop-blur-sm);
+    box-shadow: var(--bs-box-shadow-lg);
+    border-color: var(--bs-border-color-translucent);
+  }
+
+  /* Active row highlighting */
+  .table-primary {
+    background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+    border-left: 3px solid var(--bs-primary);
+
+    &:hover {
+      background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+    }
+  }
+
+  /* Striped rows with active state */
+  .table-striped tbody tr.table-primary {
+    background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+  }
+
+  /* Enhanced table hover state */
+  .table-hover tbody tr {
+    @include smooth-transition(background-color, 0.15s);
+
+    &:hover {
+      background-color: var(--bs-table-hover-bg);
+    }
+  }
 }

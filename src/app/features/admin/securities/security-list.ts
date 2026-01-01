@@ -8,11 +8,11 @@ import {
   signal,
   viewChildren
 } from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {RouterLink} from '@angular/router';
-import {DatePipe} from '@angular/common';
-import {PaginatedResponse, Security} from '../../../models/security.model';
-import {SecurityService} from '../../../services/security';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
+import { PaginatedResponse, Security } from '../../../models/security.model';
+import { SecurityService } from '../../../services/security';
 import {
   NgbDropdown,
   NgbDropdownItem,
@@ -21,14 +21,14 @@ import {
   NgbModal,
   NgbPagination
 } from '@ng-bootstrap/ng-bootstrap';
-import {FormsModule} from '@angular/forms';
-import {SortableDirective, SortEvent} from '../../../directives/sortable.directive';
-import {SecuritiesStore} from './securities-store';
-import {DeactivateModal} from './deactivate-modal/deactivate-modal';
-import {ImportB3Modal} from './import-b3-modal/import-b3-modal';
-import {ToastService} from '../../../services/toast-service';
-import {LoggerService} from '../../../services/logger';
-import {PageHeader} from '../../../layout/page-header/page-header';
+import { FormsModule } from '@angular/forms';
+import { SortableDirective, SortEvent } from '../../../directives/sortable.directive';
+import { SecuritiesStore } from './securities-store';
+import { DeactivateModal } from './deactivate-modal/deactivate-modal';
+import { ImportB3Modal } from './import-b3-modal/import-b3-modal';
+import { ToastService } from '../../../services/toast-service';
+import { LoggerService } from '../../../services/logger';
+import { PageHeader } from '../../../layout/page-header/page-header';
 
 @Component({
   selector: 'app-security-list',
@@ -47,6 +47,7 @@ export class SecurityList {
   logger = inject(LoggerService);
 
   securitiesResponse = signal<PaginatedResponse<Security> | null>(null);
+  activeRowId = signal<number | null>(null);
 
   collectionSize = computed(() => this.securitiesResponse()?.totalCount ?? 0);
 
@@ -80,7 +81,7 @@ export class SecurityList {
     this.loadSecurities();
   }
 
-  onSort({column, direction}: SortEvent): void {
+  onSort({ column, direction }: SortEvent): void {
     // Reset other headers
     for (const header of this.headers()) {
       if (header.sortable() !== column) {
@@ -178,5 +179,21 @@ export class SecurityList {
         // Modal dismissed
       }
     );
+  }
+
+  setActiveRow(securityId: number): void {
+    this.activeRowId.set(securityId);
+  }
+
+  clearActiveRow(): void {
+    this.activeRowId.set(null);
+  }
+
+  onDropdownOpenChange(isOpen: boolean, securityId: number): void {
+    if (isOpen) {
+      this.setActiveRow(securityId);
+    } else {
+      this.clearActiveRow();
+    }
   }
 }

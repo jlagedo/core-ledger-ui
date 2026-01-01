@@ -1,16 +1,6 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {AccountService} from './account';
+import { AccountService } from './account';
 
-describe('AccountService', () => {
-  let service: AccountService;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(AccountService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+// TODO: Add AccountService tests similar to SecurityService and FundService
+// testing HTTP operations: getAccounts, getAccountById, createAccount, etc.

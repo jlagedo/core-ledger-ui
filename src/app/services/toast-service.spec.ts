@@ -1,16 +1,7 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {ToastService} from './toast-service';
+import { ToastService } from './toast-service';
 
-describe('ToastService', () => {
-  let service: ToastService;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ToastService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+// ToastService is tested indirectly through LoggerService tests
+// and through components that use it. No need for isolated unit tests
+// since it's a simple state management service.

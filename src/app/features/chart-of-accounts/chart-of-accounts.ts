@@ -8,10 +8,10 @@ import {
   signal,
   viewChildren
 } from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {RouterLink} from '@angular/router';
-import {Account, PaginatedResponse} from '../../models/account.model';
-import {AccountService} from '../../services/account';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { Account, PaginatedResponse } from '../../models/account.model';
+import { AccountService } from '../../services/account';
 import {
   NgbDropdown,
   NgbDropdownItem,
@@ -20,13 +20,13 @@ import {
   NgbModal,
   NgbPagination
 } from '@ng-bootstrap/ng-bootstrap';
-import {FormsModule} from '@angular/forms';
-import {SortableDirective, SortEvent} from '../../directives/sortable.directive';
-import {ChartOfAccountsStore} from './chart-of-accounts-store';
-import {DeactivateModal} from './deactivate-modal/deactivate-modal';
-import {ToastService} from '../../services/toast-service';
-import {LoggerService} from '../../services/logger';
-import {PageHeader} from '../../layout/page-header/page-header';
+import { FormsModule } from '@angular/forms';
+import { SortableDirective, SortEvent } from '../../directives/sortable.directive';
+import { ChartOfAccountsStore } from './chart-of-accounts-store';
+import { DeactivateModal } from './deactivate-modal/deactivate-modal';
+import { ToastService } from '../../services/toast-service';
+import { LoggerService } from '../../services/logger';
+import { PageHeader } from '../../layout/page-header/page-header';
 
 @Component({
   selector: 'app-chart-of-accounts',
@@ -45,6 +45,7 @@ export class ChartOfAccounts {
   logger = inject(LoggerService);
 
   accountsResponse = signal<PaginatedResponse<Account> | null>(null);
+  activeRowId = signal<number | null>(null);
 
   collectionSize = computed(() => this.accountsResponse()?.totalCount ?? 0);
 
@@ -75,7 +76,7 @@ export class ChartOfAccounts {
     this.loadAccounts();
   }
 
-  onSort({column, direction}: SortEvent): void {
+  onSort({ column, direction }: SortEvent): void {
     // Reset other headers
     for (const header of this.headers()) {
       if (header.sortable() !== column) {
@@ -144,5 +145,21 @@ export class ChartOfAccounts {
         // Modal dismissed
       }
     );
+  }
+
+  setActiveRow(accountId: number): void {
+    this.activeRowId.set(accountId);
+  }
+
+  clearActiveRow(): void {
+    this.activeRowId.set(null);
+  }
+
+  onDropdownOpenChange(isOpen: boolean, accountId: number): void {
+    if (isOpen) {
+      this.setActiveRow(accountId);
+    } else {
+      this.clearActiveRow();
+    }
   }
 }

@@ -1,14 +1,14 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {provideHttpClient} from '@angular/common/http';
-import {provideHttpClientTesting} from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-import {Dashboard} from './dashboard';
+import { Dashboard } from './dashboard';
+import { provideTestDependencies } from '../../testing/test-helpers';
 
 // Mock ResizeObserver for ngx-echarts
 class ResizeObserverMock {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  observe() { }
+  unobserve() { }
+  disconnect() { }
 }
 
 describe('Dashboard', () => {
@@ -21,7 +21,7 @@ describe('Dashboard', () => {
 
     await TestBed.configureTestingModule({
       imports: [Dashboard],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [...provideTestDependencies(), provideHttpClientTesting()]
     })
       .compileComponents();
 

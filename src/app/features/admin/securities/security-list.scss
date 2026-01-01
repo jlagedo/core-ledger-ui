@@ -1,11 +1,2 @@
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.table-hover tbody tr:hover {
-  background-color: var(--bs-table-hover-bg);
-}
-
-.numeric {
-  font-family: 'Courier New', monospace;
-}
+// All common table list styles have been moved to global styles.scss
+// Security-specific styles can be added here if needed
