@@ -11,11 +11,35 @@ The application uses modern Angular patterns with standalone components, signals
 ## Development Commands
 
 ### Development Server
+
+The application supports multiple development modes:
+
+**Default Mode (No Authentication):**
 ```bash
 ng serve
 # or
 npm start
 ```
+Uses `local-noauth` configuration with mock authentication and mock API. Ideal for offline development.
+
+**Authenticated Mode (Auth0):**
+```bash
+npm run start:auth
+```
+Uses `local-auth` configuration with real Auth0 OIDC authentication and mock API. Requires Auth0 credentials in environment file.
+
+**Watch Modes:**
+```bash
+npm run watch          # No authentication with auto-rebuild
+npm run watch:auth     # Auth0 authentication with auto-rebuild
+```
+
+**Mock Token Generation:**
+```bash
+npm run generate-tokens
+```
+Generates JWT tokens for mock authentication development.
+
 Application runs at http://localhost:4200/
 
 ### Testing
@@ -51,7 +75,7 @@ All routes use `loadComponent` for individual components or `loadChildren` for f
 Route data includes `breadcrumb` property used by `BreadCrumbService` to generate navigation breadcrumbs automatically.
 
 **Authentication Guards:**
-Routes are protected using `autoLoginPartialRoutesGuard` from `angular-auth-oidc-client`. The `/login` route is public; all other routes require authentication.
+Routes are protected using a custom `authGuard` function (see `src/app/auth/auth.guard.ts`). This guard supports both real OIDC authentication and mock authentication modes. The `/login` route is public; all other routes require authentication.
 
 ### Authentication
 
@@ -179,6 +203,58 @@ export const MOCK_ENTITIES: Entity[] = [
 
 **See `documentation/mock-api.md` for complete documentation.**
 
+### Mock Authentication System (REQUIRED)
+
+**IMPORTANT**: The application includes a complete mock authentication system to support offline development without Auth0 dependencies.
+
+#### Mock Authentication Components
+
+1. **MockAuthService** (`src/app/auth/mock-auth-service.ts`):
+   - Simulates `OidcSecurityService` behavior
+   - Provides login/logout functionality with mock users
+   - Returns realistic authentication state observables
+
+2. **Mock Users** (`src/app/auth/mock-users.ts`):
+   - Predefined users with different roles (admin, fund-manager, trader, analyst)
+   - Realistic user profiles with claims
+   - Used for role-based access testing
+
+3. **Mock Tokens** (`src/app/auth/mock-tokens.ts`):
+   - JWT token generation for mock authentication
+   - Includes realistic claims and expiration
+   - Production-safe with `mock-tokens.production.ts` stub
+
+4. **Mock Auth Interceptor** (`src/app/auth/mock-auth-interceptor.ts`):
+   - Adds Authorization headers to requests
+   - Simulates token refresh behavior
+
+#### Environment Switching
+
+The application automatically uses mock or real authentication based on environment configuration:
+
+- **`environment.local-noauth.ts`**: Uses `MockAuthService` (default for `npm start`)
+- **`environment.local-auth.ts`**: Uses real Auth0 via `angular-auth-oidc-client` (`npm run start:auth`)
+- **`environment.development.ts`**: Configurable
+- **`environment.production.ts`**: Always uses real Auth0
+
+#### Production Safety
+
+Mock authentication files are replaced during production builds:
+- `mock-tokens.ts` → `mock-tokens.production.ts` (throws error if accessed)
+- Prevents accidental use of mock authentication in production
+
+#### Usage in AuthService
+
+The `AuthService` abstracts authentication and works with both real and mock providers:
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private readonly oidcSecurityService = inject(OidcSecurityService);
+  // OidcSecurityService is either real or MockAuthService based on environment
+}
+```
+
 ### Layout Components
 
 Core layout components in `src/app/layout/`:
@@ -272,15 +348,22 @@ Custom directives in `src/app/directives/` (kebab-case naming):
 - **Bootstrap 5.3.8**: UI component framework
 - **@ng-bootstrap/ng-bootstrap 20.0**: Angular Bootstrap components
 - **Bootstrap Icons 1.13.1**: Icon library
-- **IBM Plex Fonts 6.4.1**: Custom typography (Sans and Mono variants)
 - **SCSS**: Stylesheet preprocessor
 
 ### State Management & Data
 - **@ngrx/signals 21.0**: Signal-based state management
 - **angular-auth-oidc-client 21.0**: Auth0 OIDC authentication
-- **ngx-echarts 6.0 / echarts 6.0**: Interactive charts and visualizations
+- **ngx-echarts 21.0 / echarts 6.0**: Interactive charts and visualizations
+
+### Error Monitoring & Logging
+- **@micro-sentry/angular 7.2.0**: Lightweight Sentry integration for error tracking
+- Configured per environment (development/production)
+- See `app.config.ts` for setup with `provideMicroSentry()`
 
 ### Development Tools
+- **knip 5.78**: Unused code detection
+- **source-map-explorer 2.5.3**: Bundle analysis
+- **tsx 4.21.0 / ts-node 10.9.2**: TypeScript execution for scripts
 - **Vitest 4.0.8**: Unit testing framework
 - **@vitest/coverage-v8 4.0.16**: Code coverage
 - **jsdom 27.1.0**: DOM implementation for tests
