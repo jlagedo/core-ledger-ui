@@ -46,7 +46,7 @@
 
       <div class="table-responsive rounded-3 border border-tertiary">
 
-        <table class="table  table-hover align-middle ">
+        <table class="table table-sm table-striped table-hover align-middle fs-6">
 
           <thead class="table-light">
             <tr>
@@ -108,7 +108,7 @@
           </tbody>
         </table>
 
-        <div class="d-flex justify-content-center align-items-center px-3 py-3 small text-secondary">
+        <div class="d-flex justify-content-center align-items-center px-3 py-2 small text-secondary">
           <ngb-pagination (pageChange)="store.setPage($event); loadFunds()" [boundaryLinks]="true"
             [collectionSize]="collectionSize()" [maxSize]="5" [pageSize]="store.pageSize()" [page]="store.page()"
             [rotate]="true">
