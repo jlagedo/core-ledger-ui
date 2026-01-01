@@ -6,11 +6,9 @@ import {
   effect,
   inject,
   signal,
-  viewChildren
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { Fund, PaginatedResponse } from '../../models/fund.model';
 import { FundService } from '../../services/fund';
 import {
@@ -18,18 +16,25 @@ import {
   NgbDropdownItem,
   NgbDropdownMenu,
   NgbDropdownToggle,
-  NgbPagination
 } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
-import { SortableDirective, SortEvent } from '../../directives/sortable.directive';
 import { FundsStore } from './funds-store';
-import { ToastService } from '../../services/toast-service';
 import { LoggerService } from '../../services/logger';
 import { PageHeader } from '../../layout/page-header/page-header';
+import { DataTable, TableColumn } from '../../shared/components/data-table';
 
 @Component({
   selector: 'app-fund-list',
-  imports: [RouterLink, NgbPagination, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle, FormsModule, SortableDirective, NgbDropdownItem, DatePipe, PageHeader],
+  imports: [
+    RouterLink,
+    NgbDropdown,
+    NgbDropdownMenu,
+    NgbDropdownToggle,
+    FormsModule,
+    NgbDropdownItem,
+    PageHeader,
+    DataTable,
+  ],
   providers: [FundsStore],
   templateUrl: './fund-list.html',
   styleUrl: './fund-list.scss',
@@ -39,33 +44,59 @@ export class FundList {
   store = inject(FundsStore);
   fundService = inject(FundService);
   destroyRef = inject(DestroyRef);
-  toastService = inject(ToastService);
   logger = inject(LoggerService);
 
   fundsResponse = signal<PaginatedResponse<Fund> | null>(null);
-  activeRowId = signal<number | null>(null);
 
+  funds = computed(() => this.fundsResponse()?.items ?? []);
   collectionSize = computed(() => this.fundsResponse()?.totalCount ?? 0);
 
-  headers = viewChildren(SortableDirective);
+  columns: TableColumn<Fund>[] = [
+    {
+      key: 'code',
+      label: 'Code',
+      sortable: true,
+      headerClass: 'text-end fw-bold',
+      cellClass: 'text-end',
+      formatter: (value) => value,
+    },
+    {
+      key: 'name',
+      label: 'Name',
+      sortable: true,
+      headerClass: 'text-start fw-bold',
+      cellClass: 'text-start',
+    },
+    {
+      key: 'baseCurrency',
+      label: 'Base Currency',
+      sortable: true,
+      headerClass: 'text-center fw-bold',
+      cellClass: 'text-center',
+    },
+    {
+      key: 'inceptionDate',
+      label: 'Inception Date',
+      sortable: true,
+      headerClass: 'text-center fw-bold',
+      cellClass: 'text-center text-muted',
+      formatter: (value) => {
+        const date = new Date(value);
+        return date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: '2-digit' });
+      },
+    },
+    {
+      key: 'valuationFrequencyDescription',
+      label: 'Valuation Frequency',
+      sortable: false,
+      headerClass: 'text-center fw-bold',
+      cellClass: 'text-center',
+    },
+  ];
 
   constructor() {
     effect(() => {
       this.loadFunds();
-    });
-
-    effect(() => {
-      const headers = this.headers();
-      const sortColumn = this.store.sortColumn();
-      const sortDirection = this.store.sortDirection();
-
-      for (const header of headers) {
-        if (header.sortable() === sortColumn) {
-          header.direction.set(sortDirection);
-        } else {
-          header.direction.set('');
-        }
-      }
     });
   }
 
@@ -74,59 +105,29 @@ export class FundList {
     this.loadFunds();
   }
 
-  onSort({ column, direction }: SortEvent): void {
-    for (const header of this.headers()) {
-      if (header.sortable() !== column) {
-        header.direction.set('');
-      }
-    }
-
-    if (direction === '') {
-      this.store.resetSort();
-    } else {
-      this.store.setSort(column || 'Name', direction);
-    }
-
-    this.loadFunds();
-  }
-
   public loadFunds(): void {
     const search = this.store.searchTerm();
     const filter = search ? `name=${search}` : undefined;
     const offset = (this.store.page() - 1) * this.store.pageSize();
 
-    this.fundService.getFunds(
-      this.store.pageSize(),
-      offset,
-      this.store.sortColumn(),
-      this.store.sortDirection(),
-      filter
-    )
+    this.fundService
+      .getFunds(
+        this.store.pageSize(),
+        offset,
+        this.store.sortColumn(),
+        this.store.sortDirection(),
+        filter
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: response => this.fundsResponse.set(response),
-        error: err => this.logger.logHttpError('load funds', err, 'Failed to load funds. Please try again.')
+        next: (response) => this.fundsResponse.set(response),
+        error: (err) =>
+          this.logger.logHttpError('load funds', err, 'Failed to load funds. Please try again.'),
       });
   }
 
   onPageSizeChange(newSize: number): void {
     this.store.setPageSize(newSize);
     this.loadFunds();
-  }
-
-  setActiveRow(fundId: number): void {
-    this.activeRowId.set(fundId);
-  }
-
-  clearActiveRow(): void {
-    this.activeRowId.set(null);
-  }
-
-  onDropdownOpenChange(isOpen: boolean, fundId: number): void {
-    if (isOpen) {
-      this.setActiveRow(fundId);
-    } else {
-      this.clearActiveRow();
-    }
   }
 }

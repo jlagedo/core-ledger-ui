@@ -35,6 +35,27 @@ describe('FundList', () => {
 
       expect(component.collectionSize()).toBe(50);
     });
+
+    it('should compute funds from fundsResponse', () => {
+      expect(component.funds()).toEqual([]);
+
+      const mockFunds = [
+        {
+          id: 1,
+          code: 'FUND1',
+          name: 'Test Fund',
+          baseCurrency: 'USD',
+          inceptionDate: '2024-01-01',
+          valuationFrequency: 1,
+          valuationFrequencyDescription: 'Daily',
+          createdAt: '2024-01-01',
+        },
+      ];
+      const mockResponse = createMockPaginatedResponse(mockFunds, 1, 15, 0);
+      component.fundsResponse.set(mockResponse);
+
+      expect(component.funds()).toEqual(mockFunds);
+    });
   });
 
   describe('search functionality', () => {
@@ -59,36 +80,6 @@ describe('FundList', () => {
     });
   });
 
-  describe('sorting functionality', () => {
-    it('should reset sort when direction is empty', () => {
-      vi.spyOn(component.store, 'resetSort');
-      vi.spyOn(component, 'loadFunds');
-
-      component.onSort({ column: 'name', direction: '' });
-
-      expect(component.store.resetSort).toHaveBeenCalled();
-      expect(component.loadFunds).toHaveBeenCalled();
-    });
-
-    it('should set sort when direction is provided', () => {
-      vi.spyOn(component.store, 'setSort');
-      vi.spyOn(component, 'loadFunds');
-
-      component.onSort({ column: 'name', direction: 'asc' });
-
-      expect(component.store.setSort).toHaveBeenCalledWith('name', 'asc');
-      expect(component.loadFunds).toHaveBeenCalled();
-    });
-
-    it('should handle descending sort', () => {
-      vi.spyOn(component.store, 'setSort');
-
-      component.onSort({ column: 'id', direction: 'desc' });
-
-      expect(component.store.setSort).toHaveBeenCalledWith('id', 'desc');
-    });
-  });
-
   describe('pagination functionality', () => {
     it('should change page size and reload', () => {
       vi.spyOn(component.store, 'setPageSize');
@@ -108,6 +99,25 @@ describe('FundList', () => {
 
       component.onPageSizeChange(100);
       expect(component.store.setPageSize).toHaveBeenCalledWith(100);
+    });
+  });
+
+  describe('column configuration', () => {
+    it('should have correct column definitions', () => {
+      expect(component.columns).toHaveLength(5);
+      expect(component.columns[0].key).toBe('code');
+      expect(component.columns[1].key).toBe('name');
+      expect(component.columns[2].key).toBe('baseCurrency');
+      expect(component.columns[3].key).toBe('inceptionDate');
+      expect(component.columns[4].key).toBe('valuationFrequencyDescription');
+    });
+
+    it('should have sortable columns configured correctly', () => {
+      expect(component.columns[0].sortable).toBe(true);
+      expect(component.columns[1].sortable).toBe(true);
+      expect(component.columns[2].sortable).toBe(true);
+      expect(component.columns[3].sortable).toBe(true);
+      expect(component.columns[4].sortable).toBe(false);
     });
   });
 });
