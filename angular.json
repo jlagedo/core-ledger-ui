@@ -75,6 +75,10 @@
                   "with": "src/app/auth/mock-tokens.production.ts"
                 },
                 {
+                  "replace": "src/app/auth/mock-users.ts",
+                  "with": "src/app/auth/mock-users.production.ts"
+                },
+                {
                   "replace": "src/app/api/mock-data/index.ts",
                   "with": "src/app/api/mock-data.production.ts"
                 }
@@ -114,7 +118,7 @@
               ]
             }
           },
-          "defaultConfiguration": "local-noauth"
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
