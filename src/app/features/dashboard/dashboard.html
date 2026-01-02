@@ -35,8 +35,13 @@
       <div class="card bg-body-tertiary shadow-sm border-0 rounded-4 h-100">
         <div class="card-body p-4">
           <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Active Accounts by Type</h6>
-          <div [options]="chartOption()" class="w-100 mb-2" echarts style="height: 260px;"></div>
-          <!-- Note: echarts requires explicit height in pixels for rendering -->
+          @defer {
+            <app-dashboard-chart />
+          } @placeholder {
+            <div class="d-flex align-items-center justify-content-center placeholder-glow" style="height: 260px;">
+              <span class="placeholder rounded-circle" style="width: 180px; height: 180px;"></span>
+            </div>
+          }
         </div>
       </div>
     </div>

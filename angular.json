@@ -118,7 +118,7 @@
               ]
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "local-noauth"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
