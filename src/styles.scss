@@ -12,8 +12,8 @@
 
 @use "bootstrap/scss/bootstrap" with ($enable-dark-mode: true,
   $primary: #0077B6, $secondary: #003566, $dark: #001D3D, $light: #F8FBFA,
-  $success: #00F5D4, $info: #00BBF9, $warning: #FFB703, $danger: #E63946,
-  $font-size-base: 0.85rem,
+  $success: #168c80, $info: #00BBF9, $warning: #FFB703, $danger: #E63946,
+  $font-size-base: 0.8rem,
   $body-bg: #F8FBFA, $body-color: #212529,
   $body-bg-dark: #000814, $body-color-dark: #E9ECEF,
   $body-secondary-bg-dark: #001D3D, $body-tertiary-bg-dark: #003566);
@@ -40,7 +40,7 @@ $sunlit: (
   coral: #FF8A80,
   anemone: #EA80FC,
   starfish: #FFB74D,
-  seagrass: #81C784,
+  seagrass: #000000,
   pearl: #FFF,
   text-primary: #1A2B3C,
   text-secondary: #4A5568,
@@ -49,7 +49,7 @@ $sunlit: (
   border-light: #E2E8F0
 );
 $bio: (
-  anglerfish: #00F5D4,
+  anglerfish: #0e6e9e,
   jellyfish: #9B5DE5,
   anemone: #F15BB5,
   phosphor: #FEE440
@@ -254,33 +254,33 @@ $badges: (
   }
 
   ;
-  --alert-#{$type}-border: #{map.get($cfg, #{$prefix}-border)
+    --alert-#{$type}-border: #{map.get($cfg, #{$prefix}-border)
 }
 
-;
---alert-#{$type}-color: #{map.get($cfg, #{$prefix}-color)
+  ;
+    --alert-#{$type}-color: #{map.get($cfg, #{$prefix}-color)
 }
 
-;
---alert-#{$type}-accent: #{map.get($cfg, #{$prefix}-accent)
+  ;
+    --alert-#{$type}-accent: #{map.get($cfg, #{$prefix}-accent)
 }
 
-;
+  ;
 
-@if map.has-key($cfg, #{$prefix}-shadow) {
-  --alert-#{$type}-text-shadow: #{map.get($cfg, #{$prefix}-shadow)
-}
-
-;
-}
+    @if map.has-key($cfg, #{$prefix}-shadow) {
+      --alert-#{$type}-text-shadow: #{map.get($cfg, #{$prefix}-shadow)
 }
 
-// Badges
-@each $type, $cfg in $badges {
-  $vals: map.get($cfg, $prefix);
-  --badge-#{$type}-bg: #{list.nth($vals, 1)};
-  --badge-#{$type}-color: #{list.nth($vals, 2)};
-}
+    ;
+    }
+  }
+
+  // Badges
+  @each $type, $cfg in $badges {
+    $vals: map.get($cfg, $prefix);
+    --badge-#{$type}-bg: #{list.nth($vals, 1)};
+    --badge-#{$type}-color: #{list.nth($vals, 2)};
+  }
 }
 
 // ============================================================
@@ -411,40 +411,7 @@ body {
   radial-gradient(ellipse 25% 20% at 15% 25%, #{rgba(b(jellyfish),0.08)}, transparent 40%),
   radial-gradient(ellipse 20% 15% at 85% 35%, #{rgba(b(jellyfish),0.05)}, transparent 35%),
   radial-gradient(circle 150px at 75% 50%, #{rgba(b(anglerfish),0.06)}, transparent 50%),
-  /* Bioluminescent jellyfish - bell shapes with trailing tentacles */
-  radial-gradient(ellipse 8% 12% at 8% 78%, #{rgba(b(jellyfish), 0.25)}, transparent 60%),
-  radial-gradient(ellipse 3% 18% at 8% 88%, #{rgba(b(jellyfish), 0.15)}, transparent 70%),
-  radial-gradient(ellipse 2% 15% at 6% 90%, #{rgba(b(jellyfish), 0.10)}, transparent 65%),
-  radial-gradient(ellipse 2% 12% at 10% 92%, #{rgba(b(jellyfish), 0.08)}, transparent 60%),
-  radial-gradient(ellipse 12% 15% at 22% 82%, #{rgba(b(anglerfish), 0.30)}, transparent 55%),
-  radial-gradient(ellipse 4% 20% at 22% 92%, #{rgba(b(anglerfish), 0.18)}, transparent 70%),
-  radial-gradient(ellipse 3% 16% at 19% 95%, #{rgba(b(anglerfish), 0.12)}, transparent 65%),
-  radial-gradient(ellipse 3% 14% at 25% 96%, #{rgba(b(anglerfish), 0.10)}, transparent 60%),
-  radial-gradient(ellipse 10% 14% at 38% 76%, #{rgba(b(anemone), 0.22)}, transparent 58%),
-  radial-gradient(ellipse 3% 22% at 38% 88%, #{rgba(b(anemone), 0.14)}, transparent 70%),
-  radial-gradient(ellipse 2% 18% at 35% 92%, #{rgba(b(anemone), 0.10)}, transparent 65%),
-  radial-gradient(ellipse 2% 15% at 41% 94%, #{rgba(b(anemone), 0.08)}, transparent 60%),
-  /* Phosphorescent plankton clouds */
-  radial-gradient(circle 80px at 52% 85%, #{rgba(b(phosphor), 0.12)}, transparent 70%),
-  radial-gradient(circle 50px at 48% 80%, #{rgba(b(phosphor), 0.08)}, transparent 65%),
-  radial-gradient(circle 30px at 55% 78%, #{rgba(b(phosphor), 0.06)}, transparent 60%),
-  /* More jellyfish */
-  radial-gradient(ellipse 15% 18% at 65% 80%, #{rgba(b(jellyfish), 0.28)}, transparent 55%),
-  radial-gradient(ellipse 5% 25% at 65% 92%, #{rgba(b(jellyfish), 0.18)}, transparent 70%),
-  radial-gradient(ellipse 3% 20% at 62% 96%, #{rgba(b(jellyfish), 0.12)}, transparent 65%),
-  radial-gradient(ellipse 3% 18% at 68% 98%, #{rgba(b(jellyfish), 0.10)}, transparent 60%),
-  radial-gradient(ellipse 9% 12% at 78% 74%, #{rgba(b(anglerfish), 0.25)}, transparent 58%),
-  radial-gradient(ellipse 3% 18% at 78% 85%, #{rgba(b(anglerfish), 0.15)}, transparent 70%),
-  radial-gradient(ellipse 2% 14% at 75% 88%, #{rgba(b(anglerfish), 0.10)}, transparent 65%),
-  radial-gradient(ellipse 2% 12% at 81% 90%, #{rgba(b(anglerfish), 0.08)}, transparent 60%),
-  radial-gradient(ellipse 11% 14% at 92% 78%, #{rgba(b(anemone), 0.24)}, transparent 55%),
-  radial-gradient(ellipse 4% 20% at 92% 90%, #{rgba(b(anemone), 0.16)}, transparent 70%),
-  radial-gradient(ellipse 3% 16% at 89% 94%, #{rgba(b(anemone), 0.10)}, transparent 65%),
-  radial-gradient(ellipse 3% 14% at 95% 96%, #{rgba(b(anemone), 0.08)}, transparent 60%),
-  /* Deep sea floor glow */
-  radial-gradient(ellipse 100% 12% at 50% 98%, #{rgba(b(anglerfish), 0.15)}, transparent 80%),
-  radial-gradient(ellipse 60% 8% at 30% 95%, #{rgba(b(jellyfish), 0.10)}, transparent 70%),
-  radial-gradient(ellipse 50% 6% at 70% 100%, #{rgba(b(anemone), 0.08)}, transparent 60%),
+
   linear-gradient(180deg, #{o(midnight)} 0%, #{o(abyss)} 35%, #{rgba(o(trench),0.95)} 65%, #{o(trench)} 100%);
 
   --sunlit-shallow: #{rgba(s(shallow),0.2)};

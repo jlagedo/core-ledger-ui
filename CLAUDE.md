@@ -404,8 +404,191 @@ Custom directives in `src/app/directives/` (kebab-case naming):
 
 - SCSS is the stylesheet format (configured in `angular.json`)
 - Use Bootstrap 5 utility classes where possible
-- Avoid inline styles
+- Avoid inline styles (use rem units if inline styles are absolutely necessary)
 - Prettier formatting: printWidth 100, singleQuote true
+
+### Bootstrap 5 Best Practices
+
+The application uses **Bootstrap 5.3.8** imported from source in `styles.scss`. Follow these conventions:
+
+**Core Principles:**
+1. **Utility-First**: Prefer Bootstrap utility classes over custom CSS
+2. **Responsive Design**: Use responsive breakpoints (sm, md, lg, xl, xxl)
+3. **Spacing System**: Use consistent spacing scale (0-5, auto)
+4. **Grid System**: Leverage row/col with gutters (g-*)
+5. **Theme Colors**: Use semantic colors (primary, secondary, success, info, warning, danger, light, dark)
+
+**Grid & Layout:**
+```html
+<!-- Use grid gutters instead of manual margins -->
+<form class="row g-3" novalidate>
+  <div class="col-md-6">...</div>
+  <div class="col-md-6">...</div>
+</form>
+```
+
+**Container Usage Standards:**
+The application follows a consistent container strategy based on page type:
+
+1. **List/Index Pages** → `container-lg px-3 px-md-4`
+   - Examples: fund-list, chart-of-accounts, transaction-list, security-list
+   - Purpose: Balanced max-width on large screens, readable content width
+
+2. **Form Pages** → `container mt-3`
+   - Examples: fund-form, account-form, security-form, transaction-form
+   - Purpose: Narrower width for focused form entry
+   - Forms typically use `col-lg-8` or `col-lg-10` centered cards
+
+3. **Dashboard Pages** → `container-fluid`
+   - Examples: dashboard, posting-periods, journal-entries, administration
+   - Purpose: Full-width layouts for data visualization and charts
+
+```html
+<!-- List view example -->
+<main class="container-lg px-3 px-md-4">
+  <div class="card">...</div>
+</main>
+
+<!-- Form view example -->
+<div class="container mt-3">
+  <div class="card col-lg-8 mx-auto">...</div>
+</div>
+
+<!-- Dashboard example -->
+<main class="container-fluid px-3 pb-4">
+  <div class="row g-4">...</div>
+</main>
+```
+
+**Spacing Utilities:**
+- Margin: `m-*`, `mt-*`, `mb-*`, `ms-*`, `me-*`, `mx-*`, `my-*`
+- Padding: `p-*`, `pt-*`, `pb-*`, `ps-*`, `pe-*`, `px-*`, `py-*`
+- Gap: `gap-*`, `row-gap-*`, `column-gap-*`
+- Scale: 0 (0rem), 1 (0.25rem), 2 (0.5rem), 3 (1rem), 4 (1.5rem), 5 (3rem), auto
+
+**Button Sizing Standards:**
+- **Regular size (default)**: Primary actions (Submit, Create New, Save)
+- **Small size (`btn-sm`)**: Secondary actions in headers (Help, Info)
+- **Button groups (`btn-group-sm`)**: Table row actions, compact toolbars
+
+**Common Component Patterns:**
+
+*Cards:*
+
+**Standard Card Pattern for List Views:**
+The application uses a consistent card styling pattern across list views. Use this exact combination for consistency:
+
+```html
+<!-- List view card (data grids, tables) -->
+<div class="card bg-body-tertiary border-0 shadow-sm rounded-4 border-top bg-opacity-50">
+  <div class="card-body p-3 p-md-4">
+    <app-data-grid />
+  </div>
+</div>
+```
+
+**Explanation of classes:**
+- `bg-body-tertiary` - Themed background color (adapts to light/dark mode)
+- `border-0` - Remove default card border
+- `shadow-sm` - Subtle shadow for depth
+- `rounded-4` - Larger border radius (0.5rem)
+- `border-top` - Top border for visual separation
+- `bg-opacity-50` - 50% background opacity for glass effect
+
+**Form Card Pattern:**
+Forms use a centered card with header:
+
+```html
+<div class="card col-lg-8 mx-auto bg-body-tertiary">
+  <div class="card-header">
+    <h5 class="card-title">Create Fund</h5>
+  </div>
+  <div class="card-body">
+    <form class="row g-3">...</form>
+  </div>
+</div>
+```
+
+**Dashboard Card Pattern:**
+Dashboard cards use responsive grid and equal heights:
+
+```html
+<div class="col-xl-4 col-lg-6">
+  <div class="card bg-body-tertiary shadow-sm border-0 rounded-4 h-100">
+    <div class="card-body p-4">
+      <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Title</h6>
+      <!-- Content -->
+    </div>
+  </div>
+</div>
+```
+
+*Forms:*
+```html
+<!-- Form with validation -->
+<form class="row g-3" [formGroup]="myForm" (ngSubmit)="onSubmit()">
+  <div class="col-md-6">
+    <label for="field" class="form-label">Field Label</label>
+    <input type="text" class="form-control" [class.is-invalid]="isInvalid('field')" id="field">
+    <div class="invalid-feedback">Error message</div>
+  </div>
+</form>
+```
+
+*Buttons:*
+```html
+<!-- Button variants -->
+<button class="btn btn-primary">Primary Action</button>
+<button class="btn btn-secondary">Secondary Action</button>
+<button class="btn btn-outline-secondary">Tertiary Action</button>
+
+<!-- Button groups for table actions -->
+<div class="btn-group btn-group-sm" role="group">
+  <button class="btn btn-secondary"><i class="bi bi-pencil"></i></button>
+  <button class="btn btn-secondary dropdown-toggle" ngbDropdownToggle></button>
+</div>
+```
+
+*Alerts:*
+```html
+<!-- Alert with icon -->
+<div class="alert alert-success d-flex align-items-center" role="alert">
+  <i class="bi bi-check-circle-fill fs-4 me-2" aria-hidden="true"></i>
+  <div><strong>Success!</strong> Operation completed.</div>
+</div>
+```
+
+**Flexbox Utilities:**
+- Display: `d-flex`, `d-inline-flex`, `d-grid`
+- Direction: `flex-row`, `flex-column`
+- Justify: `justify-content-start`, `justify-content-center`, `justify-content-end`, `justify-content-between`
+- Align: `align-items-start`, `align-items-center`, `align-items-end`, `align-items-stretch`
+- Grow/Shrink: `flex-grow-1`, `flex-shrink-0`, `flex-fill`
+
+**Responsive Utilities:**
+```html
+<!-- Hide/show based on breakpoint -->
+<div class="d-none d-md-block">Hidden on mobile, visible on tablet+</div>
+
+<!-- Responsive spacing -->
+<div class="px-3 px-md-4">Padding adjusts with screen size</div>
+
+<!-- Responsive grid -->
+<div class="col-12 col-md-6 col-lg-4">Responsive column</div>
+```
+
+**Text Utilities:**
+- Color: `text-primary`, `text-secondary`, `text-muted`, `text-danger`, `text-success`
+- Alignment: `text-start`, `text-center`, `text-end`
+- Transform: `text-uppercase`, `text-lowercase`, `text-capitalize`
+- Weight: `fw-bold`, `fw-semibold`, `fw-normal`, `fw-light`
+- Size: `fs-1` through `fs-6`, `display-1` through `display-6`
+
+**Avoid:**
+- Inline styles (use rem units like `style="max-width: 25rem;"` if absolutely necessary)
+- Hardcoded pixel values (prefer Bootstrap's spacing scale)
+- Custom CSS for what Bootstrap utilities already provide
+- Repetitive class combinations (consider creating semantic classes)
 
 ### Accessibility
 

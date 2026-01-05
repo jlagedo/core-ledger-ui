@@ -11,9 +11,10 @@
     </div>
     <div class="card-body">
 
-      <form (ngSubmit)="onSubmit()" [formGroup]="transactionForm" novalidate>
+      <form (ngSubmit)="onSubmit()" [formGroup]="transactionForm" class="row g-3" novalidate>
         <!-- Fund and Security Selection -->
-        <div class="row mb-3">
+        <div class="col-12">
+          <div class="row">
           <div class="col-md-6">
             <label class="form-label" for="fundId">Fund <span class="text-danger">*</span></label>
             <select [class.is-invalid]="isInvalid('fundId')" class="form-select" formControlName="fundId" id="fundId">
@@ -39,10 +40,12 @@
               }
             </select>
           </div>
+          </div>
         </div>
 
         <!-- Transaction Type -->
-        <div class="row mb-3">
+        <div class="col-12">
+          <div class="row">
           <div class="col-md-6">
             <label class="form-label" for="transactionSubTypeId">Transaction Type <span class="text-danger">*</span></label>
             <select [class.is-invalid]="isInvalid('transactionSubTypeId')" class="form-select" formControlName="transactionSubTypeId" id="transactionSubTypeId">
@@ -74,10 +77,12 @@
               </div>
             }
           </div>
+          </div>
         </div>
 
         <!-- Trade and Settle Dates -->
-        <div class="row mb-3">
+        <div class="col-12">
+          <div class="row">
           <div class="col-md-6">
             <label class="form-label" for="tradeDate">Trade Date <span class="text-danger">*</span></label>
             <div class="input-group">
@@ -112,10 +117,12 @@
               </div>
             }
           </div>
+          </div>
         </div>
 
         <!-- Quantity, Price, Amount -->
-        <div class="row mb-3">
+        <div class="col-12">
+          <div class="row">
           <div class="col-md-4">
             <label class="form-label" for="quantity">Quantity <span class="text-danger">*</span></label>
             <input [class.is-invalid]="isInvalid('quantity')" class="form-control text-end font-monospace" formControlName="quantity"
@@ -162,19 +169,23 @@
               </div>
             }
           </div>
+          </div>
         </div>
 
         <!-- Loading Status Message -->
-        @if (submitStatus() === 'loading') {
-          <div class="alert alert-info d-flex align-items-center mb-3" role="status">
-            <div aria-hidden="true" class="spinner-border spinner-border-sm me-2 text-primary"></div>
-            <div>
-              Creating transaction...
+        <div class="col-12">
+          @if (submitStatus() === 'loading') {
+            <div class="alert alert-info d-flex align-items-center" role="status">
+              <div aria-hidden="true" class="spinner-border spinner-border-sm me-2 text-primary"></div>
+              <div>
+                Creating transaction...
+              </div>
             </div>
-          </div>
-        }
+          }
+        </div>
 
-        <div class="d-flex gap-2 align-items-center mb-3">
+        <div class="col-12">
+          <div class="d-flex gap-2 align-items-center">
           <button [disabled]="isSubmitting()" class="btn btn-primary position-relative" type="submit">
             @if (isSubmitting()) {
               <span aria-hidden="true" class="spinner-border spinner-border-sm me-1"></span>
@@ -187,6 +198,7 @@
           <button (click)="clearForm()" [disabled]="isSubmitting()" class="btn btn-outline-secondary" type="button">
             Clear
           </button>
+          </div>
         </div>
       </form>
 
