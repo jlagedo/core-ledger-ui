@@ -1,0 +1,234 @@
+<app-page-header title="New Transaction">
+  <button class="btn btn-sm btn-secondary" aria-label="Get help for this page">
+    <i class="bi bi-question-circle"></i> Help
+  </button>
+</app-page-header>
+
+<div class="container mt-3">
+  <div class="card col-lg-10 mx-auto bg-body-tertiary">
+    <div class="card-header">
+      <h5 class="card-title">Create Transaction</h5>
+    </div>
+    <div class="card-body">
+
+      <form (ngSubmit)="onSubmit()" [formGroup]="transactionForm" novalidate>
+        <!-- Fund and Security Selection -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="fundId">Fund <span class="text-danger">*</span></label>
+            <select [class.is-invalid]="isInvalid('fundId')" class="form-select" formControlName="fundId" id="fundId">
+              <option [ngValue]="null">Select a fund...</option>
+              @for (fund of funds(); track fund.id) {
+                <option [ngValue]="fund.id">{{ fund.code }} - {{ fund.name }}</option>
+              }
+            </select>
+            @if (isInvalid('fundId')) {
+              <div class="invalid-feedback">
+                @if (hasError('fundId', 'required')) {
+                  Fund is required
+                }
+              </div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="securityId">Security</label>
+            <select class="form-select" formControlName="securityId" id="securityId">
+              <option [ngValue]="null">None (Cash transaction)</option>
+              @for (security of securities(); track security.id) {
+                <option [ngValue]="security.id">{{ security.ticker }} - {{ security.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <!-- Transaction Type -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="transactionSubTypeId">Transaction Type <span class="text-danger">*</span></label>
+            <select [class.is-invalid]="isInvalid('transactionSubTypeId')" class="form-select" formControlName="transactionSubTypeId" id="transactionSubTypeId">
+              <option [ngValue]="null">Select a type...</option>
+              @for (subType of transactionSubTypes(); track subType.id) {
+                <option [ngValue]="subType.id">{{ subType.typeDescription }} - {{ subType.shortDescription }}</option>
+              }
+            </select>
+            @if (isInvalid('transactionSubTypeId')) {
+              <div class="invalid-feedback">
+                @if (hasError('transactionSubTypeId', 'required')) {
+                  Transaction type is required
+                }
+              </div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="currency">Currency <span class="text-danger">*</span></label>
+            <input [class.is-invalid]="isInvalid('currency')" class="form-control text-uppercase" formControlName="currency"
+                   id="currency" maxlength="3" placeholder="USD" type="text">
+            @if (isInvalid('currency')) {
+              <div class="invalid-feedback">
+                @if (hasError('currency', 'required')) {
+                  Currency is required
+                }
+                @if (hasError('currency', 'minlength') || hasError('currency', 'maxlength')) {
+                  Currency must be a 3-letter ISO code
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Trade and Settle Dates -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="tradeDate">Trade Date <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <input #tdPicker="ngbDatepicker" [class.is-invalid]="isInvalid('tradeDate')" class="form-control" formControlName="tradeDate"
+                     id="tradeDate" ngbDatepicker placeholder="yyyy-mm-dd" type="text">
+              <button (click)="tdPicker.toggle()" [attr.aria-label]="'Toggle calendar'" class="btn btn-outline-secondary" type="button">
+                <i aria-hidden="true" class="bi bi-calendar3"></i>
+              </button>
+            </div>
+            @if (isInvalid('tradeDate')) {
+              <div class="invalid-feedback d-block">
+                @if (hasError('tradeDate', 'required')) {
+                  Trade date is required
+                }
+              </div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="settleDate">Settle Date <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <input #sdPicker="ngbDatepicker" [class.is-invalid]="isInvalid('settleDate')" class="form-control" formControlName="settleDate"
+                     id="settleDate" ngbDatepicker placeholder="yyyy-mm-dd" type="text">
+              <button (click)="sdPicker.toggle()" [attr.aria-label]="'Toggle calendar'" class="btn btn-outline-secondary" type="button">
+                <i aria-hidden="true" class="bi bi-calendar3"></i>
+              </button>
+            </div>
+            @if (isInvalid('settleDate')) {
+              <div class="invalid-feedback d-block">
+                @if (hasError('settleDate', 'required')) {
+                  Settle date is required
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Quantity, Price, Amount -->
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="form-label" for="quantity">Quantity <span class="text-danger">*</span></label>
+            <input [class.is-invalid]="isInvalid('quantity')" class="form-control text-end font-monospace" formControlName="quantity"
+                   id="quantity" placeholder="0" type="text">
+            @if (isInvalid('quantity')) {
+              <div class="invalid-feedback">
+                @if (hasError('quantity', 'required')) {
+                  Quantity is required
+                }
+                @if (hasError('quantity', 'pattern')) {
+                  Quantity must be a valid number
+                }
+              </div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="price">Price <span class="text-danger">*</span></label>
+            <input [class.is-invalid]="isInvalid('price')" class="form-control text-end font-monospace" formControlName="price"
+                   id="price" placeholder="0.00" type="text">
+            @if (isInvalid('price')) {
+              <div class="invalid-feedback">
+                @if (hasError('price', 'required')) {
+                  Price is required
+                }
+                @if (hasError('price', 'pattern')) {
+                  Price must be a positive number
+                }
+              </div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="amount">Amount <span class="text-danger">*</span></label>
+            <input [class.is-invalid]="isInvalid('amount')" class="form-control text-end font-monospace fw-bold" formControlName="amount"
+                   id="amount" placeholder="0.00" type="text">
+            <small class="text-muted">Auto-calculated from Qty × Price</small>
+            @if (isInvalid('amount')) {
+              <div class="invalid-feedback">
+                @if (hasError('amount', 'required')) {
+                  Amount is required
+                }
+                @if (hasError('amount', 'pattern')) {
+                  Amount must be a valid number
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Loading Status Message -->
+        @if (submitStatus() === 'loading') {
+          <div class="alert alert-info d-flex align-items-center mb-3" role="status">
+            <div aria-hidden="true" class="spinner-border spinner-border-sm me-2 text-primary"></div>
+            <div>
+              Creating transaction...
+            </div>
+          </div>
+        }
+
+        <div class="d-flex gap-2 align-items-center mb-3">
+          <button [disabled]="isSubmitting()" class="btn btn-primary position-relative" type="submit">
+            @if (isSubmitting()) {
+              <span aria-hidden="true" class="spinner-border spinner-border-sm me-1"></span>
+            }
+            Submit
+          </button>
+          <button (click)="cancel()" class="btn btn-secondary" type="button">
+            Cancel and Go Back
+          </button>
+          <button (click)="clearForm()" [disabled]="isSubmitting()" class="btn btn-outline-secondary" type="button">
+            Clear
+          </button>
+        </div>
+      </form>
+
+      <!-- ARIA Live Region for Screen Reader Announcements -->
+      <div aria-atomic="true" aria-live="polite" class="visually-hidden" role="status">
+        @if (submitStatus() === 'loading') {
+          Creating transaction, please wait...
+        }
+        @if (submitStatus() === 'success') {
+          Transaction created successfully. Redirecting to Transaction List...
+        }
+        @if (submitStatus() === 'error') {
+          Error: {{ errorMessage() }}
+        }
+      </div>
+
+      <!-- Success Message -->
+      @if (submitStatus() === 'success') {
+        <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
+          <i aria-hidden="true" class="bi bi-check-circle-fill fs-4 me-2"></i>
+          <div>
+            <strong>Success!</strong> Transaction created successfully. Redirecting to Transaction List...
+          </div>
+        </div>
+      }
+
+      <!-- Error Message -->
+      @if (submitStatus() === 'error') {
+        <div class="alert alert-danger d-flex align-items-start mb-3" role="alert">
+          <i aria-hidden="true" class="bi bi-exclamation-triangle-fill fs-4 me-2 flex-shrink-0"></i>
+          <div class="flex-grow-1">
+            <strong>Error!</strong> {{ errorMessage() }}
+            <div class="mt-2">
+              <button (click)="retrySubmit()" class="btn btn-sm btn-outline-danger" type="button">
+                <i aria-hidden="true" class="bi bi-arrow-clockwise me-1"></i>
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+</div>

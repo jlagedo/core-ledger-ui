@@ -1,6 +1,7 @@
 import {Routes} from '@angular/router';
 import {Transactions} from './transactions';
-import {CaptureTransaction} from './capture-transaction';
+import {TransactionList} from './transaction-list';
+import {TransactionForm} from './transaction-form/transaction-form';
 import {TransactionLedger} from './transaction-ledger';
 import {ImportTransactions} from './import-transactions';
 
@@ -12,7 +13,17 @@ export const TRANSACTIONS_ROUTES: Routes = [
   {
     path: 'capture',
     data: {breadcrumb: 'Capture Transaction'},
-    component: CaptureTransaction
+    children: [
+      {
+        path: '',
+        component: TransactionList
+      },
+      {
+        path: 'new',
+        data: {breadcrumb: 'New Transaction'},
+        component: TransactionForm
+      }
+    ]
   },
   {
     path: 'ledger',

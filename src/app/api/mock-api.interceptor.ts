@@ -107,7 +107,7 @@ function routeRequest(req: any, mockApiService: MockApiService): HttpResponse<an
     const id = /^\d+$/.test(lastPart) ? parseInt(lastPart, 10) : null;
 
     // Endpoints that return plain arrays instead of paginated responses
-    const arrayEndpoints = ['/api/accounttypes', '/api/securitytypes'];
+    const arrayEndpoints = ['/api/accounttypes', '/api/securitytypes', '/api/transactions/status', '/api/transactions/subtypes'];
     const isArrayEndpoint = arrayEndpoints.some(endpoint => url.includes(endpoint));
 
     // Report endpoints that return arrays directly

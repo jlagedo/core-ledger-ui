@@ -8,4 +8,5 @@ export * from './account-types.mock';
 export * from './funds.mock';
 export * from './securities.mock';
 export * from './security-types.mock';
+export * from './transactions.mock';
 export * from './users.mock';

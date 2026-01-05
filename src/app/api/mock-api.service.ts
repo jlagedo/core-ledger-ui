@@ -8,6 +8,9 @@ import {
     MOCK_FUNDS,
     MOCK_SECURITIES,
     MOCK_SECURITY_TYPES,
+    MOCK_TRANSACTIONS,
+    MOCK_TRANSACTION_STATUSES,
+    MOCK_TRANSACTION_SUBTYPES,
     MOCK_USERS,
 } from './mock-data';
 import { PaginatedResponse } from '../models/fund.model';
@@ -28,6 +31,9 @@ export class MockApiService {
     private funds = new Map(MOCK_FUNDS.map(f => [f.id, { ...f }]));
     private securities = new Map(MOCK_SECURITIES.map(s => [s.id, { ...s }]));
     private securityTypes = new Map(MOCK_SECURITY_TYPES.map(st => [st.value, { ...st }]));
+    private transactions = new Map(MOCK_TRANSACTIONS.map(t => [t.id, { ...t }]));
+    private transactionStatuses = new Map(MOCK_TRANSACTION_STATUSES.map(s => [s.id, { ...s }]));
+    private transactionSubTypes = new Map(MOCK_TRANSACTION_SUBTYPES.map(st => [st.id, { ...st }]));
     private users = new Map(MOCK_USERS.map(u => [u.id, { ...u }]));
 
     // Auto-increment ID counters
@@ -35,6 +41,7 @@ export class MockApiService {
     private nextAccountTypeId = 6; // Account types use string IDs
     private nextFundId = Math.max(...MOCK_FUNDS.map(f => f.id), 0) + 1;
     private nextSecurityId = Math.max(...MOCK_SECURITIES.map(s => s.id), 0) + 1;
+    private nextTransactionId = Math.max(...MOCK_TRANSACTIONS.map(t => t.id), 0) + 1;
     private nextUserId = Math.max(...MOCK_USERS.map(u => u.id), 0) + 1;
 
     constructor() {
@@ -240,6 +247,10 @@ export class MockApiService {
         if (url.includes('/funds')) return this.funds;
         if (url.includes('/securities') && !url.includes('/securitytypes')) return this.securities;
         if (url.includes('/securitytypes')) return this.securityTypes;
+        // Transaction endpoints - order matters: more specific patterns first
+        if (url.includes('/transactions/status')) return this.transactionStatuses;
+        if (url.includes('/transactions/subtypes')) return this.transactionSubTypes;
+        if (url.includes('/transactions')) return this.transactions;
         if (url.includes('/users')) return this.users;
         return null;
     }
@@ -252,6 +263,7 @@ export class MockApiService {
         if (url.includes('/accounttypes')) return this.nextAccountTypeId++;
         if (url.includes('/funds')) return this.nextFundId++;
         if (url.includes('/securities')) return this.nextSecurityId++;
+        if (url.includes('/transactions')) return this.nextTransactionId++;
         return 1;
     }
 
@@ -278,12 +290,16 @@ export class MockApiService {
         this.funds = new Map(MOCK_FUNDS.map(f => [f.id, { ...f }]));
         this.securities = new Map(MOCK_SECURITIES.map(s => [s.id, { ...s }]));
         this.securityTypes = new Map(MOCK_SECURITY_TYPES.map(st => [st.value, { ...st }]));
+        this.transactions = new Map(MOCK_TRANSACTIONS.map(t => [t.id, { ...t }]));
+        this.transactionStatuses = new Map(MOCK_TRANSACTION_STATUSES.map(s => [s.id, { ...s }]));
+        this.transactionSubTypes = new Map(MOCK_TRANSACTION_SUBTYPES.map(st => [st.id, { ...st }]));
         this.users = new Map(MOCK_USERS.map(u => [u.id, { ...u }]));
 
         this.nextAccountId = Math.max(...MOCK_ACCOUNTS.map(a => a.id), 0) + 1;
         this.nextAccountTypeId = 6; // Account types use string IDs
         this.nextFundId = Math.max(...MOCK_FUNDS.map(f => f.id), 0) + 1;
         this.nextSecurityId = Math.max(...MOCK_SECURITIES.map(s => s.id), 0) + 1;
+        this.nextTransactionId = Math.max(...MOCK_TRANSACTIONS.map(t => t.id), 0) + 1;
         this.nextUserId = Math.max(...MOCK_USERS.map(u => u.id), 0) + 1;
     }
 }
