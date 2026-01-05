@@ -1,0 +1,109 @@
+// ============================================================
+// UTILITY CLASSES
+//
+// Brand colors, surfaces, glows, shadows, and animations.
+// ============================================================
+
+@use "sass:map";
+@use "variables" as *;
+
+// ============================================================
+// BRAND COLOR UTILITIES
+// ============================================================
+
+$brand-colors: (
+  "brand-blue-400": $brand-blue-400,
+  "brand-blue-500": $brand-blue-500,
+  "brand-blue-600": $brand-blue-600,
+  "brand-blue-700": $brand-blue-700,
+  "brand-blue-800": $brand-blue-800
+);
+
+@each $name, $color in $brand-colors {
+  .bg-#{$name} {
+    background-color: $color !important;
+  }
+  .text-#{$name} {
+    color: $color !important;
+  }
+  .border-#{$name} {
+    border-color: $color !important;
+  }
+}
+
+// ============================================================
+// SURFACE UTILITIES
+// ============================================================
+
+@each $name in (sky, foam, shallow, lagoon, sand) {
+  $colors: (
+    sky: $warm-sky,
+    foam: $neutral-50,
+    shallow: $brand-blue-100,
+    lagoon: $brand-blue-200,
+    sand: $warm-cream
+  );
+
+  .bg-surface-#{$name} {
+    background-color: map.get($colors, $name) !important;
+  }
+}
+
+// ============================================================
+// GLOW EFFECTS
+// ============================================================
+
+$glow-colors: (
+  "teal": $accent-teal,
+  "purple": $accent-purple,
+  "pink": $accent-pink,
+  "yellow": $accent-yellow
+);
+
+@each $name, $color in $glow-colors {
+  .glow-#{$name} {
+    box-shadow: 0 0 20px rgba($color, 0.15), 0 0 40px rgba($color, 0.075), 0 0 60px rgba($color, 0.03);
+  }
+}
+
+// ============================================================
+// SHADOW UTILITIES
+// ============================================================
+
+.shadow-light-sm { box-shadow: $shadow-light-sm !important; }
+.shadow-light-md { box-shadow: $shadow-light-md !important; }
+.shadow-light-lg { box-shadow: $shadow-light-lg !important; }
+
+// ============================================================
+// ANIMATION UTILITIES
+// ============================================================
+
+.animate-pulse {
+  animation: bio-pulse 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: jellyfish-float 3s ease-in-out infinite;
+}
+
+.animate-drift {
+  animation: depth-drift 4s ease-in-out infinite;
+}
+
+// ============================================================
+// GRADIENT TEXT
+// ============================================================
+
+.text-gradient-brand {
+  background: var(--nav-link-underline);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-accent {
+  background: linear-gradient(135deg, var(--accent-teal) 0%, #{$accent-purple} 50%, #{$accent-pink} 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

@@ -1,0 +1,218 @@
+// ============================================================
+// THEME TOKEN MAPS — Light/Dark Mode Values
+//
+// Single source of truth for theme-aware values.
+// Organized by category for readability.
+// ============================================================
+
+@use "sass:color";
+@use "sass:map";
+@use "variables" as *;
+
+$theme-tokens: (
+  // ========================
+  // LIGHT MODE
+  // ========================
+  light: (
+    // --- Core ---
+    body-bg: $neutral-50,
+    body-color: $color-text-primary,
+    emphasis: $brand-blue-600,
+
+    // --- Links ---
+    link: $brand-blue-500,
+    link-hover: $brand-blue-400,
+    link-visited: color.scale($brand-blue-500, $lightness: -15%, $saturation: -20%),
+
+    // --- Borders ---
+    border: $color-border-default,
+    border-translucent: rgba(26, 43, 60, 0.12),
+
+    // --- Shadows ---
+    shadow-sm: $shadow-light-sm,
+    shadow-md: $shadow-light-md,
+    shadow-lg: $shadow-light-lg,
+
+    // --- Focus States ---
+    focus-ring: rgba($brand-blue-500, 0.4),
+    focus-outline: $brand-blue-600,
+    focus-ring-offset: 2px,
+
+    // --- Disabled States ---
+    disabled-bg: rgba($neutral-400, 0.15),
+    disabled-color: $neutral-500,
+    disabled-border: $color-border-light,
+    disabled-opacity: 0.65,
+
+    // --- Form Validation ---
+    input-error-bg: rgba($accent-coral, 0.08),
+    valid: color.adjust($neutral-black, $lightness: -15%),
+    valid-border: $neutral-black,
+    invalid: color.adjust($accent-coral, $lightness: -20%),
+    invalid-border: $accent-coral,
+
+    // --- Cards ---
+    card-bg: $neutral-white,
+    card-border: $color-border-default,
+    card-header: rgba($brand-blue-200, 0.12),
+
+    // --- Glass Effect ---
+    glass-bg: rgba(255, 255, 255, 0.85),
+    glass-border: rgba(203, 213, 224, 0.6),
+    glass-shadow: 0 4px 30px rgba(26, 43, 60, 0.12),
+
+    // --- Inputs ---
+    input-bg: $neutral-white,
+    input-border: $color-border-default,
+    input-focus: $brand-blue-400,
+    input-focus-shadow: 0 0 0 0.25rem rgba($brand-blue-400, 0.2),
+    input-placeholder: $color-text-muted,
+
+    // --- Tables ---
+    table-bg: $neutral-white,
+    table-header-bg: $warm-sky,
+    table-header-color: $color-text-primary,
+    table-striped: rgba($brand-blue-200, 0.08),
+    table-hover: rgba($brand-blue-400, 0.1),
+    table-active-bg: rgba($brand-blue-500, 0.15),
+    table-active-color: $color-text-primary,
+    table-active-border: $brand-blue-500,
+    table-border: $color-border-light,
+    table-cell: $color-text-primary,
+    table-action: $color-text-secondary,
+    table-action-hover: $brand-blue-500,
+
+    // --- Buttons ---
+    btn-primary-hover: color.scale($brand-blue-500, $lightness: -10%),
+    btn-secondary-bg: $color-text-secondary,
+    btn-secondary-color: $neutral-white,
+    btn-secondary-hover: color.scale($color-text-secondary, $lightness: 15%),
+
+    // --- Navigation ---
+    nav-active: $brand-blue-400,
+    nav-underline: linear-gradient(90deg, $brand-blue-400, $brand-blue-500),
+
+    // --- Scrollbar ---
+    scrollbar-track: rgba($neutral-400, 0.1),
+    scrollbar-thumb: linear-gradient(180deg, $brand-blue-500, $brand-blue-600),
+
+    // --- Selection ---
+    selection: rgba($brand-blue-500, 0.3),
+
+    // --- Dropdown ---
+    dropdown-bg: rgba(248, 251, 250, 0.95),
+    dropdown-border: rgba(26, 43, 60, 0.12),
+
+    // --- Sidenav ---
+    sidenav-bg: $brand-blue-700,
+    sidenav-color: $warm-cream,
+    sidenav-gradient: radial-gradient(circle 500px at 50% 300px, rgba($brand-blue-500, 0.15), transparent),
+    sidenav-hover: rgba($warm-cream, 0.05),
+    sidenav-active-bg: rgba($brand-blue-400, 0.15),
+    sidenav-active-border: $brand-blue-400,
+    sidenav-divider: rgba($brand-blue-400, 0.1)
+  ),
+
+  // ========================
+  // DARK MODE
+  // ========================
+  dark: (
+    // --- Core ---
+    body-bg: $brand-blue-800,
+    body-color: $neutral-100,
+    emphasis: $neutral-white,
+
+    // --- Links ---
+    link: $brand-blue-400,
+    link-hover: color.scale($brand-blue-400, $lightness: 20%),
+    link-visited: color.scale($brand-blue-400, $lightness: -10%, $saturation: -15%),
+
+    // --- Borders ---
+    border: rgba($brand-blue-400, 0.15),
+    border-translucent: rgba(255, 255, 255, 0.1),
+
+    // --- Shadows ---
+    shadow-sm: $shadow-dark-sm,
+    shadow-md: $shadow-dark-md,
+    shadow-lg: $shadow-dark-lg,
+
+    // --- Focus States ---
+    focus-ring: rgba($accent-teal, 0.5),
+    focus-outline: $accent-teal,
+    focus-ring-offset: 2px,
+
+    // --- Disabled States ---
+    disabled-bg: rgba($neutral-600, 0.3),
+    disabled-color: $neutral-400,
+    disabled-border: rgba($neutral-400, 0.2),
+    disabled-opacity: 0.5,
+
+    // --- Form Validation ---
+    input-error-bg: rgba($accent-red-light, 0.1),
+    valid: color.scale($accent-teal, $lightness: -15%),
+    valid-border: $accent-teal,
+    invalid: $accent-red-light,
+    invalid-border: $accent-red-light,
+
+    // --- Cards ---
+    card-bg: rgba($brand-blue-700, 0.6),
+    card-border: rgba($brand-blue-400, 0.1),
+    card-header: rgba($brand-blue-400, 0.05),
+
+    // --- Glass Effect ---
+    glass-bg: rgba(255, 255, 255, 0.05),
+    glass-border: rgba($accent-teal, 0.1),
+    glass-shadow: 0 4px 30px rgba(0, 8, 20, 0.25),
+
+    // --- Inputs ---
+    input-bg: rgba($brand-blue-700, 0.4),
+    input-border: rgba($brand-blue-400, 0.2),
+    input-focus: $accent-teal,
+    input-focus-shadow: 0 0 0 0.25rem rgba($accent-teal, 0.15),
+    input-placeholder: rgba($neutral-100, 0.5),
+
+    // --- Tables ---
+    table-bg: rgba($brand-blue-700, 0.85),
+    table-header-bg: rgba($brand-blue-600, 0.6),
+    table-header-color: $neutral-100,
+    table-striped: rgba($brand-blue-600, 0.25),
+    table-hover: rgba($brand-blue-400, 0.08),
+    table-active-bg: rgba($brand-blue-500, 0.45),
+    table-active-color: $neutral-white,
+    table-active-border: $brand-blue-400,
+    table-border: rgba($brand-blue-400, 0.1),
+    table-cell: $neutral-100,
+    table-action: rgba($neutral-100, 0.7),
+    table-action-hover: $brand-blue-400,
+
+    // --- Buttons ---
+    btn-primary-hover: color.scale($brand-blue-500, $lightness: 15%),
+    btn-secondary-bg: $neutral-600,
+    btn-secondary-color: $neutral-white,
+    btn-secondary-hover: $neutral-500,
+
+    // --- Navigation ---
+    nav-active: color.scale($accent-teal, $lightness: -15%),
+    nav-underline: linear-gradient(90deg, $brand-blue-400, $accent-teal),
+
+    // --- Scrollbar ---
+    scrollbar-track: rgba($brand-blue-700, 0.5),
+    scrollbar-thumb: linear-gradient(180deg, $brand-blue-600, $brand-blue-700),
+
+    // --- Selection ---
+    selection: rgba($accent-teal, 0.3),
+
+    // --- Dropdown ---
+    dropdown-bg: rgba($brand-blue-700, 0.95),
+    dropdown-border: rgba($brand-blue-400, 0.1),
+
+    // --- Sidenav ---
+    sidenav-bg: $brand-blue-800,
+    sidenav-color: $neutral-100,
+    sidenav-gradient: radial-gradient(circle 500px at 50% 300px, rgba($accent-teal, 0.12), transparent),
+    sidenav-hover: rgba($neutral-100, 0.05),
+    sidenav-active-bg: rgba($accent-teal, 0.15),
+    sidenav-active-border: $accent-teal,
+    sidenav-divider: rgba($accent-teal, 0.1)
+  )
+);

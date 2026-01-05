@@ -1,0 +1,148 @@
+// ============================================================
+// VARIABLES — Design Token Foundation
+//
+// This file contains:
+// 1. Bootstrap Configuration (module with)
+// 2. Primitive Tokens (raw color values)
+// 3. Semantic Tokens (purpose-driven aliases)
+// 4. Component Tokens (shadows & transitions)
+// ============================================================
+
+@use "sass:color";
+
+// ============================================================
+// 1. BOOTSTRAP CONFIGURATION
+// ============================================================
+
+@use "bootstrap/scss/bootstrap" with (
+  $enable-dark-mode: true,
+
+  // Brand colors
+  $primary: #0077B6,
+  $secondary: #003566,
+  $dark: #001D3D,
+  $light: #cee2ff,
+
+  // Semantic colors
+  $success: #0b2b7c,
+  $info: #73bcd5,
+  $warning: #FFB703,
+  $danger: #E63946,
+
+  // Typography
+  $font-size-base: 0.8rem,
+
+  // Light mode body
+  $body-bg: #F8FBFA,
+  $body-color: #212529,
+
+  // Dark mode body
+  $body-bg-dark: #000814,
+  $body-color-dark: #E9ECEF,
+  $body-secondary-bg-dark: #001D3D,
+  $body-tertiary-bg-dark: #003566
+);
+
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+// ============================================================
+// 2. PRIMITIVE TOKENS — Raw Color Values
+//
+// These are the foundational colors from which all other tokens
+// derive. Named by color + intensity, not by usage.
+// ============================================================
+
+// --- Brand Blue Scale (Primary) ---
+$brand-blue-50:  #E8F4F8 !default;   // Lightest
+$brand-blue-100: #D4EBF2 !default;
+$brand-blue-200: #B8E0EC !default;
+$brand-blue-300: #00BBF9 !default;   // Info
+$brand-blue-400: #00A8E8 !default;   // Accent
+$brand-blue-500: #0077B6 !default;   // Primary
+$brand-blue-600: #003566 !default;   // Secondary
+$brand-blue-700: #001D3D !default;   // Dark
+$brand-blue-800: #000814 !default;   // Darkest
+
+// --- Neutral Scale ---
+$neutral-white:  #FFFFFF !default;
+$neutral-50:     #F8FBFA !default;   // Background light
+$neutral-100:    #E9ECEF !default;   // Mist
+$neutral-200:    #E2E8F0 !default;   // Border light
+$neutral-300:    #CBD5E0 !default;   // Border
+$neutral-400:    #ADB5BD !default;   // Muted
+$neutral-500:    #6C757D !default;   // Secondary text
+$neutral-600:    #495057 !default;   // Body text dark
+$neutral-700:    #212529 !default;   // Body text
+$neutral-black:  #000000 !default;
+
+// --- Accent Colors ---
+$accent-teal:    #0e6e9e !default;   // Dark mode success/accent
+$accent-purple:  #9B5DE5 !default;   // Decorative
+$accent-pink:    #F15BB5 !default;   // Decorative
+$accent-yellow:  #FEE440 !default;   // Dark mode warning
+$accent-amber:   #FFB74D !default;   // Light mode accent
+$accent-coral:   #FF8A80 !default;   // Light mode decorative
+$accent-red:     #E63946 !default;   // Danger
+$accent-red-light: #ff6b6b !default; // Dark mode danger text
+
+// --- Warm Neutrals (Light mode backgrounds) ---
+$warm-cream:     #FDF6E3 !default;   // Sand/warm background
+$warm-sky:       #E8F4F8 !default;   // Cool background
+
+// ============================================================
+// 3. SEMANTIC TOKENS — Purpose-Driven Aliases
+//
+// These map primitives to their intended purpose.
+// Use these in component styles, not primitives directly.
+// ============================================================
+
+// --- Text Colors ---
+$color-text-primary:   #1A2B3C !default;
+$color-text-secondary: #4A5568 !default;
+$color-text-muted:     #718096 !default;
+$color-text-inverse:   $neutral-white !default;
+
+// --- Surface Colors ---
+$color-surface-light:  $neutral-50 !default;
+$color-surface-dark:   $brand-blue-800 !default;
+
+// --- Border Colors ---
+$color-border-default: $neutral-300 !default;
+$color-border-light:   $neutral-200 !default;
+$color-border-dark:    rgba($brand-blue-400, 0.15) !default;
+
+// --- Interactive Colors ---
+$color-interactive-primary:       $brand-blue-500 !default;
+$color-interactive-primary-hover: $brand-blue-400 !default;
+$color-interactive-focus:         rgba($brand-blue-500, 0.4) !default;
+
+// --- Status Colors (already defined in Bootstrap config) ---
+$color-success-base: #168c80 !default;
+$color-success-dark: $accent-teal !default;
+$color-warning-base: #FFB703 !default;
+$color-warning-dark: $accent-yellow !default;
+$color-danger-base:  $accent-red !default;
+$color-danger-dark:  $accent-red-light !default;
+$color-info-base:    $brand-blue-300 !default;
+
+// ============================================================
+// 4. COMPONENT TOKENS — Shadows & Transitions
+// ============================================================
+
+// --- Transitions ---
+$transition-fast:   0.2s ease-in-out !default;
+$transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1) !default;
+
+// --- Blur Effects ---
+$blur-sm: 10px !default;
+$blur-md: 12px !default;
+
+// --- Shadows (Light Mode) ---
+$shadow-light-sm: 0 1px 4px rgba(26, 43, 60, 0.12) !default;
+$shadow-light-md: 0 4px 12px rgba(26, 43, 60, 0.14) !default;
+$shadow-light-lg: 0 10px 40px rgba(26, 43, 60, 0.16) !default;
+
+// --- Shadows (Dark Mode) ---
+$shadow-dark-sm: 0 2px 8px rgba(0, 0, 0, 0.3) !default;
+$shadow-dark-md: 0 4px 20px rgba(0, 0, 0, 0.4) !default;
+$shadow-dark-lg: 0 10px 40px rgba(0, 0, 0, 0.5) !default;
