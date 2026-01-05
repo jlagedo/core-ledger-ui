@@ -65,4 +65,12 @@ export const environment = {
   features: {
     sidenavDefaultCollapsed: true,
   },
+
+  // SignalR / Notification Hub Configuration
+  signalr: {
+    useMock: false, // Mock SignalR must NEVER be enabled in production
+    hubUrl: '/api/hub/notifications',
+    reconnectDelays: [0, 2000, 5000, 10000, 30000, 60000],
+    maxReconnectAttempts: 10, // More attempts in production
+  },
 };

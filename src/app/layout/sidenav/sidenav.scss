@@ -2,12 +2,12 @@
   display: contents;
 }
 
-// Sidenav wrapper with gradient overlay using pseudo-element
+// Sidenav wrapper using theme-aware CSS custom properties
 .sidenav-wrapper {
   position: relative;
-  background-color: var(--bs-dark);
-  color: var(--bs-light);
-  border-color: var(--bs-border-color-translucent);
+  background-color: var(--sidenav-bg);
+  color: var(--sidenav-color);
+  border-color: var(--sidenav-border-color);
 
   &::before {
     content: '';
@@ -16,44 +16,40 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: radial-gradient(
-      circle 500px at 50% 300px,
-      rgba(var(--bs-primary-rgb), 0.15),
-      transparent
-    );
+    background-image: var(--sidenav-gradient);
     pointer-events: none;
     z-index: 0;
   }
 
   // Ensure content appears above gradient
-  > * {
+  >* {
     position: relative;
     z-index: 1;
   }
 
-  // Navigation links - semantic colors with proper contrast
+  // Navigation links - inherit sidenav colors
   .nav-link,
   .btn-link,
   a,
   span {
     color: inherit;
-    border-color: var(--bs-border-color-translucent);
+    border-color: var(--sidenav-border-color);
   }
 
   hr {
-    border-color: var(--bs-border-color-translucent);
+    border-color: var(--sidenav-divider);
   }
 
-  // Active navigation items using primary color
+  // Active navigation items using theme-aware properties
   .nav-link.active {
-    background-color: rgba(var(--bs-primary-rgb), 0.15);
-    border-color: var(--bs-primary);
+    background-color: var(--sidenav-active-bg);
+    border-color: var(--sidenav-active-border);
   }
 
   // Hover states with subtle background
   .nav-link:hover,
   .btn-link:hover {
-    background-color: rgba(var(--bs-light-rgb), 0.05);
+    background-color: var(--sidenav-link-hover-bg);
   }
 
   // User profile section styling
@@ -105,5 +101,5 @@
 }
 
 .nav-link.active .submenu-indicator {
-  background-color: var(--bs-primary);
+  background-color: var(--sidenav-active-border);
 }

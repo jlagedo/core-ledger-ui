@@ -12,6 +12,8 @@ import { mockAuthInterceptor } from './auth/mock-auth.interceptor';
 import { MockAuthService } from './auth/mock-auth.service';
 import { mockApiInterceptor } from './api/mock-api.interceptor';
 import { MockApiService } from './api/mock-api.service';
+import { NotificationHubService } from './services/notification-hub.service';
+import { MockNotificationHubService } from './services/mock-notification-hub.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,6 +31,8 @@ export const appConfig: ApplicationConfig = {
     ...(environment.api?.useMock ? [MockApiService] : []),
     // Conditionally provide MockAuthService only when useMock is true
     ...(environment.auth.useMock ? [MockAuthService] : []),
+    // Conditionally provide MockNotificationHubService only when signalr.useMock is true
+    ...(environment.signalr?.useMock ? [MockNotificationHubService] : []),
     // Always provide OIDC (needed for types even in mock mode)
     provideAuth(authConfig),
     // Conditional auth initializer
@@ -40,6 +44,15 @@ export const appConfig: ApplicationConfig = {
         const oidcSecurityService = inject(OidcSecurityService);
         return firstValueFrom(oidcSecurityService.checkAuth());
       }
+    }),
+    // Initialize notification hub service (connects after auth via effect())
+    provideAppInitializer(() => {
+      if (environment.signalr?.useMock) {
+        inject(MockNotificationHubService);
+      } else {
+        inject(NotificationHubService);
+      }
+      return Promise.resolve();
     }),
     // Configure Sentry from environment
     provideMicroSentry({

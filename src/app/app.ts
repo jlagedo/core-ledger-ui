@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
-import {Sidenav} from './layout/sidenav/sidenav';
-import {ToastsContainer} from './layout/toasts-container/toasts-container';
-import {AuthService} from './auth/auth-service';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Sidenav } from './layout/sidenav/sidenav';
+import { ToastsContainer } from './layout/toasts-container/toasts-container';
+import { AuthService } from './auth/auth-service';
 
 @Component({
   selector: 'app-root',

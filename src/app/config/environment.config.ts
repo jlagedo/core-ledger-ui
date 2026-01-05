@@ -58,6 +58,14 @@ export interface Environment {
   features: {
     sidenavDefaultCollapsed: boolean;
   };
+
+  // SignalR / Notification Hub Configuration
+  signalr?: {
+    useMock: boolean;
+    hubUrl: string;
+    reconnectDelays: number[];
+    maxReconnectAttempts: number;
+  };
 }
 
 export const ENVIRONMENT = new InjectionToken<Environment>('Environment configuration', {

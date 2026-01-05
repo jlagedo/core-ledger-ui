@@ -56,4 +56,12 @@ export const environment = {
   features: {
     sidenavDefaultCollapsed: true,
   },
+
+  // SignalR / Notification Hub Configuration
+  signalr: {
+    useMock: false, // Use real SignalR with Auth0 authentication
+    hubUrl: '/api/hub/notifications',
+    reconnectDelays: [0, 2000, 5000, 10000, 30000],
+    maxReconnectAttempts: 5,
+  },
 };

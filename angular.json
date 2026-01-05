@@ -81,6 +81,10 @@
                 {
                   "replace": "src/app/api/mock-data/index.ts",
                   "with": "src/app/api/mock-data.production.ts"
+                },
+                {
+                  "replace": "src/app/services/mock-notification-hub.service.ts",
+                  "with": "src/app/services/mock-notification-hub.service.production.ts"
                 }
               ]
             },
