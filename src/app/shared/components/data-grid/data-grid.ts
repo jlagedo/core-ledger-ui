@@ -7,10 +7,14 @@ import {
   computed,
   effect,
   viewChildren,
+  viewChild,
   TemplateRef,
+  TrackByFunction,
 } from '@angular/core';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { SortableDirective, SortEvent } from '../../../directives/sortable.directive';
 import { ColumnDefinition, CellTemplateContext, SelectionState } from './column-definition.model';
@@ -54,7 +58,7 @@ export interface PaginatedResponse<T> {
   templateUrl: './data-grid.html',
   styleUrl: './data-grid.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, NgbPagination, SortableDirective],
+  imports: [CommonModule, FormsModule, ScrollingModule, NgbPagination, SortableDirective],
 })
 export class DataGrid<T> {
   // Required inputs
@@ -92,6 +96,21 @@ export class DataGrid<T> {
   /** Available page size options */
   pageSizeOptions = input<number[]>([15, 50, 100]);
 
+  /** Enable virtual scrolling for large datasets */
+  virtualScroll = input<boolean>(false);
+
+  /** Row height in pixels for virtual scroll (required when virtualScroll is true) */
+  rowHeight = input<number>(48);
+
+  /** Height of the virtual scroll viewport (CSS value) */
+  viewportHeight = input<string>('400px');
+
+  /** Number of items before end to trigger load more (default: 10) */
+  loadMoreThreshold = input<number>(10);
+
+  /** Whether currently loading more items */
+  loadingMore = input<boolean>(false);
+
   // Outputs
   /** Emitted when data should be refreshed */
   refresh = output<void>();
@@ -101,6 +120,12 @@ export class DataGrid<T> {
 
   /** Emitted when selection changes */
   selectionChange = output<T[]>();
+
+  /** Emitted when more data should be loaded (infinite scroll) */
+  loadMore = output<void>();
+
+  // ViewChild for virtual scroll viewport
+  readonly virtualScrollViewport = viewChild<CdkVirtualScrollViewport>('virtualScrollViewport');
 
   // Internal signals for state management
   /** Active row ID for highlighting */
@@ -131,6 +156,13 @@ export class DataGrid<T> {
 
   /** Current page items */
   readonly currentPageItems = computed(() => this.data()?.items ?? []);
+
+  /** Whether there are more items to load */
+  readonly hasMoreItems = computed(() => {
+    const items = this.currentPageItems();
+    const total = this.collectionSize();
+    return items.length < total;
+  });
 
   /** Sortable header directives */
   headers = viewChildren(SortableDirective);
@@ -201,6 +233,23 @@ export class DataGrid<T> {
   onPageSizeChange(newSize: number): void {
     this.store().setPageSize(newSize);
     this.refresh.emit();
+  }
+
+  /**
+   * Handle virtual scroll index change (infinite scroll)
+   */
+  onScrolledIndexChange(index: number): void {
+    if (!this.virtualScroll() || this.loadingMore() || !this.hasMoreItems()) {
+      return;
+    }
+
+    const items = this.currentPageItems();
+    const threshold = this.loadMoreThreshold();
+
+    // Check if we're near the end of the list
+    if (index >= items.length - threshold) {
+      this.loadMore.emit();
+    }
   }
 
   /**
@@ -306,4 +355,11 @@ export class DataGrid<T> {
     const itemWithId = item as unknown as { id?: number | string };
     return itemWithId.id ?? JSON.stringify(item);
   }
+
+  /**
+   * TrackBy function for virtual scroll
+   */
+  trackByFn: TrackByFunction<T> = (index: number, item: T): number | string => {
+    return this.getItemId(item);
+  };
 }

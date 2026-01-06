@@ -22,7 +22,13 @@
         [searchPlaceholder]="'Search transactions...'"
         [emptyMessage]="'No transactions found'"
         [rowActionsTemplate]="actionsTemplate"
-        (refresh)="loadTransactions()">
+        [virtualScroll]="true"
+        [rowHeight]="40"
+        [viewportHeight]="'550px'"
+        [loadingMore]="loadingMore()"
+        [loadMoreThreshold]="15"
+        (refresh)="loadTransactions()"
+        (loadMore)="loadMoreTransactions()">
       </app-data-grid>
 
       <!-- Class column template -->

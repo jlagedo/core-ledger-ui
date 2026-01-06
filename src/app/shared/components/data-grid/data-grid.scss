@@ -24,3 +24,97 @@
     display: none !important;
   }
 }
+
+// Virtual scroll container styles
+.virtual-scroll-container {
+  display: flex;
+  flex-direction: column;
+}
+
+// Fixed header for virtual scroll
+.virtual-scroll-header {
+  flex-shrink: 0;
+  overflow: hidden;
+  background-color: var(--bs-tertiary-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+// Virtual scroll row (flexbox-based)
+.virtual-scroll-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--bs-border-color-translucent);
+
+  &:hover:not(.virtual-scroll-header-row) {
+    // Match Bootstrap's table-hover effect
+    background-color: rgba(var(--bs-emphasis-color-rgb), 0.075);
+  }
+}
+
+.virtual-scroll-header-row {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+// Match Bootstrap's table-striped subtle effect
+.virtual-scroll-row-odd {
+  background-color: rgba(var(--bs-emphasis-color-rgb), 0.05);
+}
+
+.virtual-scroll-row-active {
+  background-color: var(--bs-primary-bg-subtle) !important;
+}
+
+// Virtual scroll cell
+.virtual-scroll-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.5rem 0.5rem;
+  font-size: 0.875rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.virtual-scroll-cell-checkbox {
+  flex: 0 0 3.125rem;
+  justify-content: center;
+}
+
+.virtual-scroll-cell-actions {
+  flex: 0 0 5rem;
+  justify-content: flex-end;
+}
+
+// Virtual scroll viewport
+.virtual-scroll-viewport {
+  flex: 1 1 auto;
+}
+
+// CDK Virtual Scroll styles
+:host ::ng-deep cdk-virtual-scroll-viewport {
+  // Ensure content wrapper takes full width
+  .cdk-virtual-scroll-content-wrapper {
+    width: 100%;
+  }
+}
+
+cdk-virtual-scroll-viewport {
+  // Scrollbar styling
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--bs-body-bg);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--bs-secondary-bg);
+    border-radius: 0.25rem;
+
+    &:hover {
+      background: var(--bs-tertiary-bg);
+    }
+  }
+}

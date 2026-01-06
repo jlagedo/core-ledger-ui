@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   effect,
   inject,
@@ -43,7 +44,31 @@ export class TransactionList implements AfterViewInit {
   datePipe = inject(DatePipe);
   decimalPipe = inject(DecimalPipe);
 
-  transactionsResponse = signal<PaginatedResponse<Transaction> | null>(null);
+  // Virtual scroll page size
+  private readonly pageSize = 50;
+
+  // Accumulated items for virtual scroll
+  private readonly accumulatedItems = signal<Transaction[]>([]);
+  private readonly totalCount = signal<number>(0);
+  private readonly currentOffset = signal<number>(0);
+
+  // Loading state for infinite scroll
+  readonly loadingMore = signal<boolean>(false);
+
+  // Computed response that combines accumulated items with total count
+  readonly transactionsResponse = computed<PaginatedResponse<Transaction> | null>(() => {
+    const items = this.accumulatedItems();
+    const total = this.totalCount();
+    if (items.length === 0 && total === 0) {
+      return null;
+    }
+    return {
+      items,
+      totalCount: total,
+      limit: this.pageSize,
+      offset: this.currentOffset()
+    };
+  });
 
   // Column definitions for data grid
   columns: ColumnDefinition<Transaction>[] = [
@@ -53,7 +78,8 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'id',
       align: 'end',
-      cellClass: 'numeric font-monospace text-nowrap'
+      minWidth: '50px',
+      cellClass: 'numeric font-monospace'
     },
     {
       key: 'fundCode',
@@ -61,7 +87,8 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'fundCode',
       align: 'start',
-      cellClass: 'fw-semibold font-monospace text-info text-nowrap'
+      minWidth: '70px',
+      cellClass: 'fw-semibold font-monospace text-info'
     },
     {
       key: 'securityTicker',
@@ -69,7 +96,8 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'securityTicker',
       align: 'start',
-      cellClass: 'font-monospace text-info text-nowrap'
+      minWidth: '55px',
+      cellClass: 'font-monospace text-info'
     },
     {
       key: 'transactionTypeDescription',
@@ -77,6 +105,7 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'transactionTypeDescription',
       align: 'center',
+      minWidth: '130px',
     },
     {
       key: 'transactionSubTypeDescription',
@@ -84,6 +113,7 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'transactionSubTypeDescription',
       align: 'start',
+      minWidth: '75px',
     },
     {
       key: 'tradeDate',
@@ -91,7 +121,8 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'tradeDate',
       align: 'center',
-      cellClass: 'font-monospace text-nowrap',
+      minWidth: '90px',
+      cellClass: 'font-monospace',
       formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yyyy') || ''
     },
     {
@@ -100,7 +131,8 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'settleDate',
       align: 'center',
-      cellClass: 'font-monospace text-nowrap',
+      minWidth: '90px',
+      cellClass: 'font-monospace',
       formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yyyy') || ''
     },
     {
@@ -109,7 +141,8 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'quantity',
       align: 'end',
-      cellClass: 'numeric font-monospace text-nowrap',
+      minWidth: '60px',
+      cellClass: 'numeric font-monospace',
       formatter: (value) => this.decimalPipe.transform(value as number, '1.0-4') || ''
     },
     {
@@ -118,7 +151,8 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'price',
       align: 'end',
-      cellClass: 'numeric font-monospace text-nowrap',
+      minWidth: '75px',
+      cellClass: 'numeric font-monospace',
       formatter: (value) => this.decimalPipe.transform(value as number, '1.2-4') || ''
     },
     {
@@ -127,7 +161,8 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'amount',
       align: 'end',
-      cellClass: 'numeric font-monospace fw-bold text-nowrap',
+      minWidth: '85px',
+      cellClass: 'numeric font-monospace fw-bold',
       formatter: (value) => this.decimalPipe.transform(value as number, '1.2-2') || ''
     },
     {
@@ -136,14 +171,16 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'currency',
       align: 'center',
-      cellClass: 'font-monospace text-info text-nowrap'
+      minWidth: '45px',
+      cellClass: 'font-monospace text-info'
     },
     {
       key: 'statusDescription',
       label: 'Status',
       sortable: true,
       sortKey: 'statusId',
-      align: 'start'
+      align: 'start',
+      minWidth: '70px',
     }
   ];
 
@@ -181,12 +218,35 @@ export class TransactionList implements AfterViewInit {
   }
 
   loadTransactions(): void {
+    // Reset and load initial page
+    this.accumulatedItems.set([]);
+    this.currentOffset.set(0);
+    this.fetchTransactions(0, false);
+  }
+
+  loadMoreTransactions(): void {
+    const items = this.accumulatedItems();
+    const total = this.totalCount();
+
+    // Don't load more if already loading or no more items
+    if (this.loadingMore() || items.length >= total) {
+      return;
+    }
+
+    const nextOffset = items.length;
+    this.fetchTransactions(nextOffset, true);
+  }
+
+  private fetchTransactions(offset: number, isLoadMore: boolean): void {
     const search = this.store.searchTerm();
     const filter = search || undefined;
-    const offset = (this.store.page() - 1) * this.store.pageSize();
+
+    if (isLoadMore) {
+      this.loadingMore.set(true);
+    }
 
     this.transactionService.getTransactions(
-      this.store.pageSize(),
+      this.pageSize,
       offset,
       this.store.sortColumn(),
       this.store.sortDirection(),
@@ -194,8 +254,22 @@ export class TransactionList implements AfterViewInit {
     )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: response => this.transactionsResponse.set(response),
-        error: err => this.logger.logHttpError('load transactions', err, 'Failed to load transactions. Please try again.')
+        next: response => {
+          if (isLoadMore) {
+            // Append to existing items
+            this.accumulatedItems.update(items => [...items, ...response.items]);
+          } else {
+            // Replace items (initial load or refresh)
+            this.accumulatedItems.set(response.items);
+          }
+          this.totalCount.set(response.totalCount);
+          this.currentOffset.set(offset);
+          this.loadingMore.set(false);
+        },
+        error: err => {
+          this.loadingMore.set(false);
+          this.logger.logHttpError('load transactions', err, 'Failed to load transactions. Please try again.');
+        }
       });
   }
 }
