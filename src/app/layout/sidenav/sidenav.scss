@@ -22,7 +22,7 @@
   }
 
   // Ensure content appears above gradient
-  >* {
+  > * {
     position: relative;
     z-index: 1;
   }
