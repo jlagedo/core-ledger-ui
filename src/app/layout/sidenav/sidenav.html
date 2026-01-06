@@ -3,28 +3,26 @@
      class="d-flex flex-column flex-shrink-0 p-1 transition-all border-end sidenav-wrapper vh-100">
 
   <!-- Logo & Toggle Section -->
-  <div [class.justify-content-between]="!store.isSidenavCollapsed()"
-       [class.justify-content-center]="store.isSidenavCollapsed()" class="d-flex align-items-center px-3">
-
-    <a (click)="handleLogoClick($event)"
-       [attr.aria-label]="store.isSidenavCollapsed() ? 'Expand sidenav' : 'Go to dashboard'"
-       [attr.role]="store.isSidenavCollapsed() ? 'button' : null" [class.cursor-pointer]="store.isSidenavCollapsed()"
-       [routerLink]="store.isSidenavCollapsed() ? null : '/dashboard'"
-       class="d-flex align-items-center text-decoration-none" tabindex="0">
-      <img [class.me-2]="!store.isSidenavCollapsed()" alt="Fluxo Logo" class="img-fluid"
-           height="32"
-           ngSrc="apple-touch-icon.png"
-           width="32">
-      @if (!store.isSidenavCollapsed()) {
-        <span class="fs-4 numeric font-monospace">Core</span>
-      }
-    </a>
-
-    @if (!store.isSidenavCollapsed()) {
-      <button (click)="toggleSidenav()" [attr.aria-expanded]="true" [attr.aria-label]="'Collapse sidenav'"
-              class="btn btn-link p-0 border-0">
-        <i class="bi bi-x fs-1"></i>
+  <div class="d-flex align-items-center header-section"
+       [class.justify-content-center]="store.isSidenavCollapsed()"
+       [class.justify-content-between]="!store.isSidenavCollapsed()">
+    @if (store.isSidenavCollapsed()) {
+      <!-- Collapsed: Show hamburger menu icon only -->
+      <button (click)="toggleSidenav()" aria-expanded="false" aria-label="Expand sidenav"
+              class="btn p-0 border-0 bg-transparent">
+        <i class="bi bi-list fs-2"></i>
       </button>
+    } @else {
+      <!-- Expanded: Show logo and close button -->
+      <a aria-label="Go to dashboard" class="d-flex align-items-center text-decoration-none"
+         routerLink="/dashboard">
+        <i class="bi bi-boxes me-2 fs-4 text-primary"></i>
+        <span class="fs-4 numeric font-monospace">Core</span>
+      </a>
+
+      <i (click)="toggleSidenav()" (keydown.enter)="toggleSidenav()"
+         aria-label="Collapse sidenav" class="bi bi-x-lg cursor-pointer"
+         role="button" tabindex="0"></i>
     }
   </div>
   <hr>

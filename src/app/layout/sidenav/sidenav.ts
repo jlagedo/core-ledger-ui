@@ -4,11 +4,10 @@ import { NgbCollapse, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { UserProfile } from '../user-profile/user-profile';
 import { MenuService } from '../../services/menu-service';
 import { SidenavStore } from './sidenav-store';
-import {NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-sidenav',
-  imports: [RouterModule, NgbCollapse, NgbTooltip, UserProfile, NgOptimizedImage],
+  imports: [RouterModule, NgbCollapse, NgbTooltip, UserProfile],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,12 +31,5 @@ export class Sidenav {
   toggleSidenav() {
     this.store.toggleSidenav();
     this.sidenavToggle.emit(this.store.isSidenavCollapsed());
-  }
-
-  handleLogoClick(event: Event) {
-    if (this.store.isSidenavCollapsed()) {
-      event.preventDefault();
-      this.toggleSidenav();
-    }
   }
 }

@@ -1,0 +1,4 @@
+// Hide dropdown caret when collapsed
+.no-caret::after {
+  display: none !important;
+}
