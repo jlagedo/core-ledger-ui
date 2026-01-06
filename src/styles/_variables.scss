@@ -17,6 +17,11 @@
 @use "bootstrap/scss/bootstrap" with (
   $enable-dark-mode: true,
 
+  // Typography
+  $font-family-base: ('Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif),
+  $font-family-monospace: ('JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace),
+  $font-size-base: 0.9rem,
+
   // Brand colors
   $primary: #0077B6,
   $secondary: #003566,
@@ -25,25 +30,20 @@
 
   // Semantic colors
   $success: #0b2b7c,
-  $info: #73bcd5,
+  $info: #0068ff,
   $warning: #FFB703,
   $danger: #E63946,
-
-  // Typography
-  $font-size-base: 0.8rem,
 
   // Light mode body
   $body-bg: #F8FBFA,
   $body-color: #212529,
 
-  // Dark mode body
-  $body-bg-dark: #000814,
-  $body-color-dark: #E9ECEF,
-  $body-secondary-bg-dark: #001D3D,
-  $body-tertiary-bg-dark: #003566
+  // Dark mode body - Bloomberg Terminal style
+  $body-bg-dark: #000000,
+  $body-color-dark: #FFA028,
+  $body-secondary-bg-dark: #1a1a1a,
+  $body-tertiary-bg-dark: #2a2a2a
 );
-
-@import "bootstrap-icons/font/bootstrap-icons.css";
 
 // ============================================================
 // 2. PRIMITIVE TOKENS — Raw Color Values
@@ -75,15 +75,16 @@ $neutral-600:    #495057 !default;   // Body text dark
 $neutral-700:    #212529 !default;   // Body text
 $neutral-black:  #000000 !default;
 
-// --- Accent Colors ---
-$accent-teal:    #0e6e9e !default;   // Dark mode success/accent
-$accent-purple:  #9B5DE5 !default;   // Decorative
-$accent-pink:    #F15BB5 !default;   // Decorative
-$accent-yellow:  #FEE440 !default;   // Dark mode warning
-$accent-amber:   #FFB74D !default;   // Light mode accent
-$accent-coral:   #FF8A80 !default;   // Light mode decorative
-$accent-red:     #E63946 !default;   // Danger
-$accent-red-light: #ff6b6b !default; // Dark mode danger text
+// --- Bloomberg Terminal Accent Colors ---
+$accent-teal:      #4af6c3 !default;   // Bloomberg success/positive
+$accent-purple:    #9B5DE5 !default;   // Decorative
+$accent-pink:      #F15BB5 !default;   // Decorative
+$accent-yellow:    #fb8b1e !default;   // Bloomberg warning/orange
+$accent-amber:     #FFA028 !default;   // Bloomberg primary amber
+$accent-coral:     #ff433d !default;   // Bloomberg danger red
+$accent-red:       #ff433d !default;   // Bloomberg danger
+$accent-red-light: #ff6b6b !default;   // Lighter red variant
+$accent-blue:      #0068ff !default;   // Bloomberg info/links
 
 // --- Warm Neutrals (Light mode backgrounds) ---
 $warm-cream:     #FDF6E3 !default;   // Sand/warm background

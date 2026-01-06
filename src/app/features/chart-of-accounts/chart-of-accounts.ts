@@ -55,7 +55,7 @@ export class ChartOfAccounts {
       sortable: true,
       sortKey: 'Code',
       align: 'end',
-      cellClass: 'numeric font-monospace'
+      cellClass: 'numeric font-monospace text-info text-nowrap'
     },
     {
       key: 'name',

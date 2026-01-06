@@ -57,7 +57,7 @@ export class SecurityList {
       sortable: true,
       sortKey: 'Ticker',
       align: 'start',
-      cellClass: 'fw-bold'
+      cellClass: 'fw-bold font-monospace text-info text-nowrap'
     },
     {
       key: 'name',
@@ -71,6 +71,7 @@ export class SecurityList {
       label: 'ISIN',
       sortable: false,
       align: 'center',
+      cellClass: 'font-monospace text-info text-nowrap',
       formatter: (value) => ((value as string | null) || 'N/A')
     },
     {
@@ -85,7 +86,8 @@ export class SecurityList {
       label: 'Currency',
       sortable: true,
       sortKey: 'Currency',
-      align: 'center'
+      align: 'center',
+      cellClass: 'font-monospace text-info text-nowrap'
     },
     {
       key: 'status',
@@ -101,7 +103,8 @@ export class SecurityList {
       sortable: true,
       sortKey: 'CreatedAt',
       align: 'center',
-      formatter: (value) => this.datePipe.transform(value as string, 'shortDate') || ''
+      cellClass: 'font-monospace text-nowrap',
+      formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yyyy') || ''
     }
   ];
 

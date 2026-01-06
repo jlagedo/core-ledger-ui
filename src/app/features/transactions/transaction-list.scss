@@ -1,2 +1,52 @@
 // Transaction list styles - using Bootstrap utility classes
-// Custom styles can be added here if needed
+
+// Instrument type badge styles - scoped to transaction list
+// Using hardcoded colors to maintain consistency across themes
+.instrument-badge {
+  &.instrument-equity {
+    color: #fff;
+    background-color: #0d6efd; // Blue - standard for stocks
+  }
+
+  &.instrument-etf {
+    color: #fff;
+    background-color: #198754; // Green - diversified/growth
+  }
+
+  &.instrument-fixed-income {
+    color: #000;
+    background-color: #ffc107; // Amber - conservative/income
+  }
+
+  &.instrument-derivative-future {
+    color: #fff;
+    background-color: #6c757d; // Gray - complex instruments
+  }
+
+  &.instrument-derivative-option {
+    color: #fff;
+    background-color: #212529; // Dark - complex instruments
+  }
+
+  &.instrument-derivative-swap {
+    color: #000;
+    background-color: #0dcaf0; // Cyan - complex instruments
+  }
+
+  &.instrument-fx {
+    color: #fff;
+    background-color: #0d6efd; // Blue - currency markets
+  }
+
+  &.instrument-money-market {
+    color: #000;
+    background-color: #f8f9fa; // Light gray - cash-like
+    border: 1px solid #dee2e6;
+  }
+
+  // Default fallback for unknown types
+  &.instrument-default {
+    color: #fff;
+    background-color: #6c757d; // Gray
+  }
+}

@@ -18,42 +18,19 @@
 ============================================================ */
 
 // ============================================================
-// 1. FOUNDATION — Variables, tokens, and Bootstrap config
-//    Note: _variables.scss contains Bootstrap's @use statement
-//    so it must be loaded first and only once
+// 1. MODULE IMPORTS (@use rules must come first)
 // ============================================================
 
 @use "styles/variables";
-
-// ============================================================
-// 2. ANIMATIONS — Keyframe definitions
-// ============================================================
-
 @use "styles/keyframes";
-
-// ============================================================
-// 3. THEME MODES — Light/dark CSS variable definitions
-//    Depends on: variables, theme-tokens, alert-tokens, mixins
-// ============================================================
-
 @use "styles/theme-modes";
-
-// ============================================================
-// 4. COMPONENT STYLES — Theme-aware component styling
-//    Depends on: variables, alert-tokens
-// ============================================================
-
 @use "styles/components";
-
-// ============================================================
-// 5. UTILITIES — Brand colors, surfaces, shadows, animations
-//    Depends on: variables
-// ============================================================
-
 @use "styles/utilities";
-
-// ============================================================
-// 6. ACCESSIBILITY — High contrast & reduced motion
-// ============================================================
-
 @use "styles/accessibility";
+
+// ============================================================
+// 2. EXTERNAL FONTS (@import rules must come after @use)
+// ============================================================
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "bootstrap-icons/font/bootstrap-icons.css";

@@ -50,7 +50,7 @@ export class FundList {
       sortable: true,
       sortKey: 'Code',
       align: 'end',
-      cellClass: 'numeric font-monospace fw-bold'
+      cellClass: 'numeric font-monospace fw-bold text-info text-nowrap'
     },
     {
       key: 'name',
@@ -72,8 +72,8 @@ export class FundList {
       sortable: true,
       sortKey: 'InceptionDate',
       align: 'center',
-      cellClass: 'text-muted',
-      formatter: (value) => this.datePipe.transform(value as string, 'shortDate') || ''
+      cellClass: 'font-monospace text-nowrap',
+      formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yyyy') || ''
     },
     {
       key: 'valuationFrequencyDescription',

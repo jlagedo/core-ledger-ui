@@ -16,7 +16,7 @@
           <div class="row">
             <div class="col-4">
               <label class="form-label" for="fundCode">Fund Code</label>
-              <input [class.is-invalid]="isInvalid('code')" autofocus class="form-control text-uppercase" formControlName="code"
+              <input [class.is-invalid]="isInvalid('code')" autofocus class="form-control text-uppercase font-monospace text-info text-nowrap" formControlName="code"
                      id="fundCode" maxlength="10" placeholder="FND001" type="text">
               @if (isInvalid('code')) {
                 <div class="invalid-feedback">
@@ -54,7 +54,7 @@
           <div class="row">
             <div class="col-4">
               <label class="form-label" for="baseCurrency">Base Currency</label>
-              <input [class.is-invalid]="isInvalid('baseCurrency')" class="form-control text-uppercase" formControlName="baseCurrency"
+              <input [class.is-invalid]="isInvalid('baseCurrency')" class="form-control text-uppercase font-monospace text-info text-nowrap" formControlName="baseCurrency"
                      id="baseCurrency" maxlength="3" placeholder="USD"
                      type="text">
               @if (isInvalid('baseCurrency')) {
@@ -72,7 +72,7 @@
             <div class="col-8">
               <label class="form-label" for="inceptionDate">Inception Date</label>
               <div class="input-group">
-                <input #d="ngbDatepicker" [class.is-invalid]="isInvalid('inceptionDate')" class="form-control" formControlName="inceptionDate"
+                <input #d="ngbDatepicker" [class.is-invalid]="isInvalid('inceptionDate')" class="form-control font-monospace text-nowrap" formControlName="inceptionDate"
                        id="inceptionDate" ngbDatepicker placeholder="yyyy-mm-dd"
                        type="text">
                 <button (click)="d.toggle()" [attr.aria-label]="'Toggle calendar'" class="btn btn-outline-secondary"

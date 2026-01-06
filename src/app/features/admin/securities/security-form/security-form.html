@@ -16,7 +16,7 @@
           <div class="row">
           <div class="col-4">
             <label class="form-label" for="ticker">Ticker</label>
-            <input [class.is-invalid]="isInvalid('ticker')" autofocus class="form-control text-uppercase" formControlName="ticker"
+            <input [class.is-invalid]="isInvalid('ticker')" autofocus class="form-control text-uppercase font-monospace text-info text-nowrap" formControlName="ticker"
                    id="ticker" maxlength="20" placeholder="AAPL" type="text">
             @if (isInvalid('ticker')) {
               <div class="invalid-feedback">
@@ -49,7 +49,7 @@
         <div class="row mb-3">
           <div class="col-4">
             <label class="form-label" for="currency">Currency</label>
-            <input [class.is-invalid]="isInvalid('currency')" class="form-control text-uppercase" formControlName="currency"
+            <input [class.is-invalid]="isInvalid('currency')" class="form-control text-uppercase font-monospace text-info text-nowrap" formControlName="currency"
                    id="currency" maxlength="3" placeholder="USD"
                    type="text">
             @if (isInvalid('currency')) {
@@ -69,7 +69,7 @@
 
           <div class="col-8">
             <label class="form-label" for="isin">ISIN (Optional)</label>
-            <input [class.is-invalid]="isInvalid('isin')" class="form-control text-uppercase" formControlName="isin"
+            <input [class.is-invalid]="isInvalid('isin')" class="form-control text-uppercase font-monospace text-info text-nowrap" formControlName="isin"
                    id="isin" maxlength="12" placeholder="US0378331005"
                    type="text">
             @if (isInvalid('isin')) {

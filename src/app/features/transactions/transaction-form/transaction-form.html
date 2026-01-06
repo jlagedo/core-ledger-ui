@@ -64,7 +64,7 @@
           </div>
           <div class="col-md-6">
             <label class="form-label" for="currency">Currency <span class="text-danger">*</span></label>
-            <input [class.is-invalid]="isInvalid('currency')" class="form-control text-uppercase" formControlName="currency"
+            <input [class.is-invalid]="isInvalid('currency')" class="form-control text-uppercase font-monospace text-info text-nowrap" formControlName="currency"
                    id="currency" maxlength="3" placeholder="USD" type="text">
             @if (isInvalid('currency')) {
               <div class="invalid-feedback">
@@ -86,7 +86,7 @@
           <div class="col-md-6">
             <label class="form-label" for="tradeDate">Trade Date <span class="text-danger">*</span></label>
             <div class="input-group">
-              <input #tdPicker="ngbDatepicker" [class.is-invalid]="isInvalid('tradeDate')" class="form-control" formControlName="tradeDate"
+              <input #tdPicker="ngbDatepicker" [class.is-invalid]="isInvalid('tradeDate')" class="form-control font-monospace text-nowrap" formControlName="tradeDate"
                      id="tradeDate" ngbDatepicker placeholder="yyyy-mm-dd" type="text">
               <button (click)="tdPicker.toggle()" [attr.aria-label]="'Toggle calendar'" class="btn btn-outline-secondary" type="button">
                 <i aria-hidden="true" class="bi bi-calendar3"></i>
@@ -103,7 +103,7 @@
           <div class="col-md-6">
             <label class="form-label" for="settleDate">Settle Date <span class="text-danger">*</span></label>
             <div class="input-group">
-              <input #sdPicker="ngbDatepicker" [class.is-invalid]="isInvalid('settleDate')" class="form-control" formControlName="settleDate"
+              <input #sdPicker="ngbDatepicker" [class.is-invalid]="isInvalid('settleDate')" class="form-control font-monospace text-nowrap" formControlName="settleDate"
                      id="settleDate" ngbDatepicker placeholder="yyyy-mm-dd" type="text">
               <button (click)="sdPicker.toggle()" [attr.aria-label]="'Toggle calendar'" class="btn btn-outline-secondary" type="button">
                 <i aria-hidden="true" class="bi bi-calendar3"></i>
@@ -125,7 +125,7 @@
           <div class="row">
           <div class="col-md-4">
             <label class="form-label" for="quantity">Quantity <span class="text-danger">*</span></label>
-            <input [class.is-invalid]="isInvalid('quantity')" class="form-control text-end font-monospace" formControlName="quantity"
+            <input [class.is-invalid]="isInvalid('quantity')" class="form-control text-end font-monospace text-nowrap" formControlName="quantity"
                    id="quantity" placeholder="0" type="text">
             @if (isInvalid('quantity')) {
               <div class="invalid-feedback">
@@ -140,7 +140,7 @@
           </div>
           <div class="col-md-4">
             <label class="form-label" for="price">Price <span class="text-danger">*</span></label>
-            <input [class.is-invalid]="isInvalid('price')" class="form-control text-end font-monospace" formControlName="price"
+            <input [class.is-invalid]="isInvalid('price')" class="form-control text-end font-monospace text-nowrap" formControlName="price"
                    id="price" placeholder="0.00" type="text">
             @if (isInvalid('price')) {
               <div class="invalid-feedback">
@@ -155,7 +155,7 @@
           </div>
           <div class="col-md-4">
             <label class="form-label" for="amount">Amount <span class="text-danger">*</span></label>
-            <input [class.is-invalid]="isInvalid('amount')" class="form-control text-end font-monospace fw-bold" formControlName="amount"
+            <input [class.is-invalid]="isInvalid('amount')" class="form-control text-end font-monospace fw-bold text-nowrap" formControlName="amount"
                    id="amount" placeholder="0.00" type="text">
             <small class="text-muted">Auto-calculated from Qty × Price</small>
             @if (isInvalid('amount')) {

@@ -25,6 +25,11 @@
         (refresh)="loadTransactions()">
       </app-data-grid>
 
+      <!-- Class column template -->
+      <ng-template #classTemplate let-transaction let-value="value">
+        <span [class]="getInstrumentBadgeClass(value)">{{ value }}</span>
+      </ng-template>
+
       <!-- Actions template for each row -->
       <ng-template #actionsTemplate let-transaction>
         <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Transaction actions">

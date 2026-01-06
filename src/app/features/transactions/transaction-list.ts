@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
@@ -34,7 +35,7 @@ import {ColumnDefinition} from '../../shared/components/data-grid/column-definit
   styleUrl: './transaction-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TransactionList {
+export class TransactionList implements AfterViewInit {
   store = inject(TransactionsStore);
   transactionService = inject(TransactionService);
   destroyRef = inject(DestroyRef);
@@ -52,7 +53,7 @@ export class TransactionList {
       sortable: true,
       sortKey: 'id',
       align: 'end',
-      cellClass: 'numeric font-monospace'
+      cellClass: 'numeric font-monospace text-nowrap'
     },
     {
       key: 'fundCode',
@@ -60,39 +61,47 @@ export class TransactionList {
       sortable: true,
       sortKey: 'fundCode',
       align: 'start',
-      cellClass: 'fw-semibold'
+      cellClass: 'fw-semibold font-monospace text-info text-nowrap'
     },
     {
       key: 'securityTicker',
-      label: 'Security',
+      label: 'Sec',
       sortable: true,
       sortKey: 'securityTicker',
-      align: 'start'
+      align: 'start',
+      cellClass: 'font-monospace text-info text-nowrap'
+    },
+    {
+      key: 'transactionTypeDescription',
+      label: 'Class',
+      sortable: true,
+      sortKey: 'transactionTypeDescription',
+      align: 'center',
     },
     {
       key: 'transactionSubTypeDescription',
-      label: 'Type',
+      label: 'Sub',
       sortable: true,
       sortKey: 'transactionSubTypeDescription',
-      align: 'start'
+      align: 'start',
     },
     {
       key: 'tradeDate',
-      label: 'Trade Date',
+      label: 'T-Date',
       sortable: true,
       sortKey: 'tradeDate',
       align: 'center',
-      cellClass: 'text-muted',
-      formatter: (value) => this.datePipe.transform(value as string, 'shortDate') || ''
+      cellClass: 'font-monospace text-nowrap',
+      formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yyyy') || ''
     },
     {
       key: 'settleDate',
-      label: 'Settle Date',
+      label: 'S-Date',
       sortable: true,
       sortKey: 'settleDate',
       align: 'center',
-      cellClass: 'text-muted',
-      formatter: (value) => this.datePipe.transform(value as string, 'shortDate') || ''
+      cellClass: 'font-monospace text-nowrap',
+      formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yyyy') || ''
     },
     {
       key: 'quantity',
@@ -100,25 +109,25 @@ export class TransactionList {
       sortable: true,
       sortKey: 'quantity',
       align: 'end',
-      cellClass: 'numeric font-monospace',
+      cellClass: 'numeric font-monospace text-nowrap',
       formatter: (value) => this.decimalPipe.transform(value as number, '1.0-4') || ''
     },
     {
       key: 'price',
-      label: 'Price',
+      label: 'Px',
       sortable: true,
       sortKey: 'price',
       align: 'end',
-      cellClass: 'numeric font-monospace',
+      cellClass: 'numeric font-monospace text-nowrap',
       formatter: (value) => this.decimalPipe.transform(value as number, '1.2-4') || ''
     },
     {
       key: 'amount',
-      label: 'Amount',
+      label: 'Amt',
       sortable: true,
       sortKey: 'amount',
       align: 'end',
-      cellClass: 'numeric font-monospace fw-bold',
+      cellClass: 'numeric font-monospace fw-bold text-nowrap',
       formatter: (value) => this.decimalPipe.transform(value as number, '1.2-2') || ''
     },
     {
@@ -126,7 +135,8 @@ export class TransactionList {
       label: 'CCY',
       sortable: true,
       sortKey: 'currency',
-      align: 'center'
+      align: 'center',
+      cellClass: 'font-monospace text-info text-nowrap'
     },
     {
       key: 'statusDescription',
@@ -138,11 +148,36 @@ export class TransactionList {
   ];
 
   @ViewChild('actionsTemplate', {static: true}) actionsTemplate!: TemplateRef<any>;
+  @ViewChild('classTemplate', {static: true}) classTemplate!: TemplateRef<any>;
+
+  // Instrument type to CSS class mapping (values match database)
+  readonly instrumentTypeStyles: Record<string, string> = {
+    'EQUITY': 'badge rounded-pill instrument-badge instrument-equity',
+    'ETF': 'badge rounded-pill instrument-badge instrument-etf',
+    'FIXED_INCOME': 'badge rounded-pill instrument-badge instrument-fixed-income',
+    'DERIVATIVE_FUTURE': 'badge rounded-pill instrument-badge instrument-derivative-future',
+    'DERIVATIVE_OPTION': 'badge rounded-pill instrument-badge instrument-derivative-option',
+    'DERIVATIVE_SWAP': 'badge rounded-pill instrument-badge instrument-derivative-swap',
+    'FX': 'badge rounded-pill instrument-badge instrument-fx',
+    'MONEY_MARKET': 'badge rounded-pill instrument-badge instrument-money-market',
+  };
+
+  getInstrumentBadgeClass(type: string): string {
+    return this.instrumentTypeStyles[type] ?? 'badge rounded-pill instrument-badge instrument-default';
+  }
 
   constructor() {
     effect(() => {
       this.loadTransactions();
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Assign template to Class column
+    const classColumn = this.columns.find(col => col.key === 'transactionTypeDescription');
+    if (classColumn) {
+      classColumn.template = this.classTemplate;
+    }
   }
 
   loadTransactions(): void {

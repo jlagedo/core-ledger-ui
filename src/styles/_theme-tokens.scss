@@ -114,21 +114,21 @@ $theme-tokens: (
   ),
 
   // ========================
-  // DARK MODE
+  // DARK MODE - Bloomberg Terminal Style
   // ========================
   dark: (
     // --- Core ---
-    body-bg: $brand-blue-800,
-    body-color: $neutral-100,
+    body-bg: $neutral-black,
+    body-color: $accent-amber,
     emphasis: $neutral-white,
 
     // --- Links ---
-    link: $brand-blue-400,
-    link-hover: color.scale($brand-blue-400, $lightness: 20%),
-    link-visited: color.scale($brand-blue-400, $lightness: -10%, $saturation: -15%),
+    link: $accent-blue,
+    link-hover: color.scale($accent-blue, $lightness: 20%),
+    link-visited: color.scale($accent-blue, $lightness: -15%),
 
     // --- Borders ---
-    border: rgba($brand-blue-400, 0.15),
+    border: rgba($accent-amber, 0.2),
     border-translucent: rgba(255, 255, 255, 0.1),
 
     // --- Shadows ---
@@ -137,8 +137,8 @@ $theme-tokens: (
     shadow-lg: $shadow-dark-lg,
 
     // --- Focus States ---
-    focus-ring: rgba($accent-teal, 0.5),
-    focus-outline: $accent-teal,
+    focus-ring: rgba($accent-blue, 0.5),
+    focus-outline: $accent-blue,
     focus-ring-offset: 2px,
 
     // --- Disabled States ---
@@ -148,71 +148,71 @@ $theme-tokens: (
     disabled-opacity: 0.5,
 
     // --- Form Validation ---
-    input-error-bg: rgba($accent-red-light, 0.1),
-    valid: color.scale($accent-teal, $lightness: -15%),
+    input-error-bg: rgba($accent-red, 0.1),
+    valid: $accent-teal,
     valid-border: $accent-teal,
-    invalid: $accent-red-light,
-    invalid-border: $accent-red-light,
+    invalid: $accent-red,
+    invalid-border: $accent-red,
 
     // --- Cards ---
-    card-bg: rgba($brand-blue-700, 0.6),
-    card-border: rgba($brand-blue-400, 0.1),
-    card-header: rgba($brand-blue-400, 0.05),
+    card-bg: rgba(26, 26, 26, 0.9),
+    card-border: rgba($accent-amber, 0.15),
+    card-header: rgba(42, 42, 42, 0.8),
 
     // --- Glass Effect ---
-    glass-bg: rgba(255, 255, 255, 0.05),
-    glass-border: rgba($accent-teal, 0.1),
-    glass-shadow: 0 4px 30px rgba(0, 8, 20, 0.25),
+    glass-bg: rgba(26, 26, 26, 0.85),
+    glass-border: rgba($accent-amber, 0.1),
+    glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.4),
 
     // --- Inputs ---
-    input-bg: rgba($brand-blue-700, 0.4),
-    input-border: rgba($brand-blue-400, 0.2),
-    input-focus: $accent-teal,
-    input-focus-shadow: 0 0 0 0.25rem rgba($accent-teal, 0.15),
-    input-placeholder: rgba($neutral-100, 0.5),
+    input-bg: rgba(26, 26, 26, 0.8),
+    input-border: rgba($accent-amber, 0.25),
+    input-focus: $accent-blue,
+    input-focus-shadow: 0 0 0 0.25rem rgba($accent-blue, 0.2),
+    input-placeholder: rgba($accent-amber, 0.5),
 
     // --- Tables ---
-    table-bg: rgba($brand-blue-700, 0.85),
-    table-header-bg: rgba($brand-blue-600, 0.6),
-    table-header-color: $neutral-100,
-    table-striped: rgba($brand-blue-600, 0.25),
-    table-hover: rgba($brand-blue-400, 0.08),
-    table-active-bg: rgba($brand-blue-500, 0.45),
+    table-bg: rgba(10, 10, 10, 0.95),
+    table-header-bg: rgba(26, 26, 26, 0.9),
+    table-header-color: $accent-amber,
+    table-striped: rgba(26, 26, 26, 0.5),
+    table-hover: rgba($accent-amber, 0.1),
+    table-active-bg: rgba($accent-amber, 0.2),
     table-active-color: $neutral-white,
-    table-active-border: $brand-blue-400,
-    table-border: rgba($brand-blue-400, 0.1),
-    table-cell: $neutral-100,
-    table-action: rgba($neutral-100, 0.7),
-    table-action-hover: $brand-blue-400,
+    table-active-border: $accent-amber,
+    table-border: rgba($accent-amber, 0.1),
+    table-cell: $accent-amber,
+    table-action: rgba($accent-amber, 0.7),
+    table-action-hover: $accent-blue,
 
     // --- Buttons ---
-    btn-primary-hover: color.scale($brand-blue-500, $lightness: 15%),
+    btn-primary-hover: color.scale($accent-blue, $lightness: 15%),
     btn-secondary-bg: $neutral-600,
     btn-secondary-color: $neutral-white,
     btn-secondary-hover: $neutral-500,
 
     // --- Navigation ---
-    nav-active: color.scale($accent-teal, $lightness: -15%),
-    nav-underline: linear-gradient(90deg, $brand-blue-400, $accent-teal),
+    nav-active: $accent-amber,
+    nav-underline: linear-gradient(90deg, $accent-amber, $accent-yellow),
 
     // --- Scrollbar ---
-    scrollbar-track: rgba($brand-blue-700, 0.5),
-    scrollbar-thumb: linear-gradient(180deg, $brand-blue-600, $brand-blue-700),
+    scrollbar-track: rgba(26, 26, 26, 0.5),
+    scrollbar-thumb: linear-gradient(180deg, $accent-amber, color.scale($accent-amber, $lightness: -20%)),
 
     // --- Selection ---
-    selection: rgba($accent-teal, 0.3),
+    selection: rgba($accent-amber, 0.3),
 
     // --- Dropdown ---
-    dropdown-bg: rgba($brand-blue-700, 0.95),
-    dropdown-border: rgba($brand-blue-400, 0.1),
+    dropdown-bg: rgba(26, 26, 26, 0.98),
+    dropdown-border: rgba($accent-amber, 0.15),
 
     // --- Sidenav ---
-    sidenav-bg: $brand-blue-800,
-    sidenav-color: $neutral-100,
-    sidenav-gradient: radial-gradient(circle 500px at 50% 300px, rgba($accent-teal, 0.12), transparent),
-    sidenav-hover: rgba($neutral-100, 0.05),
-    sidenav-active-bg: rgba($accent-teal, 0.15),
-    sidenav-active-border: $accent-teal,
-    sidenav-divider: rgba($accent-teal, 0.1)
+    sidenav-bg: $neutral-black,
+    sidenav-color: $accent-amber,
+    sidenav-gradient: radial-gradient(circle 500px at 50% 300px, rgba($accent-amber, 0.08), transparent),
+    sidenav-hover: rgba($accent-amber, 0.1),
+    sidenav-active-bg: rgba($accent-amber, 0.15),
+    sidenav-active-border: $accent-amber,
+    sidenav-divider: rgba($accent-amber, 0.2)
   )
 );
