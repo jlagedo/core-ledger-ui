@@ -78,7 +78,7 @@ export class TransactionList implements AfterViewInit {
       sortable: true,
       sortKey: 'id',
       align: 'end',
-      minWidth: '50px',
+      minWidth: '30px',
       cellClass: 'numeric font-monospace'
     },
     {
@@ -123,7 +123,7 @@ export class TransactionList implements AfterViewInit {
       align: 'center',
       minWidth: '90px',
       cellClass: 'font-monospace',
-      formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yyyy') || ''
+      formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yy') || ''
     },
     {
       key: 'settleDate',
@@ -133,7 +133,7 @@ export class TransactionList implements AfterViewInit {
       align: 'center',
       minWidth: '90px',
       cellClass: 'font-monospace',
-      formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yyyy') || ''
+      formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yy') || ''
     },
     {
       key: 'quantity',
