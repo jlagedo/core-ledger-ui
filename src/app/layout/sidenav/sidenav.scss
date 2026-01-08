@@ -64,8 +64,7 @@
   background-color: var(--sidenav-bg);
   color: var(--sidenav-color);
   border-color: var(--sidenav-border-color) !important;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
 
   // Gradient background
   &::before {
@@ -275,11 +274,60 @@
 }
 
 // ============================================================
+// SCROLLABLE NAVIGATION CONTAINER
+// ============================================================
+
+.sidenav-scroll-container {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 0; // Critical for flex item scrolling
+
+  // Custom scrollbar styling (Bloomberg terminal aesthetic)
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--sidenav-divider);
+    border-radius: 2px;
+
+    &:hover {
+      background: rgba(255, 160, 40, 0.4);
+    }
+  }
+
+  // Firefox scrollbar
+  scrollbar-width: thin;
+  scrollbar-color: var(--sidenav-divider) transparent;
+
+  // Fade effect at top/bottom edges (indicates scrollable content)
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    black 8px,
+    black calc(100% - 8px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    black 8px,
+    black calc(100% - 8px),
+    transparent 100%
+  );
+}
+
+// ============================================================
 // NAVIGATION MENU
 // ============================================================
 
 .sidenav-nav {
   padding: 0.25rem 0;
+  margin-bottom: 0; // Remove mb-auto since scroll container handles spacing
 }
 
 // ============================================================

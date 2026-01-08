@@ -6,10 +6,10 @@
   <!-- Left accent line -->
   <span class="sidenav-accent-line" aria-hidden="true"></span>
 
-  <!-- Header Section (Logo & Toggle) -->
-  <div class="d-flex align-items-center header-section"
-       [class.justify-content-center]="store.isSidenavCollapsed()"
-       [class.justify-content-between]="!store.isSidenavCollapsed()">
+  <!-- Header Section (Logo & Toggle) - FIXED -->
+  <header class="d-flex align-items-center header-section flex-shrink-0"
+          [class.justify-content-center]="store.isSidenavCollapsed()"
+          [class.justify-content-between]="!store.isSidenavCollapsed()">
     @if (store.isSidenavCollapsed()) {
       <!-- Collapsed: Show hamburger menu icon only -->
       <button (click)="toggleSidenav()"
@@ -34,10 +34,11 @@
         <i class="bi bi-x-lg"></i>
       </button>
     }
-  </div>
+  </header>
 
-  <!-- Navigation Menu -->
-  <ul class="nav nav-pills flex-column mb-auto sidenav-nav">
+  <!-- Navigation Menu - SCROLLABLE -->
+  <nav class="sidenav-scroll-container flex-grow-1" aria-label="Main navigation">
+    <ul class="nav nav-pills flex-column sidenav-nav">
     @for (item of menuItems(); track item.label; let i = $index) {
       <!-- Section divider before Ledger -->
       @if (item.label === 'Ledger') {
@@ -111,10 +112,11 @@
         </li>
       }
     }
-  </ul>
+    </ul>
+  </nav>
 
-  <!-- User Profile Footer -->
-  <div class="sidenav-footer">
+  <!-- User Profile Footer - FIXED -->
+  <footer class="sidenav-footer flex-shrink-0">
     <app-user-profile [isCollapsed]="store.isSidenavCollapsed()"/>
-  </div>
+  </footer>
 </div>
