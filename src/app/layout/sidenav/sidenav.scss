@@ -64,7 +64,8 @@
   background-color: var(--sidenav-bg);
   color: var(--sidenav-color);
   border-color: var(--sidenav-border-color) !important;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   // Gradient background
   &::before {

@@ -31,7 +31,7 @@ const MOCK_ALLOCATION: AllocationData[] = [
         @for (item of allocationData(); track item.name) {
           <div class="allocation-chart__legend-item">
             <span class="allocation-chart__legend-dot" [style.background]="item.color"></span>
-            <span class="allocation-chart__legend-label">{{ item.name }}</span>
+            <span class="allocation-chart__legend-label">{{ item.name }} - </span>
             <span class="allocation-chart__legend-value">{{ item.value }}%</span>
           </div>
         }

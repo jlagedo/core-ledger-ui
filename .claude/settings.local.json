@@ -42,7 +42,10 @@
       "Bash(npx tsx:*)",
       "Bash(xargs ls:*)",
       "Bash(git -C /Users/jlagedo/Developer/angular/core-ledger-ui status --porcelain)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:fireship.io)",
+      "Bash(npx vitest:*)"
     ]
   },
   "enabledMcpjsonServers": [

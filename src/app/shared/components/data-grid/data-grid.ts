@@ -13,8 +13,13 @@ import {
   afterNextRender,
   Injector,
   inject,
+  DestroyRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { ListRange } from '@angular/cdk/collections';
+import { Subject } from 'rxjs';
+import { debounceTime, filter, distinctUntilChanged, map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -136,6 +141,19 @@ export class DataGrid<T> {
   /** Tracks if initial data has been loaded - used for aggressive preloading */
   private readonly _initialDataLoaded = signal<boolean>(false);
 
+  // Scroll management for infinite scroll
+  /** DestroyRef for cleanup */
+  private readonly destroyRef = inject(DestroyRef);
+
+  /** Subject to debounce load more requests */
+  private readonly loadMoreSubject = new Subject<void>();
+
+  /** Track if we've set up the renderedRangeStream subscription */
+  private renderedRangeSubscribed = false;
+
+  /** Debounce time in milliseconds for load more events */
+  private readonly LOAD_MORE_DEBOUNCE_MS = 150;
+
   /** Active row ID for highlighting */
   private readonly _activeRowId = signal<number | string | null>(null);
   readonly activeRowId = this._activeRowId.asReadonly();
@@ -197,76 +215,112 @@ export class DataGrid<T> {
       this.selectionChange.emit(selected);
     });
 
-    // Effect: Reset initial data flag when data is cleared (e.g., on search/refresh)
+    // Debounced subscription for load more requests
+    // Prevents rapid-fire events when scrolling quickly
+    this.loadMoreSubject
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(this.LOAD_MORE_DEBOUNCE_MS),
+        // Double-check conditions before emitting
+        filter(() => !this.loadingMore() && this.hasMoreItems())
+      )
+      .subscribe(() => {
+        this.loadMore.emit();
+      });
+
+    // Effect: Reset flags when data is cleared (e.g., on search/refresh)
     effect(() => {
       const items = this.currentPageItems();
       if (items.length === 0 && this._initialDataLoaded()) {
         this._initialDataLoaded.set(false);
+        // Reset subscription flag so it re-subscribes on new data
+        this.renderedRangeSubscribed = false;
       }
     });
 
-    // Effect: Preload next batch after initial data loads
-    // Fixes race condition where scrolledIndexChange fires before data arrives
-    // Uses a flag to prevent queuing multiple afterNextRender callbacks
-    let pendingPreloadCheck = false;
+    // Effect: Initialize renderedRangeStream subscription and handle initial preload
+    // The effect tracks when data arrives and viewport becomes available
     effect(() => {
       const items = this.currentPageItems();
       const hasMore = this.hasMoreItems();
       const isLoadingMore = this.loadingMore();
       const isVirtualScroll = this.virtualScroll();
-      const initialDataLoaded = this._initialDataLoaded();
+      const viewport = this.virtualScrollViewport();
 
-      // Only trigger for virtual scroll mode when we have data and more items available
-      if (!isVirtualScroll || isLoadingMore || !hasMore || items.length === 0) {
+      // Skip if not virtual scroll mode or no viewport yet
+      if (!isVirtualScroll || !viewport) {
         return;
       }
 
-      // Prevent queuing multiple callbacks
-      if (pendingPreloadCheck) {
+      // Set up the renderedRangeStream subscription (idempotent)
+      this.subscribeToRenderedRange();
+
+      // Skip preload check if loading or no data or no more items
+      if (isLoadingMore || !hasMore || items.length === 0) {
         return;
       }
-      pendingPreloadCheck = true;
 
-      // Capture whether this is the first data load
-      const isFirstLoad = !initialDataLoaded;
+      // Check if we need to preload on initial data arrival
+      const isFirstLoad = !this._initialDataLoaded();
 
-      // Schedule check after next render to ensure viewport exists
-      afterNextRender(
-        () => {
-          pendingPreloadCheck = false;
+      if (isFirstLoad) {
+        afterNextRender(
+          () => {
+            // Mark as loaded
+            if (!this._initialDataLoaded()) {
+              this._initialDataLoaded.set(true);
+            }
 
-          // Re-read values to avoid stale closure data
-          const viewport = this.virtualScrollViewport();
-          const currentItems = this.currentPageItems();
-          const stillHasMore = this.hasMoreItems();
-          const stillLoadingMore = this.loadingMore();
+            // Re-check conditions (may have changed)
+            if (this.loadingMore() || !this.hasMoreItems()) {
+              return;
+            }
 
-          if (!viewport || !stillHasMore || stillLoadingMore || currentItems.length === 0) {
-            return;
-          }
-
-          // Mark initial data as loaded
-          if (!this._initialDataLoaded()) {
-            this._initialDataLoaded.set(true);
-          }
-
-          const threshold = this.loadMoreThreshold();
-          const scrollOffset = viewport.measureScrollOffset('top');
-          const itemSize = this.rowHeight();
-          const currentIndex = Math.floor(scrollOffset / itemSize);
-
-          // On initial data load, always preload if there's more data
-          // This ensures the next batch is ready before user starts scrolling
-          const shouldPreload =
-            isFirstLoad || currentIndex >= currentItems.length - threshold;
-
-          if (shouldPreload) {
-            this.loadMore.emit();
-          }
-        },
-        { injector: this.injector }
-      );
+            // Trigger preload through the debounced subject
+            this.loadMoreSubject.next();
+          },
+          { injector: this.injector }
+        );
+      }
     });
+  }
+
+  /**
+   * Subscribe to the viewport's renderedRangeStream for more reliable
+   * infinite scroll detection. This is more reliable than scrolledIndexChange
+   * because it provides both start and end indices of the rendered range.
+   */
+  private subscribeToRenderedRange(): void {
+    const viewport = this.virtualScrollViewport();
+    if (!viewport || this.renderedRangeSubscribed) {
+      return;
+    }
+
+    this.renderedRangeSubscribed = true;
+
+    // Subscribe to rendered range changes
+    viewport.renderedRangeStream
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        // Only process when we should potentially load more
+        filter(() => this.virtualScroll() && !this.loadingMore() && this.hasMoreItems()),
+        // Extract the end index and compare against threshold
+        map((range: ListRange) => {
+          const items = this.currentPageItems();
+          const threshold = this.loadMoreThreshold();
+          const endIndex = range.end;
+          const totalItems = items.length;
+
+          // Check if rendered range end is within threshold of total loaded items
+          return endIndex >= totalItems - threshold;
+        }),
+        // Only emit when the "should load" state changes to true
+        distinctUntilChanged(),
+        filter((shouldLoad) => shouldLoad)
+      )
+      .subscribe(() => {
+        this.loadMoreSubject.next();
+      });
   }
 
   /**
@@ -315,19 +369,28 @@ export class DataGrid<T> {
   }
 
   /**
-   * Handle virtual scroll index change (infinite scroll)
+   * Handle virtual scroll index change (fallback for infinite scroll)
+   * Primary detection is via renderedRangeStream, this provides additional coverage.
    */
   onScrolledIndexChange(index: number): void {
     if (!this.virtualScroll() || this.loadingMore() || !this.hasMoreItems()) {
       return;
     }
 
+    const viewport = this.virtualScrollViewport();
+    if (!viewport) {
+      return;
+    }
+
+    // Use getRenderedRange for accurate end position
+    // This is more accurate than using just the first visible index
+    const range = viewport.getRenderedRange();
     const items = this.currentPageItems();
     const threshold = this.loadMoreThreshold();
 
-    // Check if we're near the end of the list
-    if (index >= items.length - threshold) {
-      this.loadMore.emit();
+    // Check if rendered range end is within threshold of total loaded items
+    if (range.end >= items.length - threshold) {
+      this.loadMoreSubject.next();
     }
   }
 
