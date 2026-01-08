@@ -178,6 +178,60 @@
     </div>
   </div>
 
+  <!-- ============================================================
+       KEYBOARD SHORTCUTS
+       ============================================================ -->
+  <section class="terminal-panel keyboard-shortcuts-panel" style="animation-delay: 0.3s">
+    <header class="terminal-panel__header">
+      <h2 class="terminal-panel__title">
+        <span class="fn-key">F9</span>
+        Keyboard Shortcuts
+      </h2>
+      <div class="terminal-panel__actions">
+        <span class="keyboard-shortcuts__hint">
+          @if (isMac) {
+            <kbd class="key-combo key-combo--symbol">⇧</kbd>
+            <kbd class="key-combo">?</kbd>
+          } @else {
+            <kbd class="key-combo">Shift</kbd>
+            <span class="key-separator">+</span>
+            <kbd class="key-combo">?</kbd>
+          }
+          <span class="hint-text">to show anywhere</span>
+        </span>
+      </div>
+    </header>
+    <div class="terminal-panel__body p-0">
+      <div class="keyboard-shortcuts">
+        @for (entry of shortcutsByCategory() | keyvalue; track entry.key) {
+          <div class="shortcut-category">
+            <header class="shortcut-category__header">
+              <i class="bi {{ getCategoryIcon(entry.key) }} shortcut-category__icon" aria-hidden="true"></i>
+              <span class="shortcut-category__name">{{ entry.key }}</span>
+              <span class="shortcut-category__count">{{ entry.value.length }}</span>
+            </header>
+            <ul class="shortcut-list" role="list">
+              @for (shortcut of entry.value; track shortcut.id) {
+                <li class="shortcut-list__item">
+                  <div class="shortcut-list__keys" [class.shortcut-list__keys--mac]="isMac" aria-label="Keyboard shortcut">
+                    @for (part of getShortcutKeyParts(shortcut.keys); track $index; let last = $last) {
+                      <kbd class="shortcut-key" [class.shortcut-key--symbol]="isMac && part.length === 1">{{ part }}</kbd>
+                      @if (!last && !isMac) {
+                        <span class="shortcut-key__separator" aria-hidden="true">+</span>
+                      }
+                    }
+                  </div>
+                  <span class="shortcut-list__label">{{ shortcut.label }}</span>
+                  <span class="shortcut-list__indicator" aria-hidden="true"></span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
   <div class="row g-3">
     <!-- ============================================================
          ACTIVITY LOG

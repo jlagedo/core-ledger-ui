@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, KeyValuePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageHeader } from '../../layout/page-header/page-header';
 import { AuthService } from '../../auth/auth-service';
+import { KeyboardShortcutsService } from '../../services/keyboard-shortcuts.service';
 
 // ============================================================
 // INTERFACES
@@ -159,15 +160,19 @@ const QUICK_ACTIONS: QuickAction[] = [
 
 @Component({
   selector: 'app-profile',
-  imports: [PageHeader, DatePipe, FormsModule],
+  imports: [PageHeader, DatePipe, KeyValuePipe, FormsModule],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Profile {
   private readonly authService = inject(AuthService);
+  private readonly keyboardService = inject(KeyboardShortcutsService);
 
   readonly userProfile = this.authService.userProfile;
+
+  // Keyboard shortcuts from service
+  readonly shortcutsByCategory = this.keyboardService.shortcutsByCategory;
 
   // Signals for mock data
   readonly sessions = signal<Session[]>(MOCK_SESSIONS);
@@ -271,5 +276,29 @@ export class Profile {
   // Revoke session
   revokeSession(sessionId: string): void {
     this.sessions.update(sessions => sessions.filter(s => s.id !== sessionId));
+  }
+
+  // Get keyboard shortcut key parts for display
+  getShortcutKeyParts(keys: string): string[] {
+    return this.keyboardService.getKeyParts(keys);
+  }
+
+  // Check if running on macOS (affects key display)
+  get isMac(): boolean {
+    return this.keyboardService.isMacPlatform;
+  }
+
+  // Get icon for shortcut category
+  getCategoryIcon(category: string): string {
+    switch (category.toLowerCase()) {
+      case 'navigation':
+        return 'bi-signpost-2';
+      case 'focus':
+        return 'bi-cursor';
+      case 'help':
+        return 'bi-question-circle';
+      default:
+        return 'bi-keyboard';
+    }
   }
 }

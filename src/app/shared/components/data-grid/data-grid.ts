@@ -158,6 +158,10 @@ export class DataGrid<T> {
   private readonly _activeRowId = signal<number | string | null>(null);
   readonly activeRowId = this._activeRowId.asReadonly();
 
+  /** Currently focused row index for keyboard navigation */
+  private readonly _focusedRowIndex = signal<number>(-1);
+  readonly focusedRowIndex = this._focusedRowIndex.asReadonly();
+
   /** Selected items set */
   private readonly _selectedItems = signal<Set<T>>(new Set());
 
@@ -504,4 +508,134 @@ export class DataGrid<T> {
   trackByFn: TrackByFunction<T> = (index: number, item: T): number | string => {
     return this.getItemId(item);
   };
+
+  // ============================================================
+  // KEYBOARD NAVIGATION
+  // ============================================================
+
+  /**
+   * Handle keyboard navigation within the data grid.
+   * Supports arrow keys, Enter, Space, Home, End.
+   */
+  onGridKeydown(event: KeyboardEvent): void {
+    const items = this.currentPageItems();
+    if (items.length === 0) return;
+
+    const currentIndex = this._focusedRowIndex();
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.focusNextRow(items, currentIndex);
+        break;
+
+      case 'ArrowUp':
+        event.preventDefault();
+        this.focusPreviousRow(items, currentIndex);
+        break;
+
+      case 'Home':
+        event.preventDefault();
+        this.focusFirstRow(items);
+        break;
+
+      case 'End':
+        event.preventDefault();
+        this.focusLastRow(items);
+        break;
+
+      case 'Enter':
+        event.preventDefault();
+        if (currentIndex >= 0 && currentIndex < items.length) {
+          this.onRowClick(items[currentIndex]);
+        }
+        break;
+
+      case ' ':
+        // Space to toggle selection if selectable
+        if (this.selectable() && currentIndex >= 0 && currentIndex < items.length) {
+          event.preventDefault();
+          this.toggleItemSelection(items[currentIndex]);
+        }
+        break;
+
+      case 'PageDown':
+        event.preventDefault();
+        this.focusPageDown(items, currentIndex);
+        break;
+
+      case 'PageUp':
+        event.preventDefault();
+        this.focusPageUp(items, currentIndex);
+        break;
+    }
+  }
+
+  /**
+   * Focus the next row
+   */
+  private focusNextRow(items: T[], currentIndex: number): void {
+    const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+    this.focusRow(nextIndex);
+  }
+
+  /**
+   * Focus the previous row
+   */
+  private focusPreviousRow(items: T[], currentIndex: number): void {
+    const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+    this.focusRow(prevIndex);
+  }
+
+  /**
+   * Focus the first row
+   */
+  private focusFirstRow(items: T[]): void {
+    if (items.length > 0) {
+      this.focusRow(0);
+    }
+  }
+
+  /**
+   * Focus the last row
+   */
+  private focusLastRow(items: T[]): void {
+    if (items.length > 0) {
+      this.focusRow(items.length - 1);
+    }
+  }
+
+  /**
+   * Focus 10 rows down (page down)
+   */
+  private focusPageDown(items: T[], currentIndex: number): void {
+    const nextIndex = Math.min(currentIndex + 10, items.length - 1);
+    this.focusRow(nextIndex);
+  }
+
+  /**
+   * Focus 10 rows up (page up)
+   */
+  private focusPageUp(items: T[], currentIndex: number): void {
+    const prevIndex = Math.max(currentIndex - 10, 0);
+    this.focusRow(prevIndex);
+  }
+
+  /**
+   * Focus a specific row and update state
+   */
+  private focusRow(index: number): void {
+    this._focusedRowIndex.set(index);
+    const items = this.currentPageItems();
+    if (index >= 0 && index < items.length) {
+      this._activeRowId.set(this.getItemId(items[index]));
+    }
+  }
+
+  /**
+   * Handle row focus event
+   */
+  onRowFocus(index: number): void {
+    this._focusedRowIndex.set(index);
+  }
 }

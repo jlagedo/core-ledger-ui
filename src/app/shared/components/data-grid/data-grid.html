@@ -102,14 +102,14 @@
   <!-- Virtual Scroll Body -->
   @if (errorMessage()) {
   <!-- Error State -->
-  <div class="text-center text-danger py-5">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+  <div class="text-center text-danger py-5" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
     {{ errorMessage() }}
   </div>
   } @else if (currentPageItems().length === 0) {
   <!-- Empty State -->
-  <div class="text-center text-muted py-5">
-    <i class="bi bi-inbox me-2"></i>
+  <div class="text-center text-muted py-5" role="status">
+    <i class="bi bi-inbox me-2" aria-hidden="true"></i>
     {{ emptyMessage() }}
   </div>
   } @else {
@@ -118,15 +118,26 @@
     [itemSize]="rowHeight()"
     [style.height]="viewportHeight()"
     class="virtual-scroll-viewport"
+    role="grid"
+    aria-label="Data table"
+    tabindex="0"
     (scrolledIndexChange)="onScrolledIndexChange($event)"
+    (keydown)="onGridKeydown($event)"
   >
     <div
       *cdkVirtualFor="let item of currentPageItems(); trackBy: trackByFn; let idx = index; let odd = odd"
       class="virtual-scroll-row cursor-pointer"
+      role="row"
+      tabindex="0"
       [class.virtual-scroll-row-odd]="odd"
       [class.virtual-scroll-row-active]="activeRowId() === getItemId(item)"
+      [class.focused-row]="focusedRowIndex() === idx"
+      [attr.aria-selected]="activeRowId() === getItemId(item)"
       [style.height.px]="rowHeight()"
       (click)="onRowClick(item)"
+      (focus)="onRowFocus(idx)"
+      (keydown.enter)="onRowClick(item)"
+      (keydown.space)="selectable() ? toggleItemSelection(item) : null; $event.preventDefault()"
     >
       <!-- Selection Checkbox -->
       @if (selectable()) {
@@ -197,7 +208,11 @@
 </div>
 } @else {
 <!-- Standard Mode (with pagination) -->
-<div class="table-responsive data-table">
+<div class="table-responsive data-table"
+     role="grid"
+     aria-label="Data table"
+     tabindex="0"
+     (keydown)="onGridKeydown($event)">
   <table class="table table-sm table-striped table-hover align-middle fs-6 mb-0">
     <!-- Table Head -->
     <thead class="table-light">
@@ -283,8 +298,15 @@
       @for (item of currentPageItems(); track getItemId(item); let idx = $index) {
       <tr
         class="align-middle cursor-pointer"
+        role="row"
+        tabindex="0"
         [class.table-primary]="activeRowId() === getItemId(item)"
+        [class.focused-row]="focusedRowIndex() === idx"
+        [attr.aria-selected]="activeRowId() === getItemId(item)"
         (click)="onRowClick(item)"
+        (focus)="onRowFocus(idx)"
+        (keydown.enter)="onRowClick(item)"
+        (keydown.space)="selectable() ? toggleItemSelection(item) : null; $event.preventDefault()"
       >
         <!-- Selection Checkbox -->
         @if (selectable()) {

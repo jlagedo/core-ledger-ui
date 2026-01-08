@@ -22,4 +22,17 @@ export class App {
   onSidenavToggle(collapsed: boolean): void {
     this.isSidenavCollapsed.set(collapsed);
   }
+
+  /**
+   * Skip to main content for keyboard navigation accessibility.
+   * Prevents default anchor behavior and programmatically focuses main content.
+   */
+  skipToMain(event: Event): void {
+    event.preventDefault();
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+      mainContent.focus();
+      mainContent.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 }
