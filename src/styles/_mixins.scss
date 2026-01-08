@@ -124,6 +124,15 @@
   --terminal-glow-subtle: #{map.get($t, terminal-glow-subtle)};
   --terminal-glow-bg: #{map.get($t, terminal-glow-bg)};
 
+  // --- Status Indicators ---
+  --status-safe: #{map.get($t, status-safe)};
+  --status-safe-muted: #{map.get($t, status-safe-muted)};
+  --status-warning: #{map.get($t, status-warning)};
+  --status-warning-glow: #{map.get($t, status-warning-glow)};
+  --status-critical: #{map.get($t, status-critical)};
+  --status-critical-glow: #{map.get($t, status-critical-glow)};
+  --status-expired: #{map.get($t, status-expired)};
+
   // --- Alerts ---
   @each $type, $config in $alert-tokens {
     --alert-#{$type}-bg: #{map.get($config, #{$prefix}-bg)};

@@ -862,6 +862,36 @@
       transparent
     );
   }
+
+  // Inner container for deadline ticker + user profile layout
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+
+    // Deadline ticker takes available space
+    app-deadline-ticker {
+      flex: 1;
+      min-width: 0;
+    }
+
+    // User profile at bottom
+    app-user-profile {
+      flex-shrink: 0;
+    }
+
+    // Collapsed state - stack vertically with centered items
+    &--collapsed {
+      padding: 0.5rem;
+      align-items: center;
+
+      app-deadline-ticker,
+      app-user-profile {
+        width: auto;
+      }
+    }
+  }
 }
 
 .sidenav-wrapper button {

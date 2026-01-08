@@ -152,9 +152,16 @@
     </ul>
   </nav>
 
-  <!-- User Profile Footer - FIXED -->
+  <!-- Footer - FIXED -->
   <footer class="sidenav-footer flex-shrink-0">
-    <app-user-profile [isCollapsed]="store.isSidenavCollapsed()"/>
+    <div class="sidenav-footer__inner"
+         [class.sidenav-footer__inner--collapsed]="store.isSidenavCollapsed()">
+      <!-- Deadline Ticker -->
+      <app-deadline-ticker [isCollapsed]="store.isSidenavCollapsed()" />
+
+      <!-- User Profile -->
+      <app-user-profile [isCollapsed]="store.isSidenavCollapsed()" />
+    </div>
   </footer>
 
   <!-- Flyout Panel - Rendered OUTSIDE scroll container to avoid clipping -->

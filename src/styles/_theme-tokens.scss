@@ -116,7 +116,16 @@ $theme-tokens: (
     terminal-glow: $daylight-amber,
     terminal-glow-muted: rgba($daylight-amber, 0.3),
     terminal-glow-subtle: rgba($daylight-amber, 0.15),
-    terminal-glow-bg: rgba($daylight-amber, 0.06)
+    terminal-glow-bg: rgba($daylight-amber, 0.06),
+
+    // --- Status Indicators (ticker, alerts) ---
+    status-safe: $daylight-amber,
+    status-safe-muted: rgba($daylight-amber, 0.6),
+    status-warning: $daylight-gold,
+    status-warning-glow: rgba($daylight-gold, 0.5),
+    status-critical: #DC2626,
+    status-critical-glow: rgba(#DC2626, 0.5),
+    status-expired: $daylight-muted
   ),
 
   // ========================
@@ -226,6 +235,15 @@ $theme-tokens: (
     terminal-glow: $accent-amber,
     terminal-glow-muted: rgba($accent-amber, 0.4),
     terminal-glow-subtle: rgba($accent-amber, 0.2),
-    terminal-glow-bg: rgba($accent-amber, 0.06)
+    terminal-glow-bg: rgba($accent-amber, 0.06),
+
+    // --- Status Indicators (ticker, alerts) ---
+    status-safe: $terminal-text-secondary,
+    status-safe-muted: rgba($terminal-text-secondary, 0.6),
+    status-warning: $accent-amber,
+    status-warning-glow: rgba($accent-amber, 0.5),
+    status-critical: $accent-red,
+    status-critical-glow: rgba($accent-red, 0.6),
+    status-expired: $terminal-text-muted
   )
 );

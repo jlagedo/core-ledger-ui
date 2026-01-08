@@ -8,6 +8,7 @@ import {environment} from '../../../environments/environment';
 export type SidenavState = {
   menuItemsCollapsedState: Record<string, boolean>;
   isSidenavCollapsed: boolean;
+  isDeadlineTickerMinimized: boolean;
 };
 
 const STORAGE_KEY = environment.storage.sidenavState;
@@ -15,6 +16,7 @@ const STORAGE_KEY = environment.storage.sidenavState;
 const initialState: SidenavState = {
   menuItemsCollapsedState: {},
   isSidenavCollapsed: false,
+  isDeadlineTickerMinimized: true, // Default to minimized
 };
 
 /**
@@ -65,6 +67,7 @@ export const SidenavStore = signalStore(
       const state: SidenavState = {
         menuItemsCollapsedState: store.menuItemsCollapsedState(),
         isSidenavCollapsed: store.isSidenavCollapsed(),
+        isDeadlineTickerMinimized: store.isDeadlineTickerMinimized(),
       };
       saveStateToSession(state, logger, storage);
     };
@@ -124,6 +127,26 @@ export const SidenavStore = signalStore(
       setSidenavCollapsed(collapsed: boolean) {
         patchState(store, {
           isSidenavCollapsed: collapsed,
+        });
+        saveCurrentState();
+      },
+
+      /**
+       * Toggle the deadline ticker minimized state
+       */
+      toggleDeadlineTickerMinimized() {
+        patchState(store, {
+          isDeadlineTickerMinimized: !store.isDeadlineTickerMinimized(),
+        });
+        saveCurrentState();
+      },
+
+      /**
+       * Set the deadline ticker minimized state explicitly
+       */
+      setDeadlineTickerMinimized(minimized: boolean) {
+        patchState(store, {
+          isDeadlineTickerMinimized: minimized,
         });
         saveCurrentState();
       },

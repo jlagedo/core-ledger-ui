@@ -574,46 +574,8 @@
 
 // ============================================================
 // ALLOCATION CHART CONTAINER
+// Styles moved to component - only host-level styles remain
 // ============================================================
-
-.allocation-chart {
-  height: 100%;
-  min-height: 280px;
-  display: flex;
-  flex-direction: column;
-
-  &__legend {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.5rem;
-    margin-top: auto;
-    padding-top: 1rem;
-    border-top: 1px solid var(--grid-line);
-  }
-
-  &__legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.6875rem;
-  }
-
-  &__legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-  }
-
-  &__legend-label {
-    color: var(--bs-secondary-color);
-  }
-
-  &__legend-value {
-    margin-left: auto;
-    font-weight: 600;
-    color: var(--bs-emphasis-color);
-  }
-}
 
 // ============================================================
 // STATS GRID (for compact metrics)

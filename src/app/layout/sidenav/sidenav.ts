@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NgbCollapse, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { UserProfile } from '../user-profile/user-profile';
+import { DeadlineTicker } from '../deadline-ticker/deadline-ticker';
 import { MenuService } from '../../services/menu-service';
 import { SidenavStore } from './sidenav-store';
 import { MenuItem } from '../../models/menu-item.model';
@@ -10,7 +11,7 @@ import { map } from 'rxjs';
 
 @Component({
   selector: 'app-sidenav',
-  imports: [RouterModule, NgbCollapse, NgbTooltip, UserProfile],
+  imports: [RouterModule, NgbCollapse, NgbTooltip, UserProfile, DeadlineTicker],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
