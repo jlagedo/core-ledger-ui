@@ -54,45 +54,48 @@
 
       @if (item.children) {
         <!-- Menu item with submenu -->
-        <li class="nav-item">
-          <a (click)="store.toggleMenuItem(item.label)"
-             [attr.aria-controls]="item.label + 'Submenu'"
-             [attr.aria-expanded]="!store.isMenuItemCollapsed(item.label)"
-             [class.justify-content-center]="store.isSidenavCollapsed()"
-             [ngbTooltip]="store.isSidenavCollapsed() ? item.label : ''"
-             class="nav-link nav-link--parent d-flex align-items-center"
-             placement="end"
-             role="button"
-             routerLinkActive="border border-light bg-transparent">
-            <i [class.me-2]="!store.isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
-            @if (!store.isSidenavCollapsed()) {
+        <li class="nav-item nav-item--parent">
+          @if (store.isSidenavCollapsed()) {
+            <!-- Collapsed state: Trigger for flyout -->
+            <a class="nav-link nav-link--parent nav-flyout-trigger d-flex align-items-center justify-content-center"
+               role="button"
+               (mouseenter)="showFlyout($event, item)"
+               (mouseleave)="hideFlyout()"
+               routerLinkActive="border border-light bg-transparent">
+              <i class="bi {{ item.icon }}"></i>
+              <!-- Child count indicator -->
+              <span class="nav-child-indicator" aria-hidden="true">{{ item.children.length }}</span>
+            </a>
+          } @else {
+            <!-- Expanded state: Normal collapsible submenu -->
+            <a (click)="store.toggleMenuItem(item.label)"
+               [attr.aria-controls]="item.label + 'Submenu'"
+               [attr.aria-expanded]="!store.isMenuItemCollapsed(item.label)"
+               class="nav-link nav-link--parent d-flex align-items-center"
+               role="button"
+               routerLinkActive="border border-light bg-transparent">
+              <i class="bi {{ item.icon }} me-2"></i>
               <span class="flex-grow-1">{{ item.label }}</span>
               <i [class.bi-chevron-down]="!store.isMenuItemCollapsed(item.label)"
                  [class.bi-chevron-right]="store.isMenuItemCollapsed(item.label)"
                  class="bi"></i>
-            }
-          </a>
-          <div [attr.id]="item.label + 'Submenu'"
-               [ngbCollapse]="store.isSidenavCollapsed() || store.isMenuItemCollapsed(item.label)">
-            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-              @for (child of item.children; track child.label) {
-                <li class="nav-item">
-                  <a [ngbTooltip]="store.isSidenavCollapsed() ? child.label : ''"
-                     [routerLinkActiveOptions]="child.exactMatch ? { exact: true } : { exact: false }"
-                     [routerLink]="child.route"
-                     class="nav-link d-flex align-items-center"
-                     placement="end"
-                     routerLinkActive="active">
-                    @if (store.isSidenavCollapsed()) {
-                      <span class="submenu-indicator"></span>
-                    } @else {
+            </a>
+            <div [attr.id]="item.label + 'Submenu'"
+                 [ngbCollapse]="store.isMenuItemCollapsed(item.label)">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                @for (child of item.children; track child.label) {
+                  <li class="nav-item">
+                    <a [routerLinkActiveOptions]="child.exactMatch ? { exact: true } : { exact: false }"
+                       [routerLink]="child.route"
+                       class="nav-link d-flex align-items-center"
+                       routerLinkActive="active">
                       <span>{{ child.label }}</span>
-                    }
-                  </a>
-                </li>
-              }
-            </ul>
-          </div>
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
         </li>
       } @else {
         <!-- Simple menu item without submenu -->
@@ -119,4 +122,31 @@
   <footer class="sidenav-footer flex-shrink-0">
     <app-user-profile [isCollapsed]="store.isSidenavCollapsed()"/>
   </footer>
+
+  <!-- Flyout Panel - Rendered OUTSIDE scroll container to avoid clipping -->
+  @if (activeFlyoutItem(); as item) {
+    <div class="nav-flyout"
+         [style.top.px]="flyoutTop()"
+         (mouseenter)="keepFlyoutVisible()"
+         (mouseleave)="hideFlyout()">
+      <div class="nav-flyout__header">
+        <i class="bi {{ item.icon }} nav-flyout__icon"></i>
+        <span class="nav-flyout__title">{{ item.label }}</span>
+      </div>
+      <ul class="nav-flyout__list">
+        @for (child of item.children; track child.label) {
+          <li>
+            <a [routerLinkActiveOptions]="child.exactMatch ? { exact: true } : { exact: false }"
+               [routerLink]="child.route"
+               class="nav-flyout__link"
+               routerLinkActive="active"
+               (click)="hideFlyout()">
+              <span class="nav-flyout__dot"></span>
+              <span>{{ child.label }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  }
 </div>

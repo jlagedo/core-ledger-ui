@@ -6,27 +6,9 @@
 // and subtle glow effects.
 // ============================================================
 
-@use "sass:color";
-
 // ============================================================
 // ANIMATIONS
 // ============================================================
-
-@keyframes sidenav-glow {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-@keyframes nav-item-enter {
-  from {
-    opacity: 0;
-    transform: translateX(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
 
 @keyframes status-pulse {
   0%, 100% {
@@ -37,11 +19,6 @@
     opacity: 0.6;
     box-shadow: 0 0 4px var(--terminal-glow);
   }
-}
-
-@keyframes chevron-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(90deg); }
 }
 
 // ============================================================
@@ -64,7 +41,7 @@
   background-color: var(--sidenav-bg);
   color: var(--sidenav-color);
   border-color: var(--sidenav-border-color) !important;
-  overflow: hidden;
+  overflow: visible; // Allow flyout to extend outside wrapper
 
   // Gradient background
   &::before {
@@ -111,25 +88,18 @@
     z-index: 2;
   }
 
-  // Ensure content appears above overlays
-  > * {
+  // Ensure content appears above overlays (except flyout which needs absolute positioning)
+  > *:not(.nav-flyout) {
     position: relative;
     z-index: 1;
   }
 
   // Navigation links base
   .nav-link,
-  .btn-link,
   a,
   span {
     color: inherit;
     border-color: var(--sidenav-border-color);
-  }
-
-  hr {
-    border-color: var(--sidenav-divider);
-    opacity: 0.5;
-    margin: 0.5rem 0;
   }
 }
 
@@ -139,7 +109,6 @@
 
 .transition-all {
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow-x: hidden;
 }
 
 // ============================================================
@@ -478,26 +447,184 @@
 }
 
 // ============================================================
-// SUBMENU INDICATOR (Collapsed State)
+// FLYOUT SUBMENU (Collapsed State)
+// Bloomberg Terminal-style CSS hover panel
 // ============================================================
 
-.submenu-indicator {
-  width: 4px;
-  height: 4px;
-  border-radius: 1px;
-  display: inline-block;
-  background: var(--sidenav-divider);
+@keyframes flyout-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Child count indicator badge
+.nav-child-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  font-size: 0.5rem;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+  background: var(--sidenav-divider, rgba(255, 160, 40, 0.2));
+  color: var(--terminal-glow, #FFA028);
+  border-radius: 2px;
   transition: all 0.2s ease;
+  opacity: 0.8;
 }
 
-.nav-link:hover .submenu-indicator {
-  background: var(--terminal-glow);
-  box-shadow: 0 0 6px var(--terminal-glow);
+// Flyout trigger - extends hover area for smooth mouse transition
+.nav-flyout-trigger {
+  position: relative;
+
+  // Hover bridge - extends hover area to reach the flyout
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 16px;
+    height: 100%;
+    background: transparent;
+  }
+
+  &:hover {
+    .nav-child-indicator {
+      background: var(--terminal-glow, #FFA028);
+      color: #000;
+      opacity: 1;
+      box-shadow: 0 0 8px var(--terminal-glow, #FFA028);
+    }
+  }
 }
 
-.nav-link.active .submenu-indicator {
-  background: var(--terminal-glow);
-  box-shadow: 0 0 8px var(--terminal-glow);
+// Flyout panel - positioned absolute relative to sidenav-wrapper
+// Using !important to override the > * rule on sidenav-wrapper
+.nav-flyout {
+  position: absolute !important;
+  left: 100% !important; // Right edge of sidenav
+  min-width: 180px !important;
+  max-width: 220px;
+  width: auto;
+  background: var(--sidenav-bg, #0a0a0a) !important;
+  border: 1px solid var(--sidenav-divider, rgba(255, 160, 40, 0.2)) !important;
+  border-left: 2px solid var(--terminal-glow, #FFA028) !important;
+  border-radius: 0 4px 4px 0;
+  box-shadow:
+    4px 4px 24px rgba(0, 0, 0, 0.6),
+    0 0 2px rgba(255, 160, 40, 0.3);
+  z-index: 1060 !important;
+  animation: flyout-enter 0.15s ease-out forwards;
+  overflow: visible;
+
+  // Grid pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(90deg, rgba(255, 160, 40, 0.03) 1px, transparent 1px),
+      linear-gradient(rgba(255, 160, 40, 0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &__header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    border-bottom: 1px solid var(--sidenav-divider, rgba(255, 160, 40, 0.15));
+    background: rgba(255, 160, 40, 0.06);
+  }
+
+  &__icon {
+    font-size: 0.875rem;
+    color: var(--terminal-glow, #FFA028);
+    text-shadow: 0 0 8px var(--terminal-glow, #FFA028);
+  }
+
+  &__title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--bs-emphasis-color, #fff);
+  }
+
+  &__list {
+    position: relative;
+    z-index: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0.375rem 0;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 400;
+    color: var(--sidenav-color, #C4A35A);
+    text-decoration: none;
+    transition: all 0.15s ease;
+    position: relative;
+
+    &:hover {
+      background: var(--sidenav-link-hover-bg, rgba(255, 160, 40, 0.1));
+      color: var(--bs-emphasis-color, #fff);
+
+      .nav-flyout__dot {
+        background: var(--terminal-glow, #FFA028);
+        box-shadow: 0 0 6px var(--terminal-glow, #FFA028);
+      }
+    }
+
+    &.active {
+      background: var(--sidenav-active-bg, rgba(255, 160, 40, 0.12));
+      color: var(--bs-emphasis-color, #fff);
+
+      .nav-flyout__dot {
+        background: var(--terminal-glow, #FFA028);
+        box-shadow: 0 0 8px var(--terminal-glow, #FFA028);
+        animation: status-pulse 2s ease-in-out infinite;
+      }
+
+      // Left accent bar
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--terminal-glow, #FFA028);
+        box-shadow: 0 0 6px var(--terminal-glow, #FFA028);
+      }
+    }
+  }
+
+  &__dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 1px;
+    background: var(--sidenav-divider, rgba(255, 160, 40, 0.3));
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
 }
 
 // ============================================================
@@ -530,32 +657,6 @@
       }
     }
   }
-
-  .btn-toggle-nav {
-    margin-left: 0;
-    border-left: none;
-
-    .nav-link {
-      padding: 0.5rem;
-    }
-  }
-}
-
-// ============================================================
-// DIVIDER
-// ============================================================
-
-.sidenav-divider {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--sidenav-divider) 20%,
-    var(--sidenav-divider) 80%,
-    transparent 100%
-  );
-  margin: 0.5rem 0.75rem;
-  border: none;
 }
 
 // ============================================================
@@ -583,37 +684,12 @@
   }
 }
 
-// ============================================================
-// BUTTON STYLING
-// ============================================================
-
-.btn-link {
-  transition: all 0.2s ease-in-out;
-  text-decoration: none;
-
-  &:hover {
-    border-radius: 2px;
-  }
-
-  &:focus {
-    border-radius: 2px;
-  }
-}
-
 .sidenav-wrapper button {
   color: inherit;
 
   i {
     color: inherit;
   }
-}
-
-// ============================================================
-// CURSOR
-// ============================================================
-
-.cursor-pointer {
-  cursor: pointer;
 }
 
 // ============================================================
@@ -639,6 +715,11 @@
 
   .nav-link.active {
     background-color: rgba(255, 160, 40, 0.12);
+  }
+
+  .nav-child-indicator {
+    background: rgba(255, 160, 40, 0.2);
+    color: var(--terminal-glow);
   }
 }
 
@@ -670,6 +751,73 @@
 
     &::before {
       box-shadow: none;
+    }
+  }
+
+  .nav-child-indicator {
+    background: rgba(180, 83, 9, 0.15);
+    color: #B45309;
+  }
+
+  .nav-link:hover .nav-child-indicator {
+    background: #B45309;
+    box-shadow: none;
+  }
+
+  // Flyout light mode styling
+  .nav-flyout {
+    background: var(--bs-body-bg, #fff);
+    border-color: var(--bs-border-color);
+    border-left-color: #B45309;
+    box-shadow:
+      4px 4px 20px rgba(0, 0, 0, 0.12),
+      0 0 1px rgba(180, 83, 9, 0.3);
+
+    &::before {
+      background-image:
+        linear-gradient(90deg, rgba(180, 83, 9, 0.03) 1px, transparent 1px),
+        linear-gradient(rgba(180, 83, 9, 0.03) 1px, transparent 1px);
+    }
+
+    &__header {
+      background: rgba(180, 83, 9, 0.06);
+      border-bottom-color: rgba(180, 83, 9, 0.15);
+    }
+
+    &__icon {
+      color: #B45309;
+      text-shadow: none;
+    }
+
+    &__link {
+      color: var(--bs-body-color);
+
+      &:hover {
+        background: rgba(180, 83, 9, 0.08);
+
+        .nav-flyout__dot {
+          background: #B45309;
+          box-shadow: none;
+        }
+      }
+
+      &.active {
+        background: rgba(180, 83, 9, 0.1);
+
+        .nav-flyout__dot {
+          animation: none;
+          box-shadow: none;
+        }
+
+        &::before {
+          background: #B45309;
+          box-shadow: none;
+        }
+      }
+    }
+
+    &__dot {
+      background: rgba(180, 83, 9, 0.3);
     }
   }
 }
