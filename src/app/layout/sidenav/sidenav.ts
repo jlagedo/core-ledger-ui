@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, output, signal, viewChild } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NgbCollapse, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
@@ -28,6 +28,55 @@ export class Sidenav {
     this.router.events.pipe(map(() => this.router.url)),
     { initialValue: this.router.url }
   );
+
+  // Search functionality
+  readonly searchQuery = signal('');
+  readonly isSearchFocused = signal(false);
+  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+
+  // Filtered menu items based on search query
+  readonly filteredMenuItems = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    const items = this.menuItems();
+
+    if (!query) return items;
+
+    return items
+      .map(item => {
+        // Check if parent label matches
+        const parentMatches = item.label.toLowerCase().includes(query);
+
+        // Check if any children match
+        const matchingChildren = item.children?.filter(child =>
+          child.label.toLowerCase().includes(query)
+        );
+
+        // Include item if parent matches OR has matching children
+        if (parentMatches) {
+          return item; // Return full item with all children
+        } else if (matchingChildren && matchingChildren.length > 0) {
+          return { ...item, children: matchingChildren }; // Return with filtered children
+        }
+        return null;
+      })
+      .filter((item): item is MenuItem => item !== null);
+  });
+
+  // Check if search has results
+  readonly hasSearchResults = computed(() => this.filteredMenuItems().length > 0);
+
+  // Check if we're actively searching
+  readonly isSearching = computed(() => this.searchQuery().trim().length > 0);
+
+  // Determine if a submenu should be shown expanded
+  // When searching: always expand to show matching children
+  // When not searching: use the stored collapsed state
+  shouldShowExpanded(itemLabel: string): boolean {
+    if (this.isSearching()) {
+      return true; // Always expand when searching
+    }
+    return !this.store.isMenuItemCollapsed(itemLabel);
+  }
 
   // Flyout state - stores full item data for rendering outside scroll container
   readonly flyoutTop = signal<number | null>(null);
@@ -92,5 +141,36 @@ export class Sidenav {
       // Check if current URL starts with the child route
       return url.startsWith(child.route);
     });
+  }
+
+  // Search methods
+  onSearchInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery.set(input.value);
+  }
+
+  clearSearch() {
+    this.searchQuery.set('');
+    this.searchInput()?.nativeElement.focus();
+  }
+
+  onSearchKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.clearSearch();
+      this.searchInput()?.nativeElement.blur();
+    }
+  }
+
+  // Highlight matching text in labels
+  highlightMatch(text: string): string {
+    const query = this.searchQuery().trim();
+    if (!query) return text;
+
+    const regex = new RegExp(`(${this.escapeRegex(query)})`, 'gi');
+    return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+  }
+
+  private escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 }

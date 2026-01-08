@@ -36,10 +36,44 @@
     }
   </header>
 
+  <!-- Search Filter - Only visible when expanded -->
+  @if (!store.isSidenavCollapsed()) {
+    <div class="sidenav-search"
+         [class.sidenav-search--active]="searchQuery() || isSearchFocused()">
+      <div class="sidenav-search__wrapper">
+        <i class="bi bi-search sidenav-search__icon" aria-hidden="true"></i>
+        <input #searchInput
+               type="text"
+               class="sidenav-search__input"
+               placeholder="Filter menu..."
+               [value]="searchQuery()"
+               (input)="onSearchInput($event)"
+               (focus)="isSearchFocused.set(true)"
+               (blur)="isSearchFocused.set(false)"
+               (keydown)="onSearchKeydown($event)"
+               aria-label="Filter navigation menu">
+        @if (searchQuery()) {
+          <button class="sidenav-search__clear"
+                  type="button"
+                  (click)="clearSearch()"
+                  aria-label="Clear search">
+            <i class="bi bi-x" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+      @if (searchQuery() && !hasSearchResults()) {
+        <div class="sidenav-search__no-results">
+          <i class="bi bi-inbox" aria-hidden="true"></i>
+          <span>No matches</span>
+        </div>
+      }
+    </div>
+  }
+
   <!-- Navigation Menu - SCROLLABLE -->
   <nav class="sidenav-scroll-container flex-grow-1" aria-label="Main navigation">
     <ul class="nav nav-pills flex-column sidenav-nav">
-    @for (item of menuItems(); track item.label; let i = $index) {
+    @for (item of filteredMenuItems(); track item.label; let i = $index) {
       <!-- Section divider before Ledger -->
       @if (item.label === 'Ledger') {
         <li>
@@ -70,18 +104,18 @@
             <!-- Expanded state: Normal collapsible submenu -->
             <a (click)="store.toggleMenuItem(item.label)"
                [attr.aria-controls]="item.label + 'Submenu'"
-               [attr.aria-expanded]="!store.isMenuItemCollapsed(item.label)"
+               [attr.aria-expanded]="shouldShowExpanded(item.label)"
                [class.parent-active]="isParentActive(item)"
                class="nav-link nav-link--parent d-flex align-items-center"
                role="button">
               <i class="bi {{ item.icon }} me-2"></i>
               <span class="flex-grow-1">{{ item.label }}</span>
-              <i [class.bi-chevron-down]="!store.isMenuItemCollapsed(item.label)"
-                 [class.bi-chevron-right]="store.isMenuItemCollapsed(item.label)"
+              <i [class.bi-chevron-down]="shouldShowExpanded(item.label)"
+                 [class.bi-chevron-right]="!shouldShowExpanded(item.label)"
                  class="bi"></i>
             </a>
             <div [attr.id]="item.label + 'Submenu'"
-                 [ngbCollapse]="store.isMenuItemCollapsed(item.label)">
+                 [ngbCollapse]="!shouldShowExpanded(item.label)">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                 @for (child of item.children; track child.label) {
                   <li class="nav-item">
