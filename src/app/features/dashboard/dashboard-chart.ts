@@ -4,13 +4,13 @@ import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { PieChart } from 'echarts/charts';
-import { GridComponent } from 'echarts/components';
+import { GridComponent, TooltipComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { AccountService } from '../../services/account';
 import { AccountsByTypeReportDto } from '../../models/account.model';
 import { LoggerService } from '../../services/logger';
 
-echarts.use([PieChart, GridComponent, CanvasRenderer]);
+echarts.use([PieChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 @Component({
   selector: 'app-dashboard-chart',
@@ -28,35 +28,58 @@ export class DashboardChart {
 
   readonly chartOption = computed<EChartsCoreOption>(() => ({
     backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'item',
+      backgroundColor: 'rgba(26, 26, 26, 0.95)',
+      borderColor: 'rgba(255, 160, 40, 0.3)',
+      textStyle: {
+        color: '#FFA028',
+        fontFamily: 'IBM Plex Mono, monospace',
+        fontSize: 11,
+      },
+      formatter: '{b}: {c} ({d}%)',
+    },
     series: [
       {
         type: 'pie',
-        radius: '65%',
-        center: ['50%', '55%'],
+        radius: ['40%', '65%'],
+        center: ['50%', '50%'],
         avoidLabelOverlap: true,
+        itemStyle: {
+          borderColor: 'rgba(0, 0, 0, 0.8)',
+          borderWidth: 2,
+        },
         label: {
-          color: '#eee',
-          fontSize: 12,
+          color: 'var(--bs-body-color, #FFA028)',
+          fontSize: 11,
+          fontFamily: 'IBM Plex Mono, monospace',
+          formatter: '{b}\n{d}%',
         },
         labelLine: {
-          lineStyle: { color: '#888' },
+          lineStyle: {
+            color: 'rgba(255, 160, 40, 0.4)',
+          },
         },
         emphasis: {
+          label: {
+            fontSize: 12,
+            fontWeight: 600,
+          },
           itemStyle: {
-            shadowBlur: 10,
+            shadowBlur: 20,
             shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
+            shadowColor: 'rgba(255, 160, 40, 0.5)',
           },
         },
         data: this.groupAccountsByType(this.accountsByTypeReport()),
       },
     ],
     color: [
-      '#4FC3F7', // light blue
-      '#81C784', // green
-      '#FFB74D', // orange
-      '#E57373', // red
-      '#BA68C8', // purple
+      '#0068ff', // Bloomberg blue
+      '#4af6c3', // Bloomberg teal
+      '#FFA028', // Bloomberg amber
+      '#9B5DE5', // Purple
+      '#F15BB5', // Pink
     ],
   }));
 

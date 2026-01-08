@@ -1,24 +1,88 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, output, signal, viewChild } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NgbCollapse, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { UserProfile } from '../user-profile/user-profile';
+import { DeadlineTicker } from '../deadline-ticker/deadline-ticker';
 import { MenuService } from '../../services/menu-service';
 import { SidenavStore } from './sidenav-store';
-import {NgOptimizedImage} from '@angular/common';
+import { MenuItem } from '../../models/menu-item.model';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-sidenav',
-  imports: [RouterModule, NgbCollapse, NgbTooltip, UserProfile, NgOptimizedImage],
+  imports: [RouterModule, NgbCollapse, NgbTooltip, UserProfile, DeadlineTicker],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Sidenav {
   private readonly menuService = inject(MenuService);
+  private readonly router = inject(Router);
   readonly store = inject(SidenavStore);
 
   readonly menuItems = this.menuService.menuItems;
   sidenavToggle = output<boolean>();
+
+  // Track current URL for parent active state detection
+  private readonly currentUrl = toSignal(
+    this.router.events.pipe(map(() => this.router.url)),
+    { initialValue: this.router.url }
+  );
+
+  // Search functionality
+  readonly searchQuery = signal('');
+  readonly isSearchFocused = signal(false);
+  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+
+  // Filtered menu items based on search query
+  readonly filteredMenuItems = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    const items = this.menuItems();
+
+    if (!query) return items;
+
+    return items
+      .map(item => {
+        // Check if parent label matches
+        const parentMatches = item.label.toLowerCase().includes(query);
+
+        // Check if any children match
+        const matchingChildren = item.children?.filter(child =>
+          child.label.toLowerCase().includes(query)
+        );
+
+        // Include item if parent matches OR has matching children
+        if (parentMatches) {
+          return item; // Return full item with all children
+        } else if (matchingChildren && matchingChildren.length > 0) {
+          return { ...item, children: matchingChildren }; // Return with filtered children
+        }
+        return null;
+      })
+      .filter((item): item is MenuItem => item !== null);
+  });
+
+  // Check if search has results
+  readonly hasSearchResults = computed(() => this.filteredMenuItems().length > 0);
+
+  // Check if we're actively searching
+  readonly isSearching = computed(() => this.searchQuery().trim().length > 0);
+
+  // Determine if a submenu should be shown expanded
+  // When searching: always expand to show matching children
+  // When not searching: use the stored collapsed state
+  shouldShowExpanded(itemLabel: string): boolean {
+    if (this.isSearching()) {
+      return true; // Always expand when searching
+    }
+    return !this.store.isMenuItemCollapsed(itemLabel);
+  }
+
+  // Flyout state - stores full item data for rendering outside scroll container
+  readonly flyoutTop = signal<number | null>(null);
+  readonly activeFlyoutItem = signal<MenuItem | null>(null);
+  private hideTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     // Initialize collapsed state for all menu items with children
@@ -34,10 +98,80 @@ export class Sidenav {
     this.sidenavToggle.emit(this.store.isSidenavCollapsed());
   }
 
-  handleLogoClick(event: Event) {
-    if (this.store.isSidenavCollapsed()) {
-      event.preventDefault();
-      this.toggleSidenav();
+  showFlyout(event: MouseEvent, item: MenuItem) {
+    // Cancel any pending hide
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+      this.hideTimeout = null;
     }
+
+    const target = event.currentTarget as HTMLElement;
+    // Get position relative to the sidenav-wrapper (positioned ancestor)
+    const wrapper = target.closest('.sidenav-wrapper') as HTMLElement;
+    const wrapperRect = wrapper?.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    // Calculate top relative to wrapper
+    const relativeTop = targetRect.top - (wrapperRect?.top ?? 0);
+    this.flyoutTop.set(relativeTop);
+    this.activeFlyoutItem.set(item);
+  }
+
+  hideFlyout() {
+    // Add a small delay before hiding to allow mouse to reach the flyout
+    this.hideTimeout = setTimeout(() => {
+      this.flyoutTop.set(null);
+      this.activeFlyoutItem.set(null);
+      this.hideTimeout = null;
+    }, 100);
+  }
+
+  // Keep flyout visible - cancels any pending hide timeout
+  keepFlyoutVisible() {
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+      this.hideTimeout = null;
+    }
+  }
+
+  // Check if a parent menu item has any active child route
+  isParentActive(item: MenuItem): boolean {
+    if (!item.children) return false;
+    const url = this.currentUrl();
+    return item.children.some((child) => {
+      if (!child.route) return false;
+      // Check if current URL starts with the child route
+      return url.startsWith(child.route);
+    });
+  }
+
+  // Search methods
+  onSearchInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery.set(input.value);
+  }
+
+  clearSearch() {
+    this.searchQuery.set('');
+    this.searchInput()?.nativeElement.focus();
+  }
+
+  onSearchKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.clearSearch();
+      this.searchInput()?.nativeElement.blur();
+    }
+  }
+
+  // Highlight matching text in labels
+  highlightMatch(text: string): string {
+    const query = this.searchQuery().trim();
+    if (!query) return text;
+
+    const regex = new RegExp(`(${this.escapeRegex(query)})`, 'gi');
+    return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+  }
+
+  private escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 }

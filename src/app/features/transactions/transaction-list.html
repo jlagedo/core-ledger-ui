@@ -1,18 +1,21 @@
 <app-page-header title="Capture Transaction">
   <button type="button" class="btn btn-secondary">
-    <i class="bi bi-funnel"></i> Filters
+    <i class="bi bi-funnel"></i>
+    <span>Filters</span>
   </button>
   <button type="button" class="btn btn-secondary">
-    <i class="bi bi-download"></i> Export
+    <i class="bi bi-download"></i>
+    <span>Export</span>
   </button>
   <button type="button" aria-label="Create new transaction" class="btn btn-primary" routerLink="/transactions/capture/new">
-    <i class="bi bi-plus-lg me-1"></i> New Transaction
+    <i class="bi bi-plus-lg"></i>
+    <span>New Transaction</span>
   </button>
 </app-page-header>
 
-<main class="container-lg px-3 px-md-4">
-  <div class="card bg-body-tertiary border-0 shadow-sm rounded-4 border-top bg-opacity-50">
-    <div class="card-body p-3 p-md-4">
+<main class="container-data">
+  <div class="card-data">
+    <div class="card-body">
 
       <app-data-grid
         [store]="store"
@@ -22,7 +25,13 @@
         [searchPlaceholder]="'Search transactions...'"
         [emptyMessage]="'No transactions found'"
         [rowActionsTemplate]="actionsTemplate"
-        (refresh)="loadTransactions()">
+        [virtualScroll]="true"
+        [rowHeight]="35"
+        [viewportHeight]="'550px'"
+        [loadingMore]="loadingMore()"
+        [loadMoreThreshold]="15"
+        (refresh)="loadTransactions()"
+        (loadMore)="loadMoreTransactions()">
       </app-data-grid>
 
       <!-- Class column template -->

@@ -3,7 +3,7 @@ export const environment = {
   production: false,
   apiUrl: '/api',
   logLevel: 'debug' as const,
-  enableSentry: true, // Enable Sentry for development environment
+  enableSentry: false, // Enable Sentry for development environment
 
   // Sentry Configuration
   sentry: {
@@ -24,7 +24,7 @@ export const environment = {
 
   // API Mock Configuration
   api: {
-    useMock: false, // Enable mock API for local development
+    useMock: true, // Enable mock API for local development
     mockDelayMs: 300, // Simulate network latency (300ms)
     mockErrorRate: 0, // Probability of random errors (0 = none, 0.1 = 10%)
   },
@@ -59,7 +59,7 @@ export const environment = {
 
   // SignalR / Notification Hub Configuration
   signalr: {
-    useMock: false, // Enable mock SignalR for local development
+    useMock: true, // Enable mock SignalR for local development
     hubUrl: '/hubs/notifications',
     reconnectDelays: [0, 2000, 5000, 10000, 30000],
     maxReconnectAttempts: 5,

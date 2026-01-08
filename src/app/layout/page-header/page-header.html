@@ -1,14 +1,22 @@
 <nav
-  [class]="'d-flex flex-column px-3 py-2 border-bottom mb-3 bg-body-secondary shadow-sm sticky-top bg-opacity-50 ' + additionalClasses()">
+  class="terminal-header"
+  [class]="additionalClasses()"
+  role="banner"
+>
+  <!-- Breadcrumb Row -->
+  <div class="terminal-header__breadcrumb">
+    <app-breadcrumb />
+  </div>
 
-  <app-breadcrumb />
+  <!-- Main Header Row -->
+  <div class="terminal-header__main">
+    <div class="terminal-header__title-section">
+      <span class="terminal-header__indicator" aria-hidden="true"></span>
+      <h1 class="terminal-header__title">{{ title() }}</h1>
+    </div>
 
-  <div class="d-flex align-items-center mt-1">
-    <h1 class="h4 mb-0">{{ title() }}</h1>
-
-    <div class="d-flex gap-3 ms-auto align-items-center">
+    <div class="terminal-header__actions">
       <ng-content />
     </div>
   </div>
-
 </nav>

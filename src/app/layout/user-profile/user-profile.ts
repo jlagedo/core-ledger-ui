@@ -15,6 +15,7 @@ import { UserService } from '../../services/user-service';
   selector: 'app-user-profile',
   imports: [RouterLink, DatePipe, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
   templateUrl: './user-profile.html',
+  styleUrl: './user-profile.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserProfile {

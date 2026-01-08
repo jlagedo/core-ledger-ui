@@ -24,6 +24,7 @@
     </span>
   </div>
 
+  @if (!virtualScroll()) {
   <div class="col-12 col-md-4 d-flex justify-content-md-end">
     <label for="pageSizeSelect" class="visually-hidden">Items per page</label>
     <select
@@ -37,11 +38,166 @@
       }
     </select>
   </div>
+  }
 </div>
 }
 
 <!-- Data Table -->
-<div class="table-responsive rounded-3 border border-tertiary data-table">
+@if (virtualScroll()) {
+<!-- Virtual Scroll Mode -->
+<div class="virtual-scroll-container">
+  <!-- Fixed Header -->
+  <div class="virtual-scroll-header">
+    <div class="virtual-scroll-row virtual-scroll-header-row">
+      <!-- Selection Checkbox Column -->
+      @if (selectable()) {
+      <div class="virtual-scroll-cell virtual-scroll-cell-checkbox text-center fw-bold">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          [checked]="selectionState().allSelected"
+          [indeterminate]="selectionState().indeterminate"
+          (change)="toggleSelectAll()"
+          [attr.aria-label]="
+            selectionState().allSelected ? 'Deselect all items' : 'Select all items'
+          "
+        />
+      </div>
+      }
+
+      <!-- Data Columns -->
+      @for (column of columns(); track column.key) { @if (column.sortable) {
+      <div
+        class="virtual-scroll-cell fw-bold"
+        [sortable]="getSortKey(column)"
+        (sort)="onSort($event)"
+        [class]="'text-' + (column.align || 'start') + ' ' + (column.headerClass || '')"
+        [class.d-none]="column.hideOnMobile"
+        [class.d-md-flex]="column.hideOnMobile"
+        [style.min-width]="column.minWidth || null"
+        [style.flex]="'1 1 ' + (column.minWidth || '0')"
+      >
+        {{ column.label }}
+      </div>
+      } @else {
+      <div
+        class="virtual-scroll-cell fw-bold"
+        [class]="'text-' + (column.align || 'start') + ' ' + (column.headerClass || '')"
+        [class.d-none]="column.hideOnMobile"
+        [class.d-md-flex]="column.hideOnMobile"
+        [style.min-width]="column.minWidth || null"
+        [style.flex]="'1 1 ' + (column.minWidth || '0')"
+      >
+        {{ column.label }}
+      </div>
+      } }
+
+      <!-- Row Actions Column -->
+      @if (rowActionsTemplate()) {
+      <div class="virtual-scroll-cell virtual-scroll-cell-actions text-end fw-bold">Act</div>
+      }
+    </div>
+  </div>
+
+  <!-- Virtual Scroll Body -->
+  @if (errorMessage()) {
+  <!-- Error State -->
+  <div class="text-center text-danger py-5">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ errorMessage() }}
+  </div>
+  } @else if (currentPageItems().length === 0) {
+  <!-- Empty State -->
+  <div class="text-center text-muted py-5">
+    <i class="bi bi-inbox me-2"></i>
+    {{ emptyMessage() }}
+  </div>
+  } @else {
+  <cdk-virtual-scroll-viewport
+    #virtualScrollViewport
+    [itemSize]="rowHeight()"
+    [style.height]="viewportHeight()"
+    class="virtual-scroll-viewport"
+    (scrolledIndexChange)="onScrolledIndexChange($event)"
+  >
+    <div
+      *cdkVirtualFor="let item of currentPageItems(); trackBy: trackByFn; let idx = index; let odd = odd"
+      class="virtual-scroll-row cursor-pointer"
+      [class.virtual-scroll-row-odd]="odd"
+      [class.virtual-scroll-row-active]="activeRowId() === getItemId(item)"
+      [style.height.px]="rowHeight()"
+      (click)="onRowClick(item)"
+    >
+      <!-- Selection Checkbox -->
+      @if (selectable()) {
+      <div class="virtual-scroll-cell virtual-scroll-cell-checkbox text-center" (click)="$event.stopPropagation()">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          [checked]="isItemSelected(item)"
+          (change)="toggleItemSelection(item)"
+          [attr.aria-label]="'Select item ' + (idx + 1)"
+        />
+      </div>
+      }
+
+      <!-- Data Cells -->
+      @for (column of columns(); track column.key) {
+      <div
+        class="virtual-scroll-cell"
+        [class]="'text-' + (column.align || 'start') + ' ' + (column.cellClass || '')"
+        [class.d-none]="column.hideOnMobile"
+        [class.d-md-flex]="column.hideOnMobile"
+        [style.min-width]="column.minWidth || null"
+        [style.flex]="'1 1 ' + (column.minWidth || '0')"
+      >
+        @if (column.template) {
+        <!-- Custom Template -->
+        <ng-container
+          [ngTemplateOutlet]="column.template"
+          [ngTemplateOutletContext]="getCellContext(item, column, idx)"
+        >
+        </ng-container>
+        } @else {
+        <!-- Default or Formatted Value -->
+        {{ getFormattedValue(item, column) }} }
+      </div>
+      }
+
+      <!-- Row Actions -->
+      @if (rowActionsTemplate()) {
+      <div class="virtual-scroll-cell virtual-scroll-cell-actions text-end">
+        <div class="table-row-actions" (click)="$event.stopPropagation()">
+          <ng-container
+            [ngTemplateOutlet]="rowActionsTemplate()!"
+            [ngTemplateOutletContext]="{ $implicit: item }"
+          >
+          </ng-container>
+        </div>
+      </div>
+      }
+    </div>
+  </cdk-virtual-scroll-viewport>
+  }
+
+  <!-- Footer: Loading indicator and count -->
+  <div class="d-flex justify-content-center align-items-center px-3 py-2 small text-secondary border-top gap-3">
+    @if (loadingMore()) {
+    <div class="spinner-border spinner-border-sm text-primary" role="status">
+      <span class="visually-hidden">Loading more...</span>
+    </div>
+    <span>Loading more items...</span>
+    } @else {
+    <span>{{ currentPageItems().length }} of {{ collectionSize() }} items loaded</span>
+    @if (hasMoreItems()) {
+    <span class="text-muted">(scroll for more)</span>
+    }
+    }
+  </div>
+</div>
+} @else {
+<!-- Standard Mode (with pagination) -->
+<div class="table-responsive data-table">
   <table class="table table-sm table-striped table-hover align-middle fs-6 mb-0">
     <!-- Table Head -->
     <thead class="table-light">
@@ -221,3 +377,4 @@
     </ngb-pagination>
   </div>
 </div>
+}

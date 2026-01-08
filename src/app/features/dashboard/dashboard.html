@@ -1,82 +1,255 @@
-<main class="container-fluid px-3 pb-4">
-  <div class="row g-4">
+<main class="dashboard container-fluid px-3 pb-4">
 
-    <!-- Total Balance -->
-    <div class="col-xl-4 col-lg-6">
-      <div class="card bg-body-tertiary shadow-sm border-0 rounded-4 h-100">
-        <div class="card-body p-4">
-          <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Total Balance</h6>
-          <p class="display-6 fw-bold mb-1">
-            <span class="numeric font-monospace">$1,245,300.00</span>
-          </p>
-          <small class="text-muted">As of December 2025</small>
+  <!-- ============================================================
+       HERO METRICS BAR
+       ============================================================ -->
+  <section class="hero-metrics" aria-label="Key Metrics">
+    @for (metric of heroMetrics(); track metric.label) {
+      <div class="hero-metrics__item" [class.hero-metrics__item--primary]="metric.isPrimary">
+        <div class="hero-metrics__label">
+          {{ metric.label }}
+          @if (metric.isLive) {
+            <span class="live-indicator" title="Live data"></span>
+          }
+        </div>
+        <div class="hero-metrics__value"
+             [class.hero-metrics__value--positive]="metric.change > 0 && metric.format !== 'number'"
+             [class.hero-metrics__value--negative]="metric.change < 0 && metric.format !== 'number'">
+          {{ formatMetricValue(metric) }}
+        </div>
+        <div class="hero-metrics__change"
+             [class.hero-metrics__change--up]="metric.change >= 0"
+             [class.hero-metrics__change--down]="metric.change < 0">
+          <i class="bi" [class.bi-caret-up-fill]="metric.change >= 0" [class.bi-caret-down-fill]="metric.change < 0"></i>
+          {{ metric.change >= 0 ? '+' : '' }}{{ metric.changePercent | number:'1.2-2' }}%
         </div>
       </div>
+    }
+  </section>
+
+  <!-- ============================================================
+       MARKET PULSE TICKER
+       ============================================================ -->
+  <section class="market-pulse" aria-label="Fund Performance Ticker">
+    <div class="market-pulse__track">
+      @for (item of tickerTrack(); track $index) {
+        <div class="market-pulse__item">
+          <span class="market-pulse__symbol">{{ item.symbol }}</span>
+          <span class="market-pulse__value">{{ item.value | number:'1.2-2' }}</span>
+          <span class="market-pulse__change"
+                [class.market-pulse__change--up]="item.change >= 0"
+                [class.market-pulse__change--down]="item.change < 0">
+            {{ item.change >= 0 ? '+' : '' }}{{ item.change | number:'1.2-2' }}%
+          </span>
+        </div>
+      }
     </div>
+  </section>
 
-    <!-- Journal Entries -->
-    <div class="col-xl-4 col-lg-6">
-      <div class="card bg-body-tertiary shadow-sm border-0 rounded-4 h-100">
-        <div class="card-body p-4">
-          <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Recent Journal Entries</h6>
+  <!-- ============================================================
+       COMMAND CENTER GRID
+       ============================================================ -->
+  <div class="command-grid">
 
-          <div class="d-flex flex-column gap-2">
-            <div>Invoice #1023 – <span class="numeric font-monospace">$2,500</span></div>
-            <div>Payroll – <span class="numeric font-monospace">$18,000</span></div>
-            <div>Rent – <span class="numeric font-monospace">$3,200</span></div>
+    <!-- LEFT: Main Chart Area (spans 2 rows) -->
+    <section class="terminal-panel terminal-panel--chart" style="animation-delay: 0.1s">
+      <header class="terminal-panel__header">
+        <h2 class="terminal-panel__title">
+          <span class="fn-key">F7</span>
+          Asset Allocation
+        </h2>
+        <div class="terminal-panel__actions">
+          <button class="btn btn-sm btn-link text-secondary p-1" title="Refresh">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+          <button class="btn btn-sm btn-link text-secondary p-1" title="Expand">
+            <i class="bi bi-arrows-fullscreen"></i>
+          </button>
+        </div>
+      </header>
+      <div class="terminal-panel__body">
+        @defer {
+          <app-dashboard-allocation-chart />
+        } @placeholder {
+          <div class="d-flex align-items-center justify-content-center placeholder-glow" style="height: 280px;">
+            <span class="placeholder rounded-circle" style="width: 180px; height: 180px;"></span>
           </div>
+        }
 
+        <!-- Compact Stats Grid -->
+        <div class="stats-grid mt-3">
+          <div class="stats-grid__item">
+            <div class="stats-grid__label">Securities</div>
+            <div class="stats-grid__value">{{ statsData().totalSecurities | number }}</div>
+          </div>
+          <div class="stats-grid__item">
+            <div class="stats-grid__label">Accounts</div>
+            <div class="stats-grid__value">{{ statsData().activeAccounts | number }}</div>
+          </div>
+          <div class="stats-grid__item">
+            <div class="stats-grid__label">Pending</div>
+            <div class="stats-grid__value">{{ statsData().pendingSettlements }}</div>
+          </div>
+          <div class="stats-grid__item">
+            <div class="stats-grid__label">Overdue</div>
+            <div class="stats-grid__value">{{ statsData().overdueItems }}</div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Pie Chart -->
-    <div class="col-xl-4 col-lg-12">
-      <div class="card bg-body-tertiary shadow-sm border-0 rounded-4 h-100">
-        <div class="card-body p-4">
-          <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Active Accounts by Type</h6>
-          @defer {
-            <app-dashboard-chart />
-          } @placeholder {
-            <div class="d-flex align-items-center justify-content-center placeholder-glow" style="height: 16.25rem;">
-              <span class="placeholder rounded-circle" style="width: 11.25rem; height: 11.25rem;"></span>
+    <!-- RIGHT TOP: Quick Actions -->
+    <section class="terminal-panel" style="animation-delay: 0.2s">
+      <header class="terminal-panel__header">
+        <h2 class="terminal-panel__title">Quick Actions</h2>
+      </header>
+      <div class="terminal-panel__body">
+        <div class="quick-actions">
+          @for (action of quickActions(); track action.key) {
+            <a [routerLink]="action.route" class="quick-actions__btn">
+              <span class="quick-actions__key">{{ action.key }}</span>
+              <span class="quick-actions__label">{{ action.label }}</span>
+              <i class="quick-actions__icon bi {{ action.icon }}"></i>
+            </a>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT BOTTOM: Fund Summary -->
+    <section class="terminal-panel" style="animation-delay: 0.3s">
+      <header class="terminal-panel__header">
+        <h2 class="terminal-panel__title">
+          <span class="fn-key">F8</span>
+          Fund NAV Summary
+        </h2>
+        <a routerLink="/funds" class="btn btn-sm btn-link text-secondary p-1" title="View All">
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </header>
+      <div class="terminal-panel__body p-0">
+        <div class="px-3 py-2">
+          @for (fund of fundSummaries(); track fund.id) {
+            <div class="fund-row">
+              <div class="fund-row__name">{{ fund.name }}</div>
+              <div class="fund-row__nav">{{ fund.nav | number:'1.2-2' }}</div>
+              <div class="fund-row__change"
+                   [class.fund-row__change--up]="fund.change >= 0"
+                   [class.fund-row__change--down]="fund.change < 0">
+                {{ fund.change >= 0 ? '+' : '' }}{{ fund.change | number:'1.2-2' }}%
+              </div>
             </div>
           }
         </div>
       </div>
+    </section>
+  </div>
+
+  <!-- ============================================================
+       BOTTOM ROW: Activity & Periods
+       ============================================================ -->
+  <div class="row g-3 mt-0">
+
+    <!-- Activity Feed -->
+    <div class="col-lg-8">
+      <section class="terminal-panel terminal-panel--tall" style="animation-delay: 0.4s">
+        <header class="terminal-panel__header">
+          <h2 class="terminal-panel__title">
+            <span class="fn-key">F9</span>
+            Activity Feed
+          </h2>
+          <div class="terminal-panel__actions">
+            <span class="live-indicator me-2" title="Live updates"></span>
+            <button class="btn btn-sm btn-link text-secondary p-1" title="Filter">
+              <i class="bi bi-funnel"></i>
+            </button>
+          </div>
+        </header>
+        <div class="terminal-panel__body">
+          <ul class="activity-feed">
+            @for (item of activityItems(); track item.id) {
+              <li class="activity-feed__item">
+                <span class="activity-feed__time">{{ formatRelativeTime(item.time) }}</span>
+                <span class="activity-feed__content">
+                  <span class="entity">{{ item.entity }}</span>
+                  <span class="pipe">|</span>
+                  {{ item.description }}
+                  @if (item.amount) {
+                    <span class="pipe">|</span>
+                    <span class="amount">{{ item.amount | currency:'USD':'symbol':'1.0-0' }}</span>
+                  }
+                </span>
+                <span class="activity-feed__status activity-feed__status--{{ item.status }}">
+                  {{ item.status }}
+                </span>
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
     </div>
 
-    <!-- Quick Reports -->
-    <div class="col-xl-6">
-      <div class="card bg-body-tertiary shadow-sm border-0 rounded-4 h-100">
-        <div class="card-body p-4">
-          <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Quick Reports</h6>
-
-          <div class="d-grid gap-2">
-            <button class="btn btn-secondary">Trial Balance</button>
-            <button class="btn btn-secondary">Income Statement</button>
-            <button class="btn btn-secondary">Cash Flow</button>
+    <!-- Posting Periods -->
+    <div class="col-lg-4">
+      <section class="terminal-panel terminal-panel--tall" style="animation-delay: 0.5s">
+        <header class="terminal-panel__header">
+          <h2 class="terminal-panel__title">
+            <span class="fn-key">F10</span>
+            Posting Periods
+          </h2>
+          <a routerLink="/posting-periods" class="btn btn-sm btn-link text-secondary p-1" title="Manage">
+            <i class="bi bi-gear"></i>
+          </a>
+        </header>
+        <div class="terminal-panel__body">
+          <div class="period-timeline">
+            @for (period of postingPeriods(); track period.id) {
+              <div class="period-timeline__item period-timeline__item--{{ period.status }}">
+                <div>
+                  <div class="period-timeline__period">{{ period.name }}</div>
+                  <div class="period-timeline__dates">
+                    {{ period.startDate | date:'MMM d' }} - {{ period.endDate | date:'MMM d, yyyy' }}
+                  </div>
+                </div>
+                <span class="period-timeline__status period-timeline__status--{{ period.status }}">
+                  @switch (period.status) {
+                    @case ('current') { Active }
+                    @case ('open') { Open }
+                    @case ('closed') { Closed }
+                  }
+                </span>
+              </div>
+            }
           </div>
-
         </div>
-      </div>
-    </div>
-
-    <!-- Administration -->
-    <div class="col-xl-6">
-      <div class="card bg-body-tertiary shadow-sm border-0 rounded-4 h-100">
-        <div class="card-body p-4">
-          <h6 class="text-uppercase text-secondary fw-semibold mb-3 fs-6">Administration</h6>
-
-          <div class="d-grid gap-2">
-            <button class="btn btn-secondary">User Management</button>
-            <button class="btn btn-secondary">System Settings</button>
-            <button class="btn btn-secondary">Audit Logs</button>
-          </div>
-
-        </div>
-      </div>
+      </section>
     </div>
 
   </div>
+
+  <!-- ============================================================
+       BOTTOM: Accounts Chart (from existing)
+       ============================================================ -->
+  <div class="row g-3 mt-0">
+    <div class="col-12">
+      <section class="terminal-panel" style="animation-delay: 0.6s">
+        <header class="terminal-panel__header">
+          <h2 class="terminal-panel__title">
+            <span class="fn-key">F11</span>
+            Active Accounts by Type
+          </h2>
+        </header>
+        <div class="terminal-panel__body">
+          @defer {
+            <app-dashboard-chart />
+          } @placeholder {
+            <div class="d-flex align-items-center justify-content-center placeholder-glow" style="height: 260px;">
+              <span class="placeholder rounded-circle" style="width: 180px; height: 180px;"></span>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+
 </main>

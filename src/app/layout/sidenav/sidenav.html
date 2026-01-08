@@ -1,92 +1,193 @@
 <div [attr.aria-label]="store.isSidenavCollapsed() ? 'Collapsed sidenav' : 'Expanded sidenav'"
-  [style.width]="store.isSidenavCollapsed() ? '70px' : '220px'"
-  class="d-flex flex-column flex-shrink-0 p-3 transition-all border-end sidenav-wrapper vh-100">
+     [style.width]="store.isSidenavCollapsed() ? '4rem' : '15rem'"
+     [class.sidenav-wrapper--collapsed]="store.isSidenavCollapsed()"
+     class="d-flex flex-column flex-shrink-0 sidenav-width-transition sidenav-wrapper vh-100">
 
-  <!-- Logo & Toggle Section -->
-  <div [class.justify-content-between]="!store.isSidenavCollapsed()"
-    [class.justify-content-center]="store.isSidenavCollapsed()" class="d-flex align-items-center mb-3">
-    <a (click)="handleLogoClick($event)"
-      [attr.aria-label]="store.isSidenavCollapsed() ? 'Expand sidenav' : 'Go to dashboard'"
-      [attr.role]="store.isSidenavCollapsed() ? 'button' : null" [class.cursor-pointer]="store.isSidenavCollapsed()"
-      [routerLink]="store.isSidenavCollapsed() ? null : '/dashboard'"
-      class="d-flex align-items-center text-decoration-none" tabindex="0">
-      <img [class.me-2]="!store.isSidenavCollapsed()" alt="Fluxo Logo" height="32" ngSrc="apple-touch-icon.png"
-        width="32" class="img-fluid">
-      @if (!store.isSidenavCollapsed()) {
-      <span class="fs-4 numeric font-monospace">Core</span>
-      }
-    </a>
-    @if (!store.isSidenavCollapsed()) {
-    <button (click)="toggleSidenav()" [attr.aria-expanded]="true" [attr.aria-label]="'Collapse sidenav'"
-      class="btn btn-link p-0 border-0">
-      <i class="bi bi-x-lg fs-2"></i>
-    </button>
-    }
-  </div>
-  <hr>
-  <!-- Navigation Menu -->
-  <ul class="nav nav-pills flex-column mb-auto">
-    @for (item of menuItems(); track item.label) {
-    @if (item.label === 'Ledger') {
-    <li>
-      <hr class="my-2 border-secondary">
-    </li>
-    }
+  <!-- Left accent line -->
+  <span class="sidenav-accent-line" aria-hidden="true"></span>
 
-    @if (item.children) {
-    <!-- Menu item with submenu -->
-    <li>
-      <a (click)="store.toggleMenuItem(item.label)" [attr.aria-controls]="item.label + 'Submenu'"
-        [attr.aria-expanded]="!store.isMenuItemCollapsed(item.label)"
-        [class.justify-content-center]="store.isSidenavCollapsed()"
-        [ngbTooltip]="store.isSidenavCollapsed() ? item.label : ''"
-        class="nav-link d-flex align-items-center" placement="end" role="button"
-        routerLinkActive="border border-light bg-transparent">
-        <i [class.me-2]="!store.isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
-        @if (!store.isSidenavCollapsed()) {
-        <span class="flex-grow-1">{{ item.label }}</span>
-        <i [class.bi-chevron-down]="!store.isMenuItemCollapsed(item.label)"
-          [class.bi-chevron-right]="store.isMenuItemCollapsed(item.label)" class="bi"></i>
-        }
+  <!-- Header Section (Logo & Toggle) - FIXED -->
+  <header class="d-flex align-items-center header-section flex-shrink-0"
+          [class.justify-content-center]="store.isSidenavCollapsed()"
+          [class.justify-content-between]="!store.isSidenavCollapsed()">
+    @if (store.isSidenavCollapsed()) {
+      <!-- Collapsed: Show hamburger menu icon only -->
+      <button (click)="toggleSidenav()"
+              aria-expanded="false"
+              aria-label="Expand sidenav"
+              class="sidenav-toggle">
+        <i class="bi bi-list"></i>
+      </button>
+    } @else {
+      <!-- Expanded: Show logo and close button -->
+      <a aria-label="Go to dashboard"
+         class="sidenav-logo"
+         routerLink="/dashboard">
+        <i class="bi bi-boxes sidenav-logo__icon"></i>
+        <span class="sidenav-logo__text">Core</span>
+        <span class="sidenav-status" aria-hidden="true"></span>
       </a>
-      <div [attr.id]="item.label + 'Submenu'"
-        [ngbCollapse]="store.isSidenavCollapsed() || store.isMenuItemCollapsed(item.label)">
-        <ul [class.ms-3]="!store.isSidenavCollapsed()" class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-          @for (child of item.children; track child.label) {
+
+      <button (click)="toggleSidenav()"
+              aria-label="Collapse sidenav"
+              class="sidenav-toggle">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    }
+  </header>
+
+  <!-- Search Filter - Only visible when expanded -->
+  @if (!store.isSidenavCollapsed()) {
+    <div class="sidenav-search"
+         [class.sidenav-search--active]="searchQuery() || isSearchFocused()">
+      <div class="sidenav-search__wrapper">
+        <i class="bi bi-search sidenav-search__icon" aria-hidden="true"></i>
+        <input #searchInput
+               type="text"
+               class="sidenav-search__input"
+               placeholder="Filter menu..."
+               [value]="searchQuery()"
+               (input)="onSearchInput($event)"
+               (focus)="isSearchFocused.set(true)"
+               (blur)="isSearchFocused.set(false)"
+               (keydown)="onSearchKeydown($event)"
+               aria-label="Filter navigation menu">
+        @if (searchQuery()) {
+          <button class="sidenav-search__clear"
+                  type="button"
+                  (click)="clearSearch()"
+                  aria-label="Clear search">
+            <i class="bi bi-x" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+      @if (searchQuery() && !hasSearchResults()) {
+        <div class="sidenav-search__no-results">
+          <i class="bi bi-inbox" aria-hidden="true"></i>
+          <span>No matches</span>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Navigation Menu - SCROLLABLE -->
+  <nav class="sidenav-scroll-container flex-grow-1" aria-label="Main navigation">
+    <ul class="nav nav-pills flex-column sidenav-nav">
+    @for (item of filteredMenuItems(); track item.label; let i = $index) {
+      <!-- Section divider before Ledger -->
+      @if (item.label === 'Ledger') {
+        <li>
+          <div class="sidenav-section"
+               [class.sidenav-section--collapsed]="store.isSidenavCollapsed()">
+            <span class="sidenav-section__label">
+              <span>Ledger</span>
+            </span>
+          </div>
+        </li>
+      }
+
+      @if (item.children) {
+        <!-- Menu item with submenu -->
+        <li class="nav-item nav-item--parent">
+          @if (store.isSidenavCollapsed()) {
+            <!-- Collapsed state: Trigger for flyout -->
+            <a class="nav-link nav-link--parent nav-flyout-trigger d-flex align-items-center justify-content-center"
+               [class.parent-active]="isParentActive(item)"
+               role="button"
+               (mouseenter)="showFlyout($event, item)"
+               (mouseleave)="hideFlyout()">
+              <i class="bi {{ item.icon }}"></i>
+              <!-- Child count indicator -->
+              <span class="nav-child-indicator" aria-hidden="true">{{ item.children.length }}</span>
+            </a>
+          } @else {
+            <!-- Expanded state: Normal collapsible submenu -->
+            <a (click)="store.toggleMenuItem(item.label)"
+               [attr.aria-controls]="item.label + 'Submenu'"
+               [attr.aria-expanded]="shouldShowExpanded(item.label)"
+               [class.parent-active]="isParentActive(item)"
+               class="nav-link nav-link--parent d-flex align-items-center"
+               role="button">
+              <i class="bi {{ item.icon }} me-2"></i>
+              <span class="flex-grow-1">{{ item.label }}</span>
+              <i [class.bi-chevron-down]="shouldShowExpanded(item.label)"
+                 [class.bi-chevron-right]="!shouldShowExpanded(item.label)"
+                 class="bi"></i>
+            </a>
+            <div [attr.id]="item.label + 'Submenu'"
+                 [ngbCollapse]="!shouldShowExpanded(item.label)">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                @for (child of item.children; track child.label) {
+                  <li class="nav-item">
+                    <a [routerLinkActiveOptions]="child.exactMatch ? { exact: true } : { exact: false }"
+                       [routerLink]="child.route"
+                       class="nav-link d-flex align-items-center"
+                       routerLinkActive="active">
+                      <span>{{ child.label }}</span>
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </li>
+      } @else {
+        <!-- Simple menu item without submenu -->
+        <li class="nav-item">
+          <a [class.justify-content-center]="store.isSidenavCollapsed()"
+             [ngbTooltip]="store.isSidenavCollapsed() ? item.label : ''"
+             [routerLinkActiveOptions]="item.exactMatch ? { exact: true } : { exact: false }"
+             [routerLink]="item.route"
+             class="nav-link d-flex align-items-center"
+             placement="end"
+             routerLinkActive="active">
+            <i [class.me-2]="!store.isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
+            @if (!store.isSidenavCollapsed()) {
+              <span>{{ item.label }}</span>
+            }
+          </a>
+        </li>
+      }
+    }
+    </ul>
+  </nav>
+
+  <!-- Footer - FIXED -->
+  <footer class="sidenav-footer flex-shrink-0">
+    <div class="sidenav-footer__inner"
+         [class.sidenav-footer__inner--collapsed]="store.isSidenavCollapsed()">
+      <!-- Deadline Ticker -->
+      <app-deadline-ticker [isCollapsed]="store.isSidenavCollapsed()" />
+
+      <!-- User Profile -->
+      <app-user-profile [isCollapsed]="store.isSidenavCollapsed()" />
+    </div>
+  </footer>
+
+  <!-- Flyout Panel - Rendered OUTSIDE scroll container to avoid clipping -->
+  @if (activeFlyoutItem(); as item) {
+    <div class="nav-flyout"
+         [style.top.px]="flyoutTop()"
+         (mouseenter)="keepFlyoutVisible()"
+         (mouseleave)="hideFlyout()">
+      <div class="nav-flyout__header">
+        <i class="bi {{ item.icon }} nav-flyout__icon"></i>
+        <span class="nav-flyout__title">{{ item.label }}</span>
+      </div>
+      <ul class="nav-flyout__list">
+        @for (child of item.children; track child.label) {
           <li>
-            <a [ngbTooltip]="store.isSidenavCollapsed() ? child.label : ''"
-              [routerLinkActiveOptions]="child.exactMatch ? { exact: true } : { exact: false }"
-              [routerLink]="child.route" class="nav-link d-flex align-items-center" placement="end"
-              routerLinkActive="active">
-              @if (store.isSidenavCollapsed()) {
-              <span class="submenu-indicator"></span>
-              } @else {
+            <a [routerLinkActiveOptions]="child.exactMatch ? { exact: true } : { exact: false }"
+               [routerLink]="child.route"
+               class="nav-flyout__link"
+               routerLinkActive="active"
+               (click)="hideFlyout()">
+              <span class="nav-flyout__dot"></span>
               <span>{{ child.label }}</span>
-              }
             </a>
           </li>
-          }
-        </ul>
-      </div>
-    </li>
-    } @else {
-    <!-- Simple menu item without submenu -->
-    <li class="nav-item">
-      <a [class.justify-content-center]="store.isSidenavCollapsed()"
-        [ngbTooltip]="store.isSidenavCollapsed() ? item.label : ''"
-        [routerLinkActiveOptions]="item.exactMatch ? { exact: true } : { exact: false }" [routerLink]="item.route"
-        class="nav-link d-flex align-items-center" placement="end" routerLinkActive="active">
-        <i [class.me-2]="!store.isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
-        @if (!store.isSidenavCollapsed()) {
-        <span>{{ item.label }}</span>
         }
-      </a>
-    </li>
-    }
-    }
-  </ul>
-
-  <!-- User Profile with Theme Toggle -->
-  <hr class="border-secondary mt-auto">
-  <app-user-profile [isCollapsed]="store.isSidenavCollapsed()" />
+      </ul>
+    </div>
+  }
 </div>

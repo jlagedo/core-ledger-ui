@@ -7,10 +7,22 @@ import {
   computed,
   effect,
   viewChildren,
+  viewChild,
   TemplateRef,
+  TrackByFunction,
+  afterNextRender,
+  Injector,
+  inject,
+  DestroyRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { ListRange } from '@angular/cdk/collections';
+import { Subject } from 'rxjs';
+import { debounceTime, filter, distinctUntilChanged, map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { SortableDirective, SortEvent } from '../../../directives/sortable.directive';
 import { ColumnDefinition, CellTemplateContext, SelectionState } from './column-definition.model';
@@ -54,9 +66,11 @@ export interface PaginatedResponse<T> {
   templateUrl: './data-grid.html',
   styleUrl: './data-grid.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, NgbPagination, SortableDirective],
+  imports: [CommonModule, FormsModule, ScrollingModule, NgbPagination, SortableDirective],
 })
 export class DataGrid<T> {
+  private readonly injector = inject(Injector);
+
   // Required inputs
   /** Store instance from createPaginatedSearchStore */
   store = input.required<InstanceType<ReturnType<typeof createPaginatedSearchStore>>>();
@@ -92,6 +106,21 @@ export class DataGrid<T> {
   /** Available page size options */
   pageSizeOptions = input<number[]>([15, 50, 100]);
 
+  /** Enable virtual scrolling for large datasets */
+  virtualScroll = input<boolean>(false);
+
+  /** Row height in pixels for virtual scroll (required when virtualScroll is true) */
+  rowHeight = input<number>(48);
+
+  /** Height of the virtual scroll viewport (CSS value) */
+  viewportHeight = input<string>('400px');
+
+  /** Number of items before end to trigger load more (default: 10) */
+  loadMoreThreshold = input<number>(10);
+
+  /** Whether currently loading more items */
+  loadingMore = input<boolean>(false);
+
   // Outputs
   /** Emitted when data should be refreshed */
   refresh = output<void>();
@@ -102,7 +131,29 @@ export class DataGrid<T> {
   /** Emitted when selection changes */
   selectionChange = output<T[]>();
 
+  /** Emitted when more data should be loaded (infinite scroll) */
+  loadMore = output<void>();
+
+  // ViewChild for virtual scroll viewport
+  readonly virtualScrollViewport = viewChild<CdkVirtualScrollViewport>('virtualScrollViewport');
+
   // Internal signals for state management
+  /** Tracks if initial data has been loaded - used for aggressive preloading */
+  private readonly _initialDataLoaded = signal<boolean>(false);
+
+  // Scroll management for infinite scroll
+  /** DestroyRef for cleanup */
+  private readonly destroyRef = inject(DestroyRef);
+
+  /** Subject to debounce load more requests */
+  private readonly loadMoreSubject = new Subject<void>();
+
+  /** Track if we've set up the renderedRangeStream subscription */
+  private renderedRangeSubscribed = false;
+
+  /** Debounce time in milliseconds for load more events */
+  private readonly LOAD_MORE_DEBOUNCE_MS = 150;
+
   /** Active row ID for highlighting */
   private readonly _activeRowId = signal<number | string | null>(null);
   readonly activeRowId = this._activeRowId.asReadonly();
@@ -132,6 +183,13 @@ export class DataGrid<T> {
   /** Current page items */
   readonly currentPageItems = computed(() => this.data()?.items ?? []);
 
+  /** Whether there are more items to load */
+  readonly hasMoreItems = computed(() => {
+    const items = this.currentPageItems();
+    const total = this.collectionSize();
+    return items.length < total;
+  });
+
   /** Sortable header directives */
   headers = viewChildren(SortableDirective);
 
@@ -156,6 +214,113 @@ export class DataGrid<T> {
       const selected = this.selectedItemsArray();
       this.selectionChange.emit(selected);
     });
+
+    // Debounced subscription for load more requests
+    // Prevents rapid-fire events when scrolling quickly
+    this.loadMoreSubject
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(this.LOAD_MORE_DEBOUNCE_MS),
+        // Double-check conditions before emitting
+        filter(() => !this.loadingMore() && this.hasMoreItems())
+      )
+      .subscribe(() => {
+        this.loadMore.emit();
+      });
+
+    // Effect: Reset flags when data is cleared (e.g., on search/refresh)
+    effect(() => {
+      const items = this.currentPageItems();
+      if (items.length === 0 && this._initialDataLoaded()) {
+        this._initialDataLoaded.set(false);
+        // Reset subscription flag so it re-subscribes on new data
+        this.renderedRangeSubscribed = false;
+      }
+    });
+
+    // Effect: Initialize renderedRangeStream subscription and handle initial preload
+    // The effect tracks when data arrives and viewport becomes available
+    effect(() => {
+      const items = this.currentPageItems();
+      const hasMore = this.hasMoreItems();
+      const isLoadingMore = this.loadingMore();
+      const isVirtualScroll = this.virtualScroll();
+      const viewport = this.virtualScrollViewport();
+
+      // Skip if not virtual scroll mode or no viewport yet
+      if (!isVirtualScroll || !viewport) {
+        return;
+      }
+
+      // Set up the renderedRangeStream subscription (idempotent)
+      this.subscribeToRenderedRange();
+
+      // Skip preload check if loading or no data or no more items
+      if (isLoadingMore || !hasMore || items.length === 0) {
+        return;
+      }
+
+      // Check if we need to preload on initial data arrival
+      const isFirstLoad = !this._initialDataLoaded();
+
+      if (isFirstLoad) {
+        afterNextRender(
+          () => {
+            // Mark as loaded
+            if (!this._initialDataLoaded()) {
+              this._initialDataLoaded.set(true);
+            }
+
+            // Re-check conditions (may have changed)
+            if (this.loadingMore() || !this.hasMoreItems()) {
+              return;
+            }
+
+            // Trigger preload through the debounced subject
+            this.loadMoreSubject.next();
+          },
+          { injector: this.injector }
+        );
+      }
+    });
+  }
+
+  /**
+   * Subscribe to the viewport's renderedRangeStream for more reliable
+   * infinite scroll detection. This is more reliable than scrolledIndexChange
+   * because it provides both start and end indices of the rendered range.
+   */
+  private subscribeToRenderedRange(): void {
+    const viewport = this.virtualScrollViewport();
+    if (!viewport || this.renderedRangeSubscribed) {
+      return;
+    }
+
+    this.renderedRangeSubscribed = true;
+
+    // Subscribe to rendered range changes
+    viewport.renderedRangeStream
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        // Only process when we should potentially load more
+        filter(() => this.virtualScroll() && !this.loadingMore() && this.hasMoreItems()),
+        // Extract the end index and compare against threshold
+        map((range: ListRange) => {
+          const items = this.currentPageItems();
+          const threshold = this.loadMoreThreshold();
+          const endIndex = range.end;
+          const totalItems = items.length;
+
+          // Check if rendered range end is within threshold of total loaded items
+          return endIndex >= totalItems - threshold;
+        }),
+        // Only emit when the "should load" state changes to true
+        distinctUntilChanged(),
+        filter((shouldLoad) => shouldLoad)
+      )
+      .subscribe(() => {
+        this.loadMoreSubject.next();
+      });
   }
 
   /**
@@ -201,6 +366,32 @@ export class DataGrid<T> {
   onPageSizeChange(newSize: number): void {
     this.store().setPageSize(newSize);
     this.refresh.emit();
+  }
+
+  /**
+   * Handle virtual scroll index change (fallback for infinite scroll)
+   * Primary detection is via renderedRangeStream, this provides additional coverage.
+   */
+  onScrolledIndexChange(index: number): void {
+    if (!this.virtualScroll() || this.loadingMore() || !this.hasMoreItems()) {
+      return;
+    }
+
+    const viewport = this.virtualScrollViewport();
+    if (!viewport) {
+      return;
+    }
+
+    // Use getRenderedRange for accurate end position
+    // This is more accurate than using just the first visible index
+    const range = viewport.getRenderedRange();
+    const items = this.currentPageItems();
+    const threshold = this.loadMoreThreshold();
+
+    // Check if rendered range end is within threshold of total loaded items
+    if (range.end >= items.length - threshold) {
+      this.loadMoreSubject.next();
+    }
   }
 
   /**
@@ -306,4 +497,11 @@ export class DataGrid<T> {
     const itemWithId = item as unknown as { id?: number | string };
     return itemWithId.id ?? JSON.stringify(item);
   }
+
+  /**
+   * TrackBy function for virtual scroll
+   */
+  trackByFn: TrackByFunction<T> = (index: number, item: T): number | string => {
+    return this.getItemId(item);
+  };
 }
