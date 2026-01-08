@@ -8,6 +8,16 @@
 @use "alert-tokens" as *;
 
 // ============================================================
+// TYPOGRAPHY — Bloomberg Terminal Style
+// ============================================================
+
+body {
+  // Ensure all numbers align (tabular figures)
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+// ============================================================
 // CARD
 // ============================================================
 
@@ -175,7 +185,7 @@
 }
 
 // ============================================================
-// TABLES
+// TABLES — Bloomberg Terminal Density
 // ============================================================
 
 .table {
@@ -184,11 +194,15 @@
   --bs-table-hover-bg: var(--table-hover-bg);
   --bs-table-border-color: var(--table-border-color);
   background-color: var(--table-bg);
+  font-size: 0.75rem;  // 12px for terminal density
 
   thead th {
     background-color: var(--table-header-bg);
     color: var(--table-header-color);
     font-weight: 600;
+    font-size: 0.6875rem;  // 11px for headers
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     border-bottom-width: 2px;
   }
 
@@ -347,7 +361,7 @@ a:visited:not(.btn):not(.nav-link):not(.dropdown-item) {
 
 ::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb);
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 // ============================================================

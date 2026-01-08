@@ -27,39 +27,17 @@ body {
 [data-bs-theme="light"] {
   color-scheme: light;
 
-  // Ocean-inspired gradient background
+  // Bloomberg Daylight — Warm professional gradient
+  // Subtle warmth with amber accents echoing the dark terminal theme
   --theme-body-gradient:
-    radial-gradient(ellipse 120% 60% at 30% -10%, #{rgba($accent-amber, 0.12)}, transparent 50%),
-    radial-gradient(ellipse 100% 50% at 70% -5%, #{rgba($accent-coral, 0.08)}, transparent 45%),
-    radial-gradient(ellipse 40% 80% at 0% 70%, #{rgba($neutral-black, 0.08)}, transparent 50%),
-    radial-gradient(ellipse 40% 80% at 100% 60%, #{rgba($brand-blue-400, 0.12)}, transparent 50%),
-    radial-gradient(ellipse 20% 25% at 5% 85%, #{rgba($accent-coral, 0.22)}, transparent 70%),
-    radial-gradient(ellipse 15% 22% at 12% 78%, #{rgba($accent-coral, 0.18)}, transparent 60%),
-    radial-gradient(ellipse 22% 18% at 20% 90%, #{rgba($brand-blue-400, 0.15)}, transparent 65%),
-    radial-gradient(ellipse 12% 30% at 8% 72%, #{rgba($neutral-black, 0.20)}, transparent 70%),
-    radial-gradient(ellipse 35% 15% at 30% 82%, #{rgba($brand-blue-200, 0.25)}, transparent 80%),
-    radial-gradient(ellipse 28% 18% at 38% 90%, #{rgba($brand-blue-500, 0.15)}, transparent 70%),
-    radial-gradient(ellipse 18% 25% at 45% 76%, #{rgba($accent-coral, 0.18)}, transparent 65%),
-    radial-gradient(circle 60px at 50% 85%, #{rgba($accent-amber, 0.15)}, transparent 70%),
-    radial-gradient(circle 45px at 58% 78%, #{rgba($brand-blue-400, 0.18)}, transparent 60%),
-    radial-gradient(circle 70px at 65% 88%, #{rgba($brand-blue-200, 0.20)}, transparent 70%),
-    radial-gradient(ellipse 10% 35% at 70% 74%, #{rgba($neutral-black, 0.16)}, transparent 70%),
-    radial-gradient(ellipse 8% 30% at 75% 82%, #{rgba($neutral-black, 0.12)}, transparent 65%),
-    radial-gradient(ellipse 12% 25% at 68% 86%, #{rgba($brand-blue-500, 0.12)}, transparent 60%),
-    radial-gradient(circle 50px at 82% 82%, #{rgba($accent-coral, 0.18)}, transparent 65%),
-    radial-gradient(circle 35px at 88% 74%, #{rgba($accent-amber, 0.15)}, transparent 60%),
-    radial-gradient(circle 55px at 92% 88%, #{rgba($brand-blue-400, 0.15)}, transparent 70%),
-    radial-gradient(ellipse 25% 15% at 95% 78%, #{rgba($brand-blue-200, 0.20)}, transparent 75%),
-    radial-gradient(ellipse 18% 22% at 98% 85%, #{rgba($accent-coral, 0.15)}, transparent 65%),
-    radial-gradient(ellipse 15% 28% at 100% 72%, #{rgba($neutral-black, 0.18)}, transparent 70%),
-    radial-gradient(ellipse 100% 20% at 50% 92%, #{rgba($warm-cream, 0.35)}, transparent 80%),
-    radial-gradient(ellipse 80% 15% at 25% 88%, #{rgba($warm-cream, 0.25)}, transparent 70%),
-    radial-gradient(ellipse 70% 12% at 75% 95%, #{rgba($warm-cream, 0.20)}, transparent 60%),
+    radial-gradient(ellipse 100% 50% at 50% -20%, #{rgba($daylight-gold, 0.08)}, transparent 60%),
+    radial-gradient(ellipse 80% 40% at 20% 10%, #{rgba($daylight-amber, 0.05)}, transparent 50%),
+    radial-gradient(ellipse 60% 50% at 90% 80%, #{rgba($daylight-sand, 0.4)}, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 10% 90%, #{rgba($daylight-sand, 0.3)}, transparent 50%),
     linear-gradient(180deg,
-      #{color.scale($warm-sky, $lightness: -8%)} 0%,
-      #{color.scale($brand-blue-200, $lightness: -5%)} 30%,
-      #{color.scale($brand-blue-100, $lightness: -6%)} 65%,
-      #{$brand-blue-100} 100%
+      #{$daylight-white} 0%,
+      #{$daylight-cream} 50%,
+      #{$daylight-sand} 100%
     );
 
   // Expose brand colors as CSS variables
@@ -68,19 +46,27 @@ body {
   --brand-blue-600: #{$brand-blue-600};
   --brand-blue-700: #{$brand-blue-700};
 
-  // Expose accent colors
+  // Expose accent colors (Bloomberg Daylight palette)
   --accent-teal: #{$accent-teal};
+  --accent-amber: #{$daylight-amber};
+  --accent-gold: #{$daylight-gold};
   --accent-purple: #{$accent-purple};
   --accent-pink: #{$accent-pink};
   --accent-yellow: #{$accent-yellow};
 
-  // Semantic surface colors
-  --surface-lagoon: #{$brand-blue-200};
-  --surface-shallow: #{$brand-blue-100};
+  // Semantic surface colors (warm professional)
+  --surface-primary: #{$daylight-cream};
+  --surface-secondary: #{$daylight-sand};
+  --surface-elevated: #{$neutral-white};
+  --surface-accent: #{rgba($daylight-amber, 0.1)};
+
+  // Legacy surface names (compatibility)
+  --surface-lagoon: #{$daylight-sand};
+  --surface-shallow: #{$daylight-cream};
   --surface-sand: #{$warm-cream};
   --surface-coral: #{$accent-coral};
-  --surface-seagrass: #{$neutral-black};
-  --surface-starfish: #{$accent-amber};
+  --surface-seagrass: #{$daylight-text};
+  --surface-starfish: #{$daylight-amber};
 
   @include generate-theme-vars(light);
 }

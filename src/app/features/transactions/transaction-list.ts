@@ -135,26 +135,26 @@ export class TransactionList implements AfterViewInit {
       cellClass: 'font-monospace',
       formatter: (value) => this.datePipe.transform(value as string, 'MM/dd/yy') || ''
     },
-    {
-      key: 'quantity',
-      label: 'Qty',
-      sortable: true,
-      sortKey: 'quantity',
-      align: 'end',
-      minWidth: '60px',
-      cellClass: 'numeric font-monospace',
-      formatter: (value) => this.decimalPipe.transform(value as number, '1.0-4') || ''
-    },
-    {
-      key: 'price',
-      label: 'Px',
-      sortable: true,
-      sortKey: 'price',
-      align: 'end',
-      minWidth: '75px',
-      cellClass: 'numeric font-monospace',
-      formatter: (value) => this.decimalPipe.transform(value as number, '1.2-4') || ''
-    },
+    // {
+    //   key: 'quantity',
+    //   label: 'Qty',
+    //   sortable: true,
+    //   sortKey: 'quantity',
+    //   align: 'end',
+    //   minWidth: '60px',
+    //   cellClass: 'numeric font-monospace',
+    //   formatter: (value) => this.decimalPipe.transform(value as number, '1.0-4') || ''
+    // },
+    // {
+    //   key: 'price',
+    //   label: 'Px',
+    //   sortable: true,
+    //   sortKey: 'price',
+    //   align: 'end',
+    //   minWidth: '75px',
+    //   cellClass: 'numeric font-monospace',
+    //   formatter: (value) => this.decimalPipe.transform(value as number, '1.2-4') || ''
+    // },
     {
       key: 'amount',
       label: 'Amt',
@@ -162,18 +162,18 @@ export class TransactionList implements AfterViewInit {
       sortKey: 'amount',
       align: 'end',
       minWidth: '85px',
-      cellClass: 'numeric font-monospace fw-bold',
+      cellClass: 'font-monospace',
       formatter: (value) => this.decimalPipe.transform(value as number, '1.2-2') || ''
     },
-    {
-      key: 'currency',
-      label: 'CCY',
-      sortable: true,
-      sortKey: 'currency',
-      align: 'center',
-      minWidth: '45px',
-      cellClass: 'font-monospace text-info'
-    },
+    // {
+    //   key: 'currency',
+    //   label: 'CCY',
+    //   sortable: true,
+    //   sortKey: 'currency',
+    //   align: 'center',
+    //   minWidth: '45px',
+    //   cellClass: 'font-monospace text-info'
+    // },
     {
       key: 'statusDescription',
       label: 'Status',
@@ -189,18 +189,18 @@ export class TransactionList implements AfterViewInit {
 
   // Instrument type to CSS class mapping (values match database)
   readonly instrumentTypeStyles: Record<string, string> = {
-    'EQUITY': 'badge rounded-pill instrument-badge instrument-equity',
-    'ETF': 'badge rounded-pill instrument-badge instrument-etf',
-    'FIXED_INCOME': 'badge rounded-pill instrument-badge instrument-fixed-income',
-    'DERIVATIVE_FUTURE': 'badge rounded-pill instrument-badge instrument-derivative-future',
-    'DERIVATIVE_OPTION': 'badge rounded-pill instrument-badge instrument-derivative-option',
-    'DERIVATIVE_SWAP': 'badge rounded-pill instrument-badge instrument-derivative-swap',
-    'FX': 'badge rounded-pill instrument-badge instrument-fx',
-    'MONEY_MARKET': 'badge rounded-pill instrument-badge instrument-money-market',
+    'EQUITY': '  instrument- instrument-equity',
+    'ETF': '  instrument- instrument-etf',
+    'FIXED_INCOME': '  instrument- instrument-fixed-income',
+    'DERIVATIVE_FUTURE': '  instrument- instrument-derivative-future',
+    'DERIVATIVE_OPTION': '  instrument- instrument-derivative-option',
+    'DERIVATIVE_SWAP': '  instrument- instrument-derivative-swap',
+    'FX': '  instrument- instrument-fx',
+    'MONEY_MARKET': '  instrument- instrument-money-market',
   };
 
   getInstrumentBadgeClass(type: string): string {
-    return this.instrumentTypeStyles[type] ?? 'badge rounded-pill instrument-badge instrument-default';
+    return this.instrumentTypeStyles[type] ?? '  instrument- instrument-default';
   }
 
   constructor() {
