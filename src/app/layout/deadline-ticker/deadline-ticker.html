@@ -1,3 +1,4 @@
+@let urgent = mostUrgent();
 @if (activeDeadlines().length > 0) {
   <div class="deadline-ticker"
        [class.deadline-ticker--collapsed]="isCollapsed()"
@@ -10,7 +11,7 @@
       <!-- Sidenav Collapsed: Show indicator only -->
       <div class="deadline-ticker__indicator"
            [class.deadline-ticker__indicator--critical]="hasCritical()"
-           [class.deadline-ticker__indicator--warning]="mostUrgent()?.urgency === 'warning'">
+           [class.deadline-ticker__indicator--warning]="urgent?.urgency === 'warning'">
         <i class="bi bi-clock-history"></i>
         <span class="deadline-ticker__badge">{{ totalCount() }}</span>
       </div>
@@ -19,7 +20,7 @@
       <button type="button"
               class="deadline-ticker__pill"
               [class.deadline-ticker__pill--critical]="hasCritical()"
-              [class.deadline-ticker__pill--warning]="mostUrgent()?.urgency === 'warning'"
+              [class.deadline-ticker__pill--warning]="urgent?.urgency === 'warning'"
               (click)="toggleMinimized()"
               aria-label="Expand deadline ticker">
         <span class="deadline-ticker__pill-icon">
@@ -32,11 +33,11 @@
         <span class="deadline-ticker__pill-divider"></span>
         <span class="deadline-ticker__pill-urgent">
           <span class="deadline-ticker__pill-status"
-                [class.deadline-ticker__pill-status--safe]="mostUrgent()?.urgency === 'safe'"
-                [class.deadline-ticker__pill-status--warning]="mostUrgent()?.urgency === 'warning'"
-                [class.deadline-ticker__pill-status--critical]="mostUrgent()?.urgency === 'critical'">
+                [class.deadline-ticker__pill-status--safe]="urgent?.urgency === 'safe'"
+                [class.deadline-ticker__pill-status--warning]="urgent?.urgency === 'warning'"
+                [class.deadline-ticker__pill-status--critical]="urgent?.urgency === 'critical'">
           </span>
-          <span class="deadline-ticker__pill-time">{{ mostUrgent()?.remainingFormatted }}</span>
+          <span class="deadline-ticker__pill-time">{{ urgent?.remainingFormatted }}</span>
         </span>
         <span class="deadline-ticker__pill-expand">
           <i class="bi bi-chevron-down"></i>

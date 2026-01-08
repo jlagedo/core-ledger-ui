@@ -45,7 +45,8 @@
       "Bash(chmod:*)",
       "WebFetch(domain:medium.com)",
       "WebFetch(domain:fireship.io)",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(gh --version:*)"
     ]
   },
   "enabledMcpjsonServers": [

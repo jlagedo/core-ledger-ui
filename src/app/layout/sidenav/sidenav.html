@@ -1,7 +1,7 @@
 <div [attr.aria-label]="store.isSidenavCollapsed() ? 'Collapsed sidenav' : 'Expanded sidenav'"
      [style.width]="store.isSidenavCollapsed() ? '4rem' : '15rem'"
      [class.sidenav-wrapper--collapsed]="store.isSidenavCollapsed()"
-     class="d-flex flex-column flex-shrink-0 transition-all sidenav-wrapper vh-100">
+     class="d-flex flex-column flex-shrink-0 sidenav-width-transition sidenav-wrapper vh-100">
 
   <!-- Left accent line -->
   <span class="sidenav-accent-line" aria-hidden="true"></span>
