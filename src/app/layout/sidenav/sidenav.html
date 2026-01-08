@@ -58,10 +58,10 @@
           @if (store.isSidenavCollapsed()) {
             <!-- Collapsed state: Trigger for flyout -->
             <a class="nav-link nav-link--parent nav-flyout-trigger d-flex align-items-center justify-content-center"
+               [class.parent-active]="isParentActive(item)"
                role="button"
                (mouseenter)="showFlyout($event, item)"
-               (mouseleave)="hideFlyout()"
-               routerLinkActive="border border-light bg-transparent">
+               (mouseleave)="hideFlyout()">
               <i class="bi {{ item.icon }}"></i>
               <!-- Child count indicator -->
               <span class="nav-child-indicator" aria-hidden="true">{{ item.children.length }}</span>
@@ -71,9 +71,9 @@
             <a (click)="store.toggleMenuItem(item.label)"
                [attr.aria-controls]="item.label + 'Submenu'"
                [attr.aria-expanded]="!store.isMenuItemCollapsed(item.label)"
+               [class.parent-active]="isParentActive(item)"
                class="nav-link nav-link--parent d-flex align-items-center"
-               role="button"
-               routerLinkActive="border border-light bg-transparent">
+               role="button">
               <i class="bi {{ item.icon }} me-2"></i>
               <span class="flex-grow-1">{{ item.label }}</span>
               <i [class.bi-chevron-down]="!store.isMenuItemCollapsed(item.label)"

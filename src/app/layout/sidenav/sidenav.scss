@@ -380,6 +380,37 @@
     }
   }
 
+  // Parent active state - when a child route is active
+  // Shows a subtle indicator that user is within this section
+  &.parent-active {
+    background-color: var(--sidenav-hover);
+    color: var(--bs-emphasis-color);
+
+    i.bi {
+      opacity: 1;
+      color: var(--terminal-glow);
+    }
+
+    // Muted left indicator (less prominent than active)
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--terminal-glow);
+      opacity: 0.5;
+    }
+
+    // Chevron should indicate expanded/active section
+    .bi-chevron-right,
+    .bi-chevron-down {
+      opacity: 0.9;
+      color: var(--terminal-glow-muted);
+    }
+  }
+
   // Parent item (with children) styling
   &.nav-link--parent {
     text-transform: uppercase;
@@ -660,6 +691,21 @@
       &::before {
         width: 2px;
         left: 0;
+      }
+    }
+
+    // Parent active in collapsed mode - subtle highlight
+    &.parent-active {
+      background-color: var(--sidenav-hover);
+
+      i.bi {
+        color: var(--terminal-glow);
+      }
+
+      &::before {
+        width: 2px;
+        left: 0;
+        opacity: 0.5;
       }
     }
   }

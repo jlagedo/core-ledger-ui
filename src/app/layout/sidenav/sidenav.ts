@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NgbCollapse, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { UserProfile } from '../user-profile/user-profile';
 import { MenuService } from '../../services/menu-service';
 import { SidenavStore } from './sidenav-store';
 import { MenuItem } from '../../models/menu-item.model';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-sidenav',
@@ -15,10 +17,17 @@ import { MenuItem } from '../../models/menu-item.model';
 })
 export class Sidenav {
   private readonly menuService = inject(MenuService);
+  private readonly router = inject(Router);
   readonly store = inject(SidenavStore);
 
   readonly menuItems = this.menuService.menuItems;
   sidenavToggle = output<boolean>();
+
+  // Track current URL for parent active state detection
+  private readonly currentUrl = toSignal(
+    this.router.events.pipe(map(() => this.router.url)),
+    { initialValue: this.router.url }
+  );
 
   // Flyout state - stores full item data for rendering outside scroll container
   readonly flyoutTop = signal<number | null>(null);
@@ -72,5 +81,16 @@ export class Sidenav {
       clearTimeout(this.hideTimeout);
       this.hideTimeout = null;
     }
+  }
+
+  // Check if a parent menu item has any active child route
+  isParentActive(item: MenuItem): boolean {
+    if (!item.children) return false;
+    const url = this.currentUrl();
+    return item.children.some((child) => {
+      if (!child.route) return false;
+      // Check if current URL starts with the child route
+      return url.startsWith(child.route);
+    });
   }
 }
