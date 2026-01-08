@@ -34,8 +34,17 @@
 // ============================================================
 
 .sidenav-wrapper {
-  --terminal-glow: var(--accent-amber, #FFA028);
+  // Terminal glow is set via theme variables (--terminal-glow)
   --grid-line: var(--bs-border-color);
+
+  // Flyout-specific effects (dark mode defaults, light mode overrides below)
+  --flyout-shadow: 4px 4px 24px rgba(0, 0, 0, 0.6), 0 0 2px var(--terminal-glow-muted);
+  --flyout-grid-pattern:
+    linear-gradient(90deg, var(--terminal-glow-bg) 1px, transparent 1px),
+    linear-gradient(var(--terminal-glow-bg) 1px, transparent 1px);
+  --flyout-icon-glow: 0 0 8px var(--terminal-glow);
+  --flyout-dot-glow: 0 0 6px var(--terminal-glow);
+  --flyout-dot-glow-active: 0 0 8px var(--terminal-glow);
 
   position: relative;
   background-color: var(--sidenav-bg);
@@ -153,7 +162,8 @@
     font-size: 1.125rem;
     font-weight: 600;
     letter-spacing: 0.05em;
-    color: var(--bs-emphasis-color);
+    // Use sidenav's own color context (cream on dark sidebar)
+    color: var(--sidenav-color);
   }
 
   // Status indicator (pulsing dot)
@@ -274,7 +284,7 @@
     border-radius: 2px;
 
     &:hover {
-      background: rgba(255, 160, 40, 0.4);
+      background: var(--terminal-glow-muted);
     }
   }
 
@@ -336,7 +346,7 @@
   // Hover state
   &:hover {
     background-color: var(--sidenav-link-hover-bg);
-    border-left-color: rgba(255, 160, 40, 0.3);
+    border-left-color: var(--terminal-glow-muted);
 
     i.bi {
       opacity: 1;
@@ -474,8 +484,8 @@
   font-weight: 700;
   line-height: 14px;
   text-align: center;
-  background: var(--sidenav-divider, rgba(255, 160, 40, 0.2));
-  color: var(--terminal-glow, #FFA028);
+  background: var(--terminal-glow-subtle);
+  color: var(--terminal-glow);
   border-radius: 2px;
   transition: all 0.2s ease;
   opacity: 0.8;
@@ -498,10 +508,10 @@
 
   &:hover {
     .nav-child-indicator {
-      background: var(--terminal-glow, #FFA028);
-      color: #000;
+      background: var(--terminal-glow);
+      color: var(--sidenav-bg);
       opacity: 1;
-      box-shadow: 0 0 8px var(--terminal-glow, #FFA028);
+      box-shadow: 0 0 8px var(--terminal-glow);
     }
   }
 }
@@ -514,13 +524,11 @@
   min-width: 180px !important;
   max-width: 220px;
   width: auto;
-  background: var(--sidenav-bg, #0a0a0a) !important;
-  border: 1px solid var(--sidenav-divider, rgba(255, 160, 40, 0.2)) !important;
-  border-left: 2px solid var(--terminal-glow, #FFA028) !important;
+  background: var(--sidenav-bg) !important;
+  border: 1px solid var(--sidenav-divider) !important;
+  border-left: 2px solid var(--terminal-glow) !important;
   border-radius: 0 4px 4px 0;
-  box-shadow:
-    4px 4px 24px rgba(0, 0, 0, 0.6),
-    0 0 2px rgba(255, 160, 40, 0.3);
+  box-shadow: var(--flyout-shadow);
   z-index: 1060 !important;
   animation: flyout-enter 0.15s ease-out forwards;
   overflow: visible;
@@ -530,9 +538,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-image:
-      linear-gradient(90deg, rgba(255, 160, 40, 0.03) 1px, transparent 1px),
-      linear-gradient(rgba(255, 160, 40, 0.03) 1px, transparent 1px);
+    background-image: var(--flyout-grid-pattern);
     background-size: 24px 24px;
     pointer-events: none;
     z-index: 0;
@@ -545,14 +551,14 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.625rem 0.75rem;
-    border-bottom: 1px solid var(--sidenav-divider, rgba(255, 160, 40, 0.15));
-    background: rgba(255, 160, 40, 0.06);
+    border-bottom: 1px solid var(--sidenav-divider);
+    background: var(--terminal-glow-bg);
   }
 
   &__icon {
     font-size: 0.875rem;
-    color: var(--terminal-glow, #FFA028);
-    text-shadow: 0 0 8px var(--terminal-glow, #FFA028);
+    color: var(--terminal-glow);
+    text-shadow: var(--flyout-icon-glow);
   }
 
   &__title {
@@ -560,7 +566,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--bs-emphasis-color, #fff);
+    color: var(--bs-emphasis-color);
   }
 
   &__list {
@@ -578,28 +584,28 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.6875rem;
     font-weight: 400;
-    color: var(--sidenav-color, #C4A35A);
+    color: var(--sidenav-color);
     text-decoration: none;
     transition: all 0.15s ease;
     position: relative;
 
     &:hover {
-      background: var(--sidenav-link-hover-bg, rgba(255, 160, 40, 0.1));
-      color: var(--bs-emphasis-color, #fff);
+      background: var(--sidenav-link-hover-bg);
+      color: var(--bs-emphasis-color);
 
       .nav-flyout__dot {
-        background: var(--terminal-glow, #FFA028);
-        box-shadow: 0 0 6px var(--terminal-glow, #FFA028);
+        background: var(--terminal-glow);
+        box-shadow: var(--flyout-dot-glow);
       }
     }
 
     &.active {
-      background: var(--sidenav-active-bg, rgba(255, 160, 40, 0.12));
-      color: var(--bs-emphasis-color, #fff);
+      background: var(--sidenav-active-bg);
+      color: var(--bs-emphasis-color);
 
       .nav-flyout__dot {
-        background: var(--terminal-glow, #FFA028);
-        box-shadow: 0 0 8px var(--terminal-glow, #FFA028);
+        background: var(--terminal-glow);
+        box-shadow: var(--flyout-dot-glow-active);
         animation: status-pulse 2s ease-in-out infinite;
       }
 
@@ -611,8 +617,8 @@
         top: 0;
         bottom: 0;
         width: 2px;
-        background: var(--terminal-glow, #FFA028);
-        box-shadow: 0 0 6px var(--terminal-glow, #FFA028);
+        background: var(--terminal-glow);
+        box-shadow: var(--flyout-dot-glow);
       }
     }
   }
@@ -621,7 +627,7 @@
     width: 4px;
     height: 4px;
     border-radius: 1px;
-    background: var(--sidenav-divider, rgba(255, 160, 40, 0.3));
+    background: var(--terminal-glow-muted);
     flex-shrink: 0;
     transition: all 0.2s ease;
   }
@@ -678,7 +684,7 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 160, 40, 0.3),
+      var(--terminal-glow-muted),
       transparent
     );
   }
@@ -698,7 +704,7 @@
 
 [data-bs-theme="dark"] {
   .sidenav-wrapper {
-    background: rgba(0, 0, 0, 0.98);
+    background: var(--sidenav-bg);
 
     &::after {
       opacity: 0.04;
@@ -714,11 +720,11 @@
   }
 
   .nav-link.active {
-    background-color: rgba(255, 160, 40, 0.12);
+    background-color: var(--sidenav-active-bg);
   }
 
   .nav-child-indicator {
-    background: rgba(255, 160, 40, 0.2);
+    background: var(--terminal-glow-subtle);
     color: var(--terminal-glow);
   }
 }
@@ -729,7 +735,11 @@
 
 [data-bs-theme="light"] {
   .sidenav-wrapper {
-    --terminal-glow: #B45309;
+    // Light mode flyout effects - no glow, subtle shadows
+    --flyout-shadow: 4px 4px 20px rgba(0, 0, 0, 0.12), 0 0 1px var(--terminal-glow-muted);
+    --flyout-icon-glow: none;
+    --flyout-dot-glow: none;
+    --flyout-dot-glow-active: none;
 
     &::after {
       opacity: 0.02;
@@ -741,7 +751,7 @@
   }
 
   .sidenav-section__label {
-    color: #B45309;
+    color: var(--terminal-glow);
   }
 
   .nav-link.active {
@@ -755,69 +765,26 @@
   }
 
   .nav-child-indicator {
-    background: rgba(180, 83, 9, 0.15);
-    color: #B45309;
+    background: var(--terminal-glow-subtle);
+    color: var(--terminal-glow);
   }
 
-  .nav-link:hover .nav-child-indicator {
-    background: #B45309;
+  .nav-flyout-trigger:hover .nav-child-indicator {
+    background: var(--terminal-glow);
     box-shadow: none;
   }
 
-  // Flyout light mode styling
+  // Flyout light mode - use body bg for better contrast
   .nav-flyout {
-    background: var(--bs-body-bg, #fff);
-    border-color: var(--bs-border-color);
-    border-left-color: #B45309;
-    box-shadow:
-      4px 4px 20px rgba(0, 0, 0, 0.12),
-      0 0 1px rgba(180, 83, 9, 0.3);
-
-    &::before {
-      background-image:
-        linear-gradient(90deg, rgba(180, 83, 9, 0.03) 1px, transparent 1px),
-        linear-gradient(rgba(180, 83, 9, 0.03) 1px, transparent 1px);
-    }
-
-    &__header {
-      background: rgba(180, 83, 9, 0.06);
-      border-bottom-color: rgba(180, 83, 9, 0.15);
-    }
-
-    &__icon {
-      color: #B45309;
-      text-shadow: none;
-    }
+    background: var(--bs-body-bg) !important;
+    border-color: var(--bs-border-color) !important;
 
     &__link {
       color: var(--bs-body-color);
 
-      &:hover {
-        background: rgba(180, 83, 9, 0.08);
-
-        .nav-flyout__dot {
-          background: #B45309;
-          box-shadow: none;
-        }
+      &.active .nav-flyout__dot {
+        animation: none;
       }
-
-      &.active {
-        background: rgba(180, 83, 9, 0.1);
-
-        .nav-flyout__dot {
-          animation: none;
-          box-shadow: none;
-        }
-
-        &::before {
-          background: #B45309;
-          box-shadow: none;
-        }
-      }
-    }
-
-    &__dot {
-      background: rgba(180, 83, 9, 0.3);
     }
   }
 }

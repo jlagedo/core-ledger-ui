@@ -118,6 +118,12 @@
   --sidenav-divider: #{map.get($t, sidenav-divider)};
   --sidenav-border-color: #{map.get($t, border)};
 
+  // --- Terminal Glow ---
+  --terminal-glow: #{map.get($t, terminal-glow)};
+  --terminal-glow-muted: #{map.get($t, terminal-glow-muted)};
+  --terminal-glow-subtle: #{map.get($t, terminal-glow-subtle)};
+  --terminal-glow-bg: #{map.get($t, terminal-glow-bg)};
+
   // --- Alerts ---
   @each $type, $config in $alert-tokens {
     --alert-#{$type}-bg: #{map.get($config, #{$prefix}-bg)};

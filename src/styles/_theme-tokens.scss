@@ -110,7 +110,13 @@ $theme-tokens: (
     sidenav-hover: rgba($daylight-amber, 0.08),
     sidenav-active-bg: rgba($daylight-amber, 0.15),
     sidenav-active-border: $daylight-amber,
-    sidenav-divider: rgba($daylight-amber, 0.15)
+    sidenav-divider: rgba($daylight-amber, 0.15),
+
+    // --- Terminal Glow (Bloomberg accent) ---
+    terminal-glow: $daylight-amber,
+    terminal-glow-muted: rgba($daylight-amber, 0.3),
+    terminal-glow-subtle: rgba($daylight-amber, 0.15),
+    terminal-glow-bg: rgba($daylight-amber, 0.06)
   ),
 
   // ========================
@@ -214,6 +220,12 @@ $theme-tokens: (
     sidenav-hover: rgba($accent-amber, 0.12),
     sidenav-active-bg: rgba($accent-amber, 0.18),
     sidenav-active-border: $accent-amber,
-    sidenav-divider: $terminal-border
+    sidenav-divider: $terminal-border,
+
+    // --- Terminal Glow (Bloomberg accent) ---
+    terminal-glow: $accent-amber,
+    terminal-glow-muted: rgba($accent-amber, 0.4),
+    terminal-glow-subtle: rgba($accent-amber, 0.2),
+    terminal-glow-bg: rgba($accent-amber, 0.06)
   )
 );
