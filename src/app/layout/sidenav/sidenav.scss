@@ -144,13 +144,19 @@
 
 // ============================================================
 // HEADER SECTION (Logo & Toggle)
+// Aligned with page-header total height (breadcrumb + main row)
 // ============================================================
 
 .header-section {
-  padding: 0.75rem 1rem;
+  // Uses shared --header-height CSS variable for perfect alignment
+  // with the page-header component (breadcrumb + title rows)
+  padding: 1rem;
   border-bottom: 1px solid var(--sidenav-divider);
-  min-height: 56px;
+  height: var(--header-height, 67px);
+  box-sizing: border-box;
   position: relative;
+  display: flex;
+  align-items: center;
 
   // Logo styling
   .sidenav-logo {
@@ -281,6 +287,9 @@
   overflow-x: hidden;
   overflow-y: auto;
   min-height: 0; // Critical for flex item scrolling
+
+  // Reserve scrollbar space to prevent layout shift when content overflows
+  scrollbar-gutter: stable;
 
   // Custom scrollbar styling (Bloomberg terminal aesthetic)
   &::-webkit-scrollbar {

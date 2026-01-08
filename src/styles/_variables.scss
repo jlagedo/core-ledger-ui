@@ -172,6 +172,10 @@ $color-info-base:    $brand-blue-300 !default;
 // 4. COMPONENT TOKENS — Shadows & Transitions
 // ============================================================
 
+// --- Layout Dimensions ---
+// Shared header height ensures sidenav and page-header align perfectly
+$header-height: 67px !default;
+
 // --- Transitions ---
 $transition-fast:   0.2s ease-in-out !default;
 $transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1) !default;

@@ -27,6 +27,9 @@ body {
 [data-bs-theme="light"] {
   color-scheme: light;
 
+  // Layout dimensions (shared across components)
+  --header-height: #{$header-height};
+
   // Bloomberg Daylight — Warm professional gradient
   // Subtle warmth with amber accents echoing the dark terminal theme
   --theme-body-gradient:
