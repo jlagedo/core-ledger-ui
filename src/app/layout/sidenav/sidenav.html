@@ -1,64 +1,86 @@
 <div [attr.aria-label]="store.isSidenavCollapsed() ? 'Collapsed sidenav' : 'Expanded sidenav'"
      [style.width]="store.isSidenavCollapsed() ? '4rem' : '15rem'"
-     class="d-flex flex-column flex-shrink-0 p-1 transition-all border-end sidenav-wrapper vh-100">
+     [class.sidenav-wrapper--collapsed]="store.isSidenavCollapsed()"
+     class="d-flex flex-column flex-shrink-0 transition-all sidenav-wrapper vh-100">
 
-  <!-- Logo & Toggle Section -->
+  <!-- Left accent line -->
+  <span class="sidenav-accent-line" aria-hidden="true"></span>
+
+  <!-- Header Section (Logo & Toggle) -->
   <div class="d-flex align-items-center header-section"
        [class.justify-content-center]="store.isSidenavCollapsed()"
        [class.justify-content-between]="!store.isSidenavCollapsed()">
     @if (store.isSidenavCollapsed()) {
       <!-- Collapsed: Show hamburger menu icon only -->
-      <button (click)="toggleSidenav()" aria-expanded="false" aria-label="Expand sidenav"
-              class="btn p-0 border-0 bg-transparent">
-        <i class="bi bi-list fs-2"></i>
+      <button (click)="toggleSidenav()"
+              aria-expanded="false"
+              aria-label="Expand sidenav"
+              class="sidenav-toggle">
+        <i class="bi bi-list"></i>
       </button>
     } @else {
       <!-- Expanded: Show logo and close button -->
-      <a aria-label="Go to dashboard" class="d-flex align-items-center text-decoration-none"
+      <a aria-label="Go to dashboard"
+         class="sidenav-logo"
          routerLink="/dashboard">
-        <i class="bi bi-boxes me-2 fs-4 text-primary"></i>
-        <span class="fs-4 numeric font-monospace">Core</span>
+        <i class="bi bi-boxes sidenav-logo__icon"></i>
+        <span class="sidenav-logo__text">Core</span>
+        <span class="sidenav-status" aria-hidden="true"></span>
       </a>
 
-      <i (click)="toggleSidenav()" (keydown.enter)="toggleSidenav()"
-         aria-label="Collapse sidenav" class="bi bi-x-lg cursor-pointer"
-         role="button" tabindex="0"></i>
+      <button (click)="toggleSidenav()"
+              aria-label="Collapse sidenav"
+              class="sidenav-toggle">
+        <i class="bi bi-x-lg"></i>
+      </button>
     }
   </div>
-  <hr>
+
   <!-- Navigation Menu -->
-  <ul class="nav nav-pills flex-column mb-auto">
-    @for (item of menuItems(); track item.label) {
+  <ul class="nav nav-pills flex-column mb-auto sidenav-nav">
+    @for (item of menuItems(); track item.label; let i = $index) {
+      <!-- Section divider before Ledger -->
       @if (item.label === 'Ledger') {
         <li>
-          <hr class="my-2 border-secondary">
+          <div class="sidenav-section"
+               [class.sidenav-section--collapsed]="store.isSidenavCollapsed()">
+            <span class="sidenav-section__label">
+              <span>Ledger</span>
+            </span>
+          </div>
         </li>
       }
 
       @if (item.children) {
         <!-- Menu item with submenu -->
-        <li>
-          <a (click)="store.toggleMenuItem(item.label)" [attr.aria-controls]="item.label + 'Submenu'"
+        <li class="nav-item">
+          <a (click)="store.toggleMenuItem(item.label)"
+             [attr.aria-controls]="item.label + 'Submenu'"
              [attr.aria-expanded]="!store.isMenuItemCollapsed(item.label)"
              [class.justify-content-center]="store.isSidenavCollapsed()"
              [ngbTooltip]="store.isSidenavCollapsed() ? item.label : ''"
-             class="nav-link d-flex align-items-center" placement="end" role="button"
+             class="nav-link nav-link--parent d-flex align-items-center"
+             placement="end"
+             role="button"
              routerLinkActive="border border-light bg-transparent">
             <i [class.me-2]="!store.isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
             @if (!store.isSidenavCollapsed()) {
               <span class="flex-grow-1">{{ item.label }}</span>
               <i [class.bi-chevron-down]="!store.isMenuItemCollapsed(item.label)"
-                 [class.bi-chevron-right]="store.isMenuItemCollapsed(item.label)" class="bi"></i>
+                 [class.bi-chevron-right]="store.isMenuItemCollapsed(item.label)"
+                 class="bi"></i>
             }
           </a>
           <div [attr.id]="item.label + 'Submenu'"
                [ngbCollapse]="store.isSidenavCollapsed() || store.isMenuItemCollapsed(item.label)">
-            <ul [class.ms-3]="!store.isSidenavCollapsed()" class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
               @for (child of item.children; track child.label) {
-                <li>
+                <li class="nav-item">
                   <a [ngbTooltip]="store.isSidenavCollapsed() ? child.label : ''"
                      [routerLinkActiveOptions]="child.exactMatch ? { exact: true } : { exact: false }"
-                     [routerLink]="child.route" class="nav-link d-flex align-items-center" placement="end"
+                     [routerLink]="child.route"
+                     class="nav-link d-flex align-items-center"
+                     placement="end"
                      routerLinkActive="active">
                     @if (store.isSidenavCollapsed()) {
                       <span class="submenu-indicator"></span>
@@ -76,8 +98,11 @@
         <li class="nav-item">
           <a [class.justify-content-center]="store.isSidenavCollapsed()"
              [ngbTooltip]="store.isSidenavCollapsed() ? item.label : ''"
-             [routerLinkActiveOptions]="item.exactMatch ? { exact: true } : { exact: false }" [routerLink]="item.route"
-             class="nav-link d-flex align-items-center" placement="end" routerLinkActive="active">
+             [routerLinkActiveOptions]="item.exactMatch ? { exact: true } : { exact: false }"
+             [routerLink]="item.route"
+             class="nav-link d-flex align-items-center"
+             placement="end"
+             routerLinkActive="active">
             <i [class.me-2]="!store.isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
             @if (!store.isSidenavCollapsed()) {
               <span>{{ item.label }}</span>
@@ -88,7 +113,8 @@
     }
   </ul>
 
-  <!-- User Profile with Theme Toggle -->
-  <hr class="border-secondary mt-auto">
-  <app-user-profile [isCollapsed]="store.isSidenavCollapsed()"/>
+  <!-- User Profile Footer -->
+  <div class="sidenav-footer">
+    <app-user-profile [isCollapsed]="store.isSidenavCollapsed()"/>
+  </div>
 </div>

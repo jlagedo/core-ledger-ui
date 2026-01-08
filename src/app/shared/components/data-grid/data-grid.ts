@@ -10,6 +10,9 @@ import {
   viewChild,
   TemplateRef,
   TrackByFunction,
+  afterNextRender,
+  Injector,
+  inject,
 } from '@angular/core';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
@@ -61,6 +64,8 @@ export interface PaginatedResponse<T> {
   imports: [CommonModule, FormsModule, ScrollingModule, NgbPagination, SortableDirective],
 })
 export class DataGrid<T> {
+  private readonly injector = inject(Injector);
+
   // Required inputs
   /** Store instance from createPaginatedSearchStore */
   store = input.required<InstanceType<ReturnType<typeof createPaginatedSearchStore>>>();
@@ -128,6 +133,9 @@ export class DataGrid<T> {
   readonly virtualScrollViewport = viewChild<CdkVirtualScrollViewport>('virtualScrollViewport');
 
   // Internal signals for state management
+  /** Tracks if initial data has been loaded - used for aggressive preloading */
+  private readonly _initialDataLoaded = signal<boolean>(false);
+
   /** Active row ID for highlighting */
   private readonly _activeRowId = signal<number | string | null>(null);
   readonly activeRowId = this._activeRowId.asReadonly();
@@ -187,6 +195,77 @@ export class DataGrid<T> {
     effect(() => {
       const selected = this.selectedItemsArray();
       this.selectionChange.emit(selected);
+    });
+
+    // Effect: Reset initial data flag when data is cleared (e.g., on search/refresh)
+    effect(() => {
+      const items = this.currentPageItems();
+      if (items.length === 0 && this._initialDataLoaded()) {
+        this._initialDataLoaded.set(false);
+      }
+    });
+
+    // Effect: Preload next batch after initial data loads
+    // Fixes race condition where scrolledIndexChange fires before data arrives
+    // Uses a flag to prevent queuing multiple afterNextRender callbacks
+    let pendingPreloadCheck = false;
+    effect(() => {
+      const items = this.currentPageItems();
+      const hasMore = this.hasMoreItems();
+      const isLoadingMore = this.loadingMore();
+      const isVirtualScroll = this.virtualScroll();
+      const initialDataLoaded = this._initialDataLoaded();
+
+      // Only trigger for virtual scroll mode when we have data and more items available
+      if (!isVirtualScroll || isLoadingMore || !hasMore || items.length === 0) {
+        return;
+      }
+
+      // Prevent queuing multiple callbacks
+      if (pendingPreloadCheck) {
+        return;
+      }
+      pendingPreloadCheck = true;
+
+      // Capture whether this is the first data load
+      const isFirstLoad = !initialDataLoaded;
+
+      // Schedule check after next render to ensure viewport exists
+      afterNextRender(
+        () => {
+          pendingPreloadCheck = false;
+
+          // Re-read values to avoid stale closure data
+          const viewport = this.virtualScrollViewport();
+          const currentItems = this.currentPageItems();
+          const stillHasMore = this.hasMoreItems();
+          const stillLoadingMore = this.loadingMore();
+
+          if (!viewport || !stillHasMore || stillLoadingMore || currentItems.length === 0) {
+            return;
+          }
+
+          // Mark initial data as loaded
+          if (!this._initialDataLoaded()) {
+            this._initialDataLoaded.set(true);
+          }
+
+          const threshold = this.loadMoreThreshold();
+          const scrollOffset = viewport.measureScrollOffset('top');
+          const itemSize = this.rowHeight();
+          const currentIndex = Math.floor(scrollOffset / itemSize);
+
+          // On initial data load, always preload if there's more data
+          // This ensures the next batch is ready before user starts scrolling
+          const shouldPreload =
+            isFirstLoad || currentIndex >= currentItems.length - threshold;
+
+          if (shouldPreload) {
+            this.loadMore.emit();
+          }
+        },
+        { injector: this.injector }
+      );
     });
   }
 
