@@ -1,52 +1,64 @@
-// Transaction list styles - using Bootstrap utility classes
+// Transaction list styles - Bloomberg Terminal inspired
 
-// Instrument type badge styles - scoped to transaction list
-// Using hardcoded colors to maintain consistency across themes
+// Instrument type badge styles - theme-aware with Bloomberg Terminal colors
+// Uses CSS variables for proper dark/light mode support
 .instrument-badge {
+  display: inline-block;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: 2px;
+
+  // EQUITY - Bloomberg Blue
   &.instrument-equity {
-    color: #fff;
-    background-color: #0d6efd; // Blue - standard for stocks
+    color: var(--bs-emphasis-color);
+    background-color: rgba(var(--bs-info-rgb), 0.2);
+    border: 1px solid rgba(var(--bs-info-rgb), 0.4);
   }
 
+  // ETF - Bloomberg Teal (positive/growth)
   &.instrument-etf {
-    color: #fff;
-    background-color: #198754; // Green - diversified/growth
+    color: var(--bs-emphasis-color);
+    background-color: rgba(var(--bs-success-rgb), 0.2);
+    border: 1px solid rgba(var(--bs-success-rgb), 0.4);
   }
 
+  // FIXED INCOME - Bloomberg Amber (income/conservative)
   &.instrument-fixed-income {
-    color: #000;
-    background-color: #ffc107; // Amber - conservative/income
+    color: var(--bs-emphasis-color);
+    background-color: rgba(var(--bs-warning-rgb), 0.2);
+    border: 1px solid rgba(var(--bs-warning-rgb), 0.4);
   }
 
-  &.instrument-derivative-future {
-    color: #fff;
-    background-color: #6c757d; // Gray - complex instruments
-  }
-
-  &.instrument-derivative-option {
-    color: #fff;
-    background-color: #212529; // Dark - complex instruments
-  }
-
+  // DERIVATIVES - Muted styling for complex instruments
+  &.instrument-derivative-future,
+  &.instrument-derivative-option,
   &.instrument-derivative-swap {
-    color: #000;
-    background-color: #0dcaf0; // Cyan - complex instruments
+    color: var(--bs-emphasis-color);
+    background-color: rgba(var(--bs-secondary-rgb), 0.15);
+    border: 1px solid rgba(var(--bs-secondary-rgb), 0.3);
   }
 
+  // FX - Similar to equity (blue)
   &.instrument-fx {
-    color: #fff;
-    background-color: #0d6efd; // Blue - currency markets
+    color: var(--bs-emphasis-color);
+    background-color: rgba(var(--bs-primary-rgb), 0.2);
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.4);
   }
 
+  // MONEY MARKET - Subtle/neutral (cash-like)
   &.instrument-money-market {
-    color: #000;
-    background-color: #f8f9fa; // Light gray - cash-like
-    border: 1px solid #dee2e6;
+    color: var(--bs-body-color);
+    background-color: var(--bs-tertiary-bg);
+    border: 1px solid var(--bs-border-color);
   }
 
-  // Default fallback for unknown types
+  // Default fallback
   &.instrument-default {
-    color: #fff;
-    background-color: #6c757d; // Gray
+    color: var(--bs-body-color);
+    background-color: var(--bs-secondary-bg);
+    border: 1px solid var(--bs-border-color);
   }
 }

@@ -88,12 +88,15 @@ body {
   --surface-seagrass: #{$accent-teal};
   --surface-starfish: #{$accent-amber};
 
-  // Bootstrap dark mode overrides - Bloomberg palette
+  // Bootstrap dark mode overrides - Terminal Hierarchy System
+  // Uses distinct colors instead of opacity variations for better contrast
   --bs-body-bg-rgb: 0, 0, 0;
   --bs-body-color-rgb: 255, 160, 40;
-  --bs-secondary-color: #{rgba($accent-amber, 0.7)};
-  --bs-secondary-bg: #1a1a1a;
-  --bs-tertiary-color: #{rgba($accent-amber, 0.5)};
+  --bs-emphasis-color: #{$terminal-text-emphasis};
+  --bs-emphasis-color-rgb: 255, 255, 255;
+  --bs-secondary-color: #{$terminal-text-secondary};
+  --bs-secondary-bg: #1e1e1e;
+  --bs-tertiary-color: #{$terminal-text-muted};
   --bs-tertiary-bg: #2a2a2a;
 
   // Theme colors - Bloomberg semantic colors
@@ -102,12 +105,18 @@ body {
   --bs-warning: #{$accent-yellow};
   --bs-danger: #{$accent-red};
   --bs-info: #{$accent-blue};
-  --bs-secondary: #{$neutral-500};
+  --bs-secondary: #{$terminal-text-secondary};
 
   // Bloomberg accent colors exposed
   --accent-teal: #{$accent-teal};
   --accent-amber: #{$accent-amber};
   --accent-blue: #{$accent-blue};
+
+  // Terminal text hierarchy exposed as CSS variables
+  --terminal-text-emphasis: #{$terminal-text-emphasis};
+  --terminal-text-primary: #{$terminal-text-primary};
+  --terminal-text-secondary: #{$terminal-text-secondary};
+  --terminal-text-muted: #{$terminal-text-muted};
 
   // Dark mode specific effects - Bloomberg amber glow
   --nav-link-active-text-shadow: 0 0 8px #{rgba($accent-amber, 0.4)};

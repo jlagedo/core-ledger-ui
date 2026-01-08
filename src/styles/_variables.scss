@@ -108,6 +108,15 @@ $accent-red:       #ff433d !default;   // Bloomberg danger
 $accent-red-light: #ff6b6b !default;   // Lighter red variant
 $accent-blue:      #0068ff !default;   // Bloomberg info/links
 
+// --- Bloomberg Terminal Text Hierarchy (Dark Mode) ---
+// Distinct colors instead of opacity variations for better contrast
+$terminal-text-emphasis: #FFFFFF !default;   // Headers, emphasis (pure white)
+$terminal-text-primary:  #FFA028 !default;   // Primary body text (amber)
+$terminal-text-secondary: #C4A35A !default;  // Secondary text (muted gold)
+$terminal-text-muted:    #8B7355 !default;   // Tertiary/muted (warm gray)
+$terminal-text-placeholder: #6B5B45 !default; // Placeholders (subtle warm)
+$terminal-border:        rgba(#FFA028, 0.25) !default; // Visible grid lines
+
 // --- Warm Neutrals (Light mode backgrounds) ---
 $warm-cream:     #FDF6E3 !default;   // Sand/warm background
 $warm-sky:       #E8F4F8 !default;   // Cool background

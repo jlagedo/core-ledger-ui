@@ -189,18 +189,18 @@ export class TransactionList implements AfterViewInit {
 
   // Instrument type to CSS class mapping (values match database)
   readonly instrumentTypeStyles: Record<string, string> = {
-    'EQUITY': '  instrument- instrument-equity',
-    'ETF': '  instrument- instrument-etf',
-    'FIXED_INCOME': '  instrument- instrument-fixed-income',
-    'DERIVATIVE_FUTURE': '  instrument- instrument-derivative-future',
-    'DERIVATIVE_OPTION': '  instrument- instrument-derivative-option',
-    'DERIVATIVE_SWAP': '  instrument- instrument-derivative-swap',
-    'FX': '  instrument- instrument-fx',
-    'MONEY_MARKET': '  instrument- instrument-money-market',
+    'EQUITY': 'instrument-badge instrument-equity',
+    'ETF': 'instrument-badge instrument-etf',
+    'FIXED_INCOME': 'instrument-badge instrument-fixed-income',
+    'DERIVATIVE_FUTURE': 'instrument-badge instrument-derivative-future',
+    'DERIVATIVE_OPTION': 'instrument-badge instrument-derivative-option',
+    'DERIVATIVE_SWAP': 'instrument-badge instrument-derivative-swap',
+    'FX': 'instrument-badge instrument-fx',
+    'MONEY_MARKET': 'instrument-badge instrument-money-market',
   };
 
   getInstrumentBadgeClass(type: string): string {
-    return this.instrumentTypeStyles[type] ?? '  instrument- instrument-default';
+    return this.instrumentTypeStyles[type] ?? 'instrument-badge instrument-default';
   }
 
   constructor() {

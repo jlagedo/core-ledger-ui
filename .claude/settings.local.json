@@ -39,7 +39,10 @@
       "WebFetch(domain:github.com)",
       "Bash(grep:*)",
       "Bash(timeout 60 ng build:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(xargs ls:*)",
+      "Bash(git -C /Users/jlagedo/Developer/angular/core-ledger-ui status --porcelain)",
+      "Bash(chmod:*)"
     ]
   },
   "enabledMcpjsonServers": [

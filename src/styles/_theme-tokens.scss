@@ -115,21 +115,22 @@ $theme-tokens: (
 
   // ========================
   // DARK MODE - Bloomberg Terminal Style
+  // Uses distinct colors for text hierarchy instead of opacity variations
   // ========================
   dark: (
     // --- Core ---
     body-bg: $neutral-black,
-    body-color: $accent-amber,
-    emphasis: $neutral-white,
+    body-color: $terminal-text-primary,
+    emphasis: $terminal-text-emphasis,
 
     // --- Links ---
     link: $accent-blue,
     link-hover: color.scale($accent-blue, $lightness: 20%),
     link-visited: color.scale($accent-blue, $lightness: -15%),
 
-    // --- Borders ---
-    border: rgba($accent-amber, 0.2),
-    border-translucent: rgba(255, 255, 255, 0.1),
+    // --- Borders (increased visibility) ---
+    border: $terminal-border,
+    border-translucent: rgba(255, 255, 255, 0.12),
 
     // --- Shadows ---
     shadow-sm: $shadow-dark-sm,
@@ -143,12 +144,12 @@ $theme-tokens: (
 
     // --- Disabled States ---
     disabled-bg: rgba($neutral-600, 0.3),
-    disabled-color: $neutral-400,
-    disabled-border: rgba($neutral-400, 0.2),
-    disabled-opacity: 0.5,
+    disabled-color: $terminal-text-muted,
+    disabled-border: rgba($terminal-text-muted, 0.3),
+    disabled-opacity: 0.6,
 
     // --- Form Validation ---
-    input-error-bg: rgba($accent-red, 0.1),
+    input-error-bg: rgba($accent-red, 0.12),
     valid: $accent-teal,
     valid-border: $accent-teal,
     invalid: $accent-red,
@@ -156,63 +157,63 @@ $theme-tokens: (
 
     // --- Cards ---
     card-bg: rgba(26, 26, 26, 0.9),
-    card-border: rgba($accent-amber, 0.15),
-    card-header: rgba(42, 42, 42, 0.8),
+    card-border: $terminal-border,
+    card-header: rgba(42, 42, 42, 0.9),
 
     // --- Glass Effect ---
     glass-bg: rgba(26, 26, 26, 0.85),
-    glass-border: rgba($accent-amber, 0.1),
+    glass-border: $terminal-border,
     glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.4),
 
     // --- Inputs ---
     input-bg: rgba(26, 26, 26, 0.8),
-    input-border: rgba($accent-amber, 0.25),
+    input-border: $terminal-border,
     input-focus: $accent-blue,
-    input-focus-shadow: 0 0 0 0.25rem rgba($accent-blue, 0.2),
-    input-placeholder: rgba($accent-amber, 0.5),
+    input-focus-shadow: 0 0 0 0.25rem rgba($accent-blue, 0.25),
+    input-placeholder: $terminal-text-placeholder,
 
-    // --- Tables ---
+    // --- Tables (Bloomberg terminal grid style) ---
     table-bg: rgba(10, 10, 10, 0.95),
-    table-header-bg: rgba(26, 26, 26, 0.9),
-    table-header-color: $accent-amber,
+    table-header-bg: rgba(30, 30, 30, 0.95),
+    table-header-color: $terminal-text-emphasis,
     table-striped: rgba(26, 26, 26, 0.5),
-    table-hover: rgba($accent-amber, 0.1),
+    table-hover: rgba($accent-amber, 0.12),
     table-active-bg: rgba($accent-amber, 0.2),
-    table-active-color: $neutral-white,
+    table-active-color: $terminal-text-emphasis,
     table-active-border: $accent-amber,
-    table-border: rgba($accent-amber, 0.1),
-    table-cell: $accent-amber,
-    table-action: rgba($accent-amber, 0.7),
+    table-border: $terminal-border,
+    table-cell: $terminal-text-primary,
+    table-action: $terminal-text-secondary,
     table-action-hover: $accent-blue,
 
     // --- Buttons ---
     btn-primary-hover: color.scale($accent-blue, $lightness: 15%),
-    btn-secondary-bg: $neutral-600,
-    btn-secondary-color: $neutral-white,
-    btn-secondary-hover: $neutral-500,
+    btn-secondary-bg: rgba(60, 60, 60, 0.9),
+    btn-secondary-color: $terminal-text-emphasis,
+    btn-secondary-hover: rgba(80, 80, 80, 0.9),
 
     // --- Navigation ---
     nav-active: $accent-amber,
     nav-underline: linear-gradient(90deg, $accent-amber, $accent-yellow),
 
     // --- Scrollbar ---
-    scrollbar-track: rgba(26, 26, 26, 0.5),
-    scrollbar-thumb: linear-gradient(180deg, $accent-amber, color.scale($accent-amber, $lightness: -20%)),
+    scrollbar-track: rgba(26, 26, 26, 0.8),
+    scrollbar-thumb: $terminal-text-muted,
 
     // --- Selection ---
-    selection: rgba($accent-amber, 0.3),
+    selection: rgba($accent-amber, 0.35),
 
     // --- Dropdown ---
     dropdown-bg: rgba(26, 26, 26, 0.98),
-    dropdown-border: rgba($accent-amber, 0.15),
+    dropdown-border: $terminal-border,
 
     // --- Sidenav ---
     sidenav-bg: $neutral-black,
-    sidenav-color: $accent-amber,
+    sidenav-color: $terminal-text-primary,
     sidenav-gradient: radial-gradient(circle 500px at 50% 300px, rgba($accent-amber, 0.08), transparent),
-    sidenav-hover: rgba($accent-amber, 0.1),
-    sidenav-active-bg: rgba($accent-amber, 0.15),
+    sidenav-hover: rgba($accent-amber, 0.12),
+    sidenav-active-bg: rgba($accent-amber, 0.18),
     sidenav-active-border: $accent-amber,
-    sidenav-divider: rgba($accent-amber, 0.2)
+    sidenav-divider: $terminal-border
   )
 );
