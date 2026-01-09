@@ -1,4 +1,8 @@
 <app-page-header title="Capture Transaction">
+  <button type="button" class="btn btn-secondary" (click)="onRefresh()">
+    <i class="bi bi-arrow-clockwise"></i>
+    <span>Refresh</span>
+  </button>
   <button type="button" class="btn btn-secondary">
     <i class="bi bi-funnel"></i>
     <span>Filters</span>
@@ -15,67 +19,156 @@
 
 <main class="container-data">
   <div class="card-data">
-    <div class="card-body">
-
-      <app-data-grid
-        [store]="store"
-        [data]="transactionsResponse()"
-        [columns]="columns"
-        [searchable]="true"
-        [searchPlaceholder]="'Search transactions...'"
-        [emptyMessage]="'No transactions found'"
-        [rowActionsTemplate]="actionsTemplate"
-        [virtualScroll]="true"
-        [rowHeight]="35"
-        [viewportHeight]="'550px'"
-        [loadingMore]="loadingMore()"
-        [loadMoreThreshold]="15"
-        (refresh)="loadTransactions()"
-        (loadMore)="loadMoreTransactions()">
-      </app-data-grid>
-
-      <!-- Class column template -->
-      <ng-template #classTemplate let-transaction let-value="value">
-        <span [class]="getInstrumentBadgeClass(value)">{{ value }}</span>
-      </ng-template>
-
-      <!-- Actions template for each row -->
-      <ng-template #actionsTemplate let-transaction>
-        <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Transaction actions">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            [routerLink]="['/transactions/capture', transaction.id, 'edit']"
-            [attr.aria-label]="'Edit transaction ' + transaction.id">
-            <i class="bi bi-pencil" aria-hidden="true"></i>
-          </button>
-          <div class="btn-group btn-group-sm" container="body" ngbDropdown role="group">
-            <button
-              type="button"
-              class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
-              ngbDropdownToggle
-              [attr.aria-label]="'More actions for transaction ' + transaction.id">
-              <span class="visually-hidden">Toggle Dropdown</span>
+    <div class="card-body p-0">
+      <!-- Search Controls -->
+      <div class="d-flex align-items-center p-3 border-bottom gap-3">
+        <div class="input-group" style="max-width: 300px;">
+          <span class="input-group-text">
+            <i class="bi bi-search"></i>
+          </span>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search transactions..."
+            [(ngModel)]="searchTerm"
+            (keydown.enter)="onSearch()"
+            aria-label="Search transactions"
+          />
+          @if (searchTerm()) {
+            <button class="btn btn-outline-secondary" type="button" (click)="onClearSearch()">
+              <i class="bi bi-x"></i>
             </button>
-            <div ngbDropdownMenu>
-              <button type="button" [routerLink]="['/transactions/capture', transaction.id]" ngbDropdownItem>
-                <i class="bi bi-eye me-2"></i>View Details
-              </button>
-              <hr class="dropdown-divider">
-              <button type="button" ngbDropdownItem>
-                <i class="bi bi-check-circle me-2"></i>Confirm Transaction
-              </button>
-              <button type="button" ngbDropdownItem>
-                <i class="bi bi-clock-history me-2"></i>Audit Log
-              </button>
-              <button type="button" ngbDropdownItem class="text-danger">
-                <i class="bi bi-x-circle me-2"></i>Cancel Transaction
-              </button>
-            </div>
-          </div>
+          }
         </div>
-      </ng-template>
+        <button class="btn btn-primary" (click)="onSearch()">Search</button>
+      </div>
 
+      <!-- AG Grid with Bloomberg Terminal Theme -->
+      <ag-grid-angular
+        style="width: 100%; height: 600px;"
+        [theme]="gridTheme()"
+        [columnDefs]="columnDefs"
+        [defaultColDef]="defaultColDef"
+        [rowModelType]="'infinite'"
+        [rowSelection]="'multiple'"
+        [suppressRowClickSelection]="true"
+        [cacheBlockSize]="50"
+        [maxBlocksInCache]="10"
+        [pagination]="false"
+        [animateRows]="false"
+        (gridReady)="onGridReady($event)"
+        (sortChanged)="onSortChanged($event)"
+        (selectionChanged)="onSelectionChanged($event)"
+        (cellClicked)="onCellClicked($event)"
+      />
+
+      <!-- Bloomberg Terminal Status Bar -->
+      <div class="grid-status-bar">
+        <div class="status-bar__section status-bar__records">
+          <span class="status-bar__label">RECORDS</span>
+          <span class="status-bar__value status-bar__value--primary">
+            {{ paginationStats().totalCount | number }}
+          </span>
+        </div>
+
+        <div class="status-bar__divider"></div>
+
+        <div class="status-bar__section status-bar__loaded">
+          <span class="status-bar__label">LOADED</span>
+          <span class="status-bar__value">
+            {{ paginationStats().loadedCount | number }}
+          </span>
+          <span class="status-bar__progress">
+            @if (paginationStats().totalCount > 0) {
+              <span class="status-bar__percentage">
+                {{ (paginationStats().loadedCount / paginationStats().totalCount * 100) | number:'1.0-0' }}%
+              </span>
+            }
+          </span>
+        </div>
+
+        <div class="status-bar__divider"></div>
+
+        <div class="status-bar__section status-bar__range">
+          <span class="status-bar__label">VIEWING</span>
+          <span class="status-bar__value">
+            @if (paginationStats().totalCount > 0) {
+              {{ paginationStats().currentRangeStart | number }}–{{ paginationStats().currentRangeEnd | number }}
+            } @else {
+              —
+            }
+          </span>
+        </div>
+
+        <div class="status-bar__spacer"></div>
+
+        <div class="status-bar__section status-bar__status">
+          @if (isLoading()) {
+            <span class="status-bar__indicator status-bar__indicator--loading"></span>
+            <span class="status-bar__label">FETCHING</span>
+          } @else {
+            <span class="status-bar__indicator status-bar__indicator--ready"></span>
+            <span class="status-bar__label">READY</span>
+          }
+        </div>
+      </div>
     </div>
   </div>
 </main>
+
+<!-- Floating Bulk Action Bar -->
+@if (hasSelection()) {
+  <div class="bulk-action-bar" role="toolbar" aria-label="Bulk actions">
+    <div class="bulk-action-bar__selection">
+      <span class="bulk-action-bar__indicator"></span>
+      <span class="bulk-action-bar__count">{{ selectionCount() }}</span>
+      <span class="bulk-action-bar__label">SELECTED</span>
+    </div>
+
+    <div class="bulk-action-bar__divider"></div>
+
+    <div class="bulk-action-bar__actions">
+      <button
+        type="button"
+        class="bulk-action-btn bulk-action-btn--edit"
+        (click)="onBulkEdit()"
+        title="Edit selected transactions"
+      >
+        <i class="bi bi-pencil"></i>
+        <span>EDIT</span>
+      </button>
+
+      <button
+        type="button"
+        class="bulk-action-btn bulk-action-btn--cancel"
+        (click)="onBulkCancel()"
+        title="Cancel selected transactions"
+      >
+        <i class="bi bi-x-circle"></i>
+        <span>CANCEL</span>
+      </button>
+
+      <button
+        type="button"
+        class="bulk-action-btn bulk-action-btn--export"
+        (click)="onBulkExport()"
+        title="Export selected transactions"
+      >
+        <i class="bi bi-download"></i>
+        <span>EXPORT</span>
+      </button>
+    </div>
+
+    <div class="bulk-action-bar__spacer"></div>
+
+    <button
+      type="button"
+      class="bulk-action-bar__close"
+      (click)="onClearSelection()"
+      title="Clear selection"
+      aria-label="Clear selection"
+    >
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+}
