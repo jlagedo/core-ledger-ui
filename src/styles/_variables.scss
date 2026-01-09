@@ -121,12 +121,12 @@ $terminal-border:        rgba(#FFA028, 0.25) !default; // Visible grid lines
 $warm-cream:     #FDF6E3 !default;   // Sand/warm background
 $warm-sky:       #E8F4F8 !default;   // Cool background
 
-// --- Bloomberg Daylight Palette (Light mode) ---
-$daylight-white:    #FFFDF9 !default;   // Warm white background
-$daylight-cream:    #FAF8F3 !default;   // Card/surface background
-$daylight-sand:     #F5F0E8 !default;   // Header/stripe background
-$daylight-border:   #E8E0D4 !default;   // Warm border
-$daylight-muted:    #9C8B7A !default;   // Muted text (warm gray)
+// --- Bloomberg Daylight Palette (Light mode) - High Contrast ---
+$daylight-white:    #F5F0E8 !default;   // Warm body bg (darker base)
+$daylight-cream:    #FFFFFF !default;   // Pure white cards (elevation)
+$daylight-sand:     #E8E0D4 !default;   // Headers/stripes (visible)
+$daylight-border:   #CFC3B1 !default;   // Strong borders (was #E8E0D4)
+$daylight-muted:    #7A6B5A !default;   // Muted text (better contrast)
 $daylight-text:     #2C1810 !default;   // Primary text (warm charcoal)
 $daylight-navy:     #1A1A2E !default;   // Emphasis text
 $daylight-amber:    #B45309 !default;   // Amber accent (darker for contrast)

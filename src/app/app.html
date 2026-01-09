@@ -1,9 +1,19 @@
+<!-- Skip to main content link for keyboard users -->
+<a href="#main-content"
+   class="skip-link visually-hidden-focusable"
+   (click)="skipToMain($event)"
+   (keydown.enter)="skipToMain($event)">
+  Skip to main content
+</a>
+
 <div class="d-flex flex-nowrap">
   @if (isLoggedIn()) {
   <app-sidenav (sidenavToggle)="onSidenavToggle($event)" />
   }
 
-  <main class="flex-fill p-0 overflow-y-auto vh-100">
+  <main id="main-content"
+        class="flex-fill p-0 overflow-y-auto vh-100"
+        tabindex="-1">
     <router-outlet />
   </main>
 </div>

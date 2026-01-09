@@ -46,7 +46,11 @@
       "WebFetch(domain:medium.com)",
       "WebFetch(domain:fireship.io)",
       "Bash(npx vitest:*)",
-      "Bash(gh --version:*)"
+      "Bash(gh --version:*)",
+      "mcp__ag-mcp__detect_version",
+      "mcp__ag-mcp__search_docs",
+      "mcp__ag-mcp__list_versions",
+      "mcp__ag-mcp__set_versions"
     ]
   },
   "enabledMcpjsonServers": [

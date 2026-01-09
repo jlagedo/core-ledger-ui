@@ -71,8 +71,11 @@
   }
 
   <!-- Navigation Menu - SCROLLABLE -->
-  <nav class="sidenav-scroll-container flex-grow-1" aria-label="Main navigation">
-    <ul class="nav nav-pills flex-column sidenav-nav">
+  <nav #navElement
+       class="sidenav-scroll-container flex-grow-1"
+       aria-label="Main navigation"
+       role="navigation">
+    <ul class="nav nav-pills flex-column sidenav-nav" role="menubar" aria-label="Main menu">
     @for (item of filteredMenuItems(); track item.label; let i = $index) {
       <!-- Section divider before Ledger -->
       @if (item.label === 'Ledger') {
@@ -88,15 +91,22 @@
 
       @if (item.children) {
         <!-- Menu item with submenu -->
-        <li class="nav-item nav-item--parent">
+        <li class="nav-item nav-item--parent" role="none">
           @if (store.isSidenavCollapsed()) {
             <!-- Collapsed state: Trigger for flyout -->
             <a class="nav-link nav-link--parent nav-flyout-trigger d-flex align-items-center justify-content-center"
                [class.parent-active]="isParentActive(item)"
-               role="button"
+               role="menuitem"
+               tabindex="0"
+               [attr.aria-label]="item.label + ' menu, ' + item.children.length + ' items'"
+               aria-haspopup="true"
+               [attr.aria-expanded]="activeFlyoutItem()?.label === item.label"
                (mouseenter)="showFlyout($event, item)"
-               (mouseleave)="hideFlyout()">
-              <i class="bi {{ item.icon }}"></i>
+               (mouseleave)="hideFlyout()"
+               (focus)="onMenuItemFocus(i)"
+               (keydown.enter)="showFlyoutFromKeyboard(item, $event)"
+               (keydown.space)="showFlyoutFromKeyboard(item, $event)">
+              <i class="bi {{ item.icon }}" aria-hidden="true"></i>
               <!-- Child count indicator -->
               <span class="nav-child-indicator" aria-hidden="true">{{ item.children.length }}</span>
             </a>
@@ -107,21 +117,31 @@
                [attr.aria-expanded]="shouldShowExpanded(item.label)"
                [class.parent-active]="isParentActive(item)"
                class="nav-link nav-link--parent d-flex align-items-center"
-               role="button">
-              <i class="bi {{ item.icon }} me-2"></i>
+               role="menuitem"
+               tabindex="0"
+               aria-haspopup="true"
+               (focus)="onMenuItemFocus(i)"
+               (keydown.enter)="store.toggleMenuItem(item.label)"
+               (keydown.space)="store.toggleMenuItem(item.label); $event.preventDefault()">
+              <i class="bi {{ item.icon }} me-2" aria-hidden="true"></i>
               <span class="flex-grow-1">{{ item.label }}</span>
               <i [class.bi-chevron-down]="shouldShowExpanded(item.label)"
                  [class.bi-chevron-right]="!shouldShowExpanded(item.label)"
-                 class="bi"></i>
+                 class="bi"
+                 aria-hidden="true"></i>
             </a>
             <div [attr.id]="item.label + 'Submenu'"
-                 [ngbCollapse]="!shouldShowExpanded(item.label)">
-              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                @for (child of item.children; track child.label) {
-                  <li class="nav-item">
+                 [ngbCollapse]="!shouldShowExpanded(item.label)"
+                 role="menu"
+                 [attr.aria-label]="item.label + ' submenu'">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small" role="none">
+                @for (child of item.children; track child.label; let j = $index) {
+                  <li class="nav-item" role="none">
                     <a [routerLinkActiveOptions]="child.exactMatch ? { exact: true } : { exact: false }"
                        [routerLink]="child.route"
                        class="nav-link d-flex align-items-center"
+                       role="menuitem"
+                       tabindex="0"
                        routerLinkActive="active">
                       <span>{{ child.label }}</span>
                     </a>
@@ -133,15 +153,18 @@
         </li>
       } @else {
         <!-- Simple menu item without submenu -->
-        <li class="nav-item">
+        <li class="nav-item" role="none">
           <a [class.justify-content-center]="store.isSidenavCollapsed()"
              [ngbTooltip]="store.isSidenavCollapsed() ? item.label : ''"
              [routerLinkActiveOptions]="item.exactMatch ? { exact: true } : { exact: false }"
              [routerLink]="item.route"
              class="nav-link d-flex align-items-center"
+             role="menuitem"
+             tabindex="0"
              placement="end"
-             routerLinkActive="active">
-            <i [class.me-2]="!store.isSidenavCollapsed()" class="bi {{ item.icon }}"></i>
+             routerLinkActive="active"
+             (focus)="onMenuItemFocus(i)">
+            <i [class.me-2]="!store.isSidenavCollapsed()" class="bi {{ item.icon }}" aria-hidden="true"></i>
             @if (!store.isSidenavCollapsed()) {
               <span>{{ item.label }}</span>
             }
@@ -168,21 +191,28 @@
   @if (activeFlyoutItem(); as item) {
     <div class="nav-flyout"
          [style.top.px]="flyoutTop()"
+         role="menu"
+         [attr.aria-label]="item.label + ' submenu'"
          (mouseenter)="keepFlyoutVisible()"
-         (mouseleave)="hideFlyout()">
+         (mouseleave)="hideFlyout()"
+         (keydown.escape)="hideFlyout()">
       <div class="nav-flyout__header">
-        <i class="bi {{ item.icon }} nav-flyout__icon"></i>
+        <i class="bi {{ item.icon }} nav-flyout__icon" aria-hidden="true"></i>
         <span class="nav-flyout__title">{{ item.label }}</span>
       </div>
-      <ul class="nav-flyout__list">
-        @for (child of item.children; track child.label) {
-          <li>
+      <ul class="nav-flyout__list" role="none">
+        @for (child of item.children; track child.label; let k = $index) {
+          <li role="none">
             <a [routerLinkActiveOptions]="child.exactMatch ? { exact: true } : { exact: false }"
                [routerLink]="child.route"
                class="nav-flyout__link"
+               role="menuitem"
+               tabindex="0"
                routerLinkActive="active"
-               (click)="hideFlyout()">
-              <span class="nav-flyout__dot"></span>
+               (click)="hideFlyout()"
+               (keydown.enter)="hideFlyout()"
+               (keydown.escape)="hideFlyout()">
+              <span class="nav-flyout__dot" aria-hidden="true"></span>
               <span>{{ child.label }}</span>
             </a>
           </li>

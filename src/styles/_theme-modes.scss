@@ -30,17 +30,14 @@ body {
   // Layout dimensions (shared across components)
   --header-height: #{$header-height};
 
-  // Bloomberg Daylight — Warm professional gradient
-  // Subtle warmth with amber accents echoing the dark terminal theme
+  // Bloomberg Daylight — Warm professional gradient (high contrast)
+  // Warm cream base lets white cards float with visible elevation
   --theme-body-gradient:
-    radial-gradient(ellipse 100% 50% at 50% -20%, #{rgba($daylight-gold, 0.08)}, transparent 60%),
-    radial-gradient(ellipse 80% 40% at 20% 10%, #{rgba($daylight-amber, 0.05)}, transparent 50%),
-    radial-gradient(ellipse 60% 50% at 90% 80%, #{rgba($daylight-sand, 0.4)}, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 10% 90%, #{rgba($daylight-sand, 0.3)}, transparent 50%),
+    radial-gradient(ellipse 100% 50% at 50% -20%, #{rgba($daylight-gold, 0.06)}, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 80%, #{rgba($daylight-amber, 0.08)}, transparent 60%),
     linear-gradient(180deg,
-      #{$daylight-white} 0%,
-      #{$daylight-cream} 50%,
-      #{$daylight-sand} 100%
+      #F5F0E8 0%,
+      #EDE5D8 100%
     );
 
   // Expose brand colors as CSS variables

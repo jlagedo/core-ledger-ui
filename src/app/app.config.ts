@@ -1,9 +1,16 @@
-import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners, } from '@angular/core';
+import { ApplicationConfig, inject, isDevMode, provideAppInitializer, provideBrowserGlobalErrorListeners, } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor, OidcSecurityService, provideAuth } from 'angular-auth-oidc-client';
 import { firstValueFrom } from 'rxjs';
 import { provideMicroSentry } from '@micro-sentry/angular';
+
+// AG Grid module registration
+import { ModuleRegistry } from 'ag-grid-community';
+import { AllCommunityModule } from 'ag-grid-community';
+
+// Register AG Grid modules globally
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 import { routes } from './app.routes';
 import { authConfig } from './auth/auth.config';
