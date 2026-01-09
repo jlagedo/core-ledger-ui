@@ -61,30 +61,19 @@
 :host {
   position: fixed !important;
   bottom: 1rem !important;
-  left: 50% !important;
-  transform: translateX(-50%);
-  right: auto !important;
+  right: 1rem !important;
+  left: auto !important;
   top: auto !important;
+  transform: none;
   z-index: 1090 !important;
   padding: 0 !important;
   max-width: 28rem;
   min-width: 20rem;
   pointer-events: none;
 
-  // Offset for sidenav (centered in content area, not viewport)
-  // Sidenav collapsed is ~4.5rem, expanded is ~14rem
-  // We add half the sidenav width to shift toast right
-  margin-left: 7rem;
-
-  @media (max-width: 992px) {
-    margin-left: 2.25rem;
-  }
-
   @media (max-width: 768px) {
     left: 0 !important;
     right: 0 !important;
-    transform: none;
-    margin-left: 0;
     max-width: 100%;
     min-width: 100%;
     bottom: 0 !important;
