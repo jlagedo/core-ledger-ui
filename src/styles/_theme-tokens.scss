@@ -24,9 +24,9 @@ $theme-tokens: (
     link-hover: $daylight-amber,
     link-visited: color.scale($brand-blue-500, $lightness: -15%, $saturation: -20%),
 
-    // --- Borders ---
+    // --- Borders (HIGH CONTRAST) ---
     border: $daylight-border,
-    border-translucent: rgba($daylight-text, 0.08),
+    border-translucent: rgba($daylight-text, 0.15),
 
     // --- Shadows (warm-tinted) ---
     shadow-sm: 0 1px 4px rgba($daylight-text, 0.08),
@@ -51,29 +51,29 @@ $theme-tokens: (
     invalid: #B91C1C,
     invalid-border: #DC2626,
 
-    // --- Cards ---
+    // --- Cards (WHITE for elevation) ---
     card-bg: $daylight-cream,
     card-border: $daylight-border,
-    card-header: $daylight-sand,
+    card-header: #FAF7F2,
 
     // --- Glass Effect ---
-    glass-bg: rgba($daylight-cream, 0.92),
-    glass-border: rgba($daylight-border, 0.8),
-    glass-shadow: 0 4px 30px rgba($daylight-text, 0.08),
+    glass-bg: rgba($daylight-cream, 0.95),
+    glass-border: $daylight-border,
+    glass-shadow: 0 4px 30px rgba($daylight-text, 0.1),
 
-    // --- Inputs ---
-    input-bg: $neutral-white,
+    // --- Inputs (WHITE with visible borders) ---
+    input-bg: $daylight-cream,
     input-border: $daylight-border,
     input-focus: $daylight-amber,
     input-focus-shadow: 0 0 0 0.25rem rgba($daylight-amber, 0.15),
     input-placeholder: $daylight-muted,
 
-    // --- Tables (warm professional) ---
+    // --- Tables (CLEAR HIERARCHY) ---
     table-bg: $daylight-cream,
     table-header-bg: $daylight-sand,
     table-header-color: $daylight-text,
-    table-striped: rgba($daylight-sand, 0.5),
-    table-hover: rgba($daylight-gold, 0.08),
+    table-striped: #FAF7F2,
+    table-hover: rgba($daylight-gold, 0.15),
     table-active-bg: rgba($daylight-amber, 0.12),
     table-active-color: $daylight-text,
     table-active-border: $daylight-amber,
@@ -93,8 +93,8 @@ $theme-tokens: (
     nav-underline: linear-gradient(90deg, $daylight-amber, $daylight-gold),
 
     // --- Scrollbar ---
-    scrollbar-track: rgba($daylight-sand, 0.5),
-    scrollbar-thumb: linear-gradient(180deg, $daylight-muted, color.scale($daylight-muted, $lightness: -15%)),
+    scrollbar-track: $daylight-sand,
+    scrollbar-thumb: $daylight-muted,
 
     // --- Selection ---
     selection: rgba($daylight-gold, 0.25),

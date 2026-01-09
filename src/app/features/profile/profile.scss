@@ -880,7 +880,32 @@
 
 [data-bs-theme="light"] {
   .terminal-panel {
+    background: #FFFFFF;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+
+    &__header {
+      background: var(--bs-tertiary-bg);
+    }
+  }
+
+  .data-grid {
+    border-color: var(--bs-border-color);
+
+    &__item {
+      background: #FFFFFF;
+    }
+  }
+
+  .keyboard-shortcuts {
+    background: var(--bs-border-color);
+  }
+
+  .shortcut-category {
+    background: #FFFFFF;
+
+    &__header {
+      background: var(--bs-tertiary-bg);
+    }
   }
 
   .identity-card__status {
@@ -902,5 +927,26 @@
 
   .data-grid__value--success {
     color: #065F3E;
+  }
+
+  .quick-actions__btn {
+    background: #FFFFFF;
+    border-color: var(--bs-border-color);
+
+    &:hover {
+      background: var(--bs-tertiary-bg);
+    }
+  }
+
+  .session-list__item--current {
+    background: rgba(180, 83, 9, 0.06);
+  }
+
+  .session-list__icon {
+    background: var(--bs-tertiary-bg);
+  }
+
+  .shortcut-key {
+    background: linear-gradient(180deg, #FFFFFF 0%, var(--bs-tertiary-bg) 100%);
   }
 }
