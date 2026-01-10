@@ -135,6 +135,207 @@ ag-grid-angular {
 }
 
 // ============================================================
+// PRESET BAR — Bloomberg Function Keys Style
+// ============================================================
+
+.preset-bar {
+  --preset-bg: var(--bs-tertiary-bg);
+  --preset-border: var(--bs-border-color);
+  --preset-text: var(--bs-secondary-color);
+  --preset-text-muted: var(--bs-tertiary-color);
+  --preset-accent: var(--accent-amber, #FFA028);
+  --preset-hover: rgba(255, 160, 40, 0.08);
+  --preset-active-bg: rgba(255, 160, 40, 0.15);
+  --preset-active-border: rgba(255, 160, 40, 0.5);
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--preset-bg);
+  border-bottom: 1px solid var(--preset-border);
+  font-family: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+}
+
+.preset-bar__label {
+  color: var(--preset-text-muted);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+  padding: 0.25rem 0.5rem;
+  background: rgba(128, 128, 128, 0.1);
+  border-radius: 2px;
+}
+
+.preset-bar__chips {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.preset-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  background: transparent;
+  border: 1px solid var(--preset-border);
+  border-radius: 3px;
+  color: var(--preset-text);
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--preset-hover);
+    border-color: var(--preset-accent);
+    color: var(--preset-accent);
+  }
+
+  &--active {
+    background: var(--preset-active-bg);
+    border-color: var(--preset-active-border);
+    color: var(--preset-accent);
+    font-weight: 600;
+    box-shadow: 0 0 8px rgba(255, 160, 40, 0.2);
+
+    .preset-chip__icon {
+      color: var(--preset-accent);
+    }
+  }
+}
+
+.preset-chip__icon {
+  font-size: 0.75rem;
+  color: var(--preset-text-muted);
+  transition: color 0.15s ease-out;
+}
+
+.preset-chip__label {
+  line-height: 1;
+}
+
+.preset-bar__clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: var(--preset-text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(220, 53, 69, 0.15);
+    border-color: rgba(220, 53, 69, 0.3);
+    color: var(--bs-danger);
+  }
+}
+
+// Dark mode preset bar
+[data-bs-theme="dark"] {
+  .preset-bar {
+    --preset-bg: rgba(15, 15, 15, 0.95);
+    --preset-border: rgba(255, 160, 40, 0.15);
+    --preset-hover: rgba(255, 160, 40, 0.1);
+    --preset-active-bg: rgba(255, 160, 40, 0.18);
+    --preset-active-border: rgba(255, 160, 40, 0.6);
+    backdrop-filter: blur(4px);
+  }
+
+  .preset-bar__label {
+    background: rgba(255, 160, 40, 0.1);
+    color: var(--preset-accent);
+  }
+
+  .preset-chip {
+    border-color: rgba(255, 160, 40, 0.2);
+
+    &--active {
+      box-shadow: 0 0 12px rgba(255, 160, 40, 0.25);
+    }
+  }
+}
+
+// Light mode preset bar
+[data-bs-theme="light"] {
+  .preset-bar {
+    --preset-bg: #F8F5F0;
+    --preset-border: #E5DDD0;
+    --preset-accent: #B45309;
+    --preset-hover: rgba(180, 83, 9, 0.08);
+    --preset-active-bg: rgba(180, 83, 9, 0.12);
+    --preset-active-border: rgba(180, 83, 9, 0.5);
+  }
+
+  .preset-bar__label {
+    background: rgba(180, 83, 9, 0.08);
+    color: #B45309;
+  }
+
+  .preset-chip {
+    border-color: #CFC3B1;
+
+    &:hover {
+      border-color: #B45309;
+      color: #B45309;
+    }
+
+    &--active {
+      box-shadow: 0 0 8px rgba(180, 83, 9, 0.15);
+    }
+  }
+
+  .preset-chip__icon {
+    color: #8B7355;
+  }
+}
+
+// Responsive preset bar
+@media (max-width: 768px) {
+  .preset-bar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .preset-bar__label {
+    flex-basis: auto;
+  }
+
+  .preset-bar__chips {
+    flex: 1 1 100%;
+    order: 1;
+  }
+
+  .preset-chip__label {
+    display: none;
+  }
+
+  .preset-chip {
+    padding: 0.375rem;
+  }
+
+  .preset-chip__icon {
+    font-size: 0.875rem;
+  }
+}
+
+// ============================================================
 // QUICK FILTER BAR — Bloomberg Terminal Style
 // ============================================================
 

@@ -16,6 +16,35 @@
 <main class="container-data">
   <div class="card-data">
     <div class="card-body p-0">
+      <!-- Preset Quick Filters -->
+      <div class="preset-bar">
+        <span class="preset-bar__label">PRESETS</span>
+        <div class="preset-bar__chips">
+          @for (preset of presets; track preset.id) {
+            <button
+              type="button"
+              class="preset-chip"
+              [class.preset-chip--active]="isPresetActive(preset.id)"
+              [title]="preset.description"
+              (click)="onPresetClick(preset.id)"
+            >
+              <i class="bi {{ preset.icon }} preset-chip__icon"></i>
+              <span class="preset-chip__label">{{ preset.shortLabel }}</span>
+            </button>
+          }
+        </div>
+        @if (activePreset()) {
+          <button
+            type="button"
+            class="preset-bar__clear"
+            title="Limpar preset"
+            (click)="onPresetClick(null)"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+        }
+      </div>
+
       <!-- Quick Filter Bar -->
       <div class="filter-bar">
         <!-- Search Input -->

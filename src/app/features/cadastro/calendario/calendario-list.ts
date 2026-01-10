@@ -24,7 +24,11 @@ import {
 
 import { Calendario, TipoDia, Praca } from '../../../models/calendario.model';
 import { CalendarioService } from '../../../services/calendario';
-import { CalendarioStore } from './calendario-store';
+import {
+  CalendarioStore,
+  CALENDARIO_PRESETS,
+  CalendarioPresetId,
+} from './calendario-store';
 import { LoggerService } from '../../../services/logger';
 import { PageHeader } from '../../../layout/page-header/page-header';
 import { ThemeService } from '../../../services/theme-service';
@@ -170,6 +174,10 @@ export class CalendarioList {
   readonly filters = this.store.filters;
   readonly hasActiveFilters = this.store.hasActiveFilters;
   readonly activeFilterCount = this.store.activeFilterCount;
+  readonly activePreset = this.store.activePreset;
+
+  // Presets configuration
+  readonly presets = CALENDARIO_PRESETS;
 
   // Pagination statistics for status bar
   readonly paginationStats = signal<PaginationStats>({
@@ -462,6 +470,20 @@ export class CalendarioList {
     this.hoveredDate.set(null);
     this.store.clearAllFilters();
     this.refreshGrid();
+  }
+
+  // Preset handlers
+  onPresetClick(presetId: CalendarioPresetId): void {
+    this.store.togglePreset(presetId);
+    // Sync UI state with store
+    this.searchTerm.set('');
+    this.fromDate.set(this.isoStringToNgbDate(this.store.filters().dataInicio));
+    this.toDate.set(this.isoStringToNgbDate(this.store.filters().dataFim));
+    this.refreshGrid();
+  }
+
+  isPresetActive(presetId: CalendarioPresetId): boolean {
+    return this.activePreset() === presetId;
   }
 
   // Refresh grid data
