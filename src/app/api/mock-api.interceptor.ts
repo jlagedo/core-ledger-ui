@@ -106,6 +106,34 @@ function routeRequest(req: any, mockApiService: MockApiService): HttpResponse<an
     const lastPart = urlParts[urlParts.length - 1];
     const id = /^\d+$/.test(lastPart) ? parseInt(lastPart, 10) : null;
 
+    // Check for indexador history endpoints: /api/indexadores/:id/historico
+    const indexadorHistoricoMatch = url.match(/\/api\/indexadores\/(\d+)\/historico(?:\/|$|\?)/);
+    if (indexadorHistoricoMatch) {
+        const indexadorId = parseInt(indexadorHistoricoMatch[1], 10);
+
+        // Check for export: /api/indexadores/:id/historico/exportar
+        if (url.includes('/historico/exportar')) {
+            if (req.method === 'GET') {
+                return mockApiService.handleHistoricoExportRequest(indexadorId, params);
+            }
+        }
+
+        // Regular history list: /api/indexadores/:id/historico
+        if (req.method === 'GET') {
+            return mockApiService.handleHistoricoIndexadorListRequest(indexadorId, params);
+        }
+    }
+
+    // Handle historicos-indexadores POST (create) and DELETE
+    if (url.includes('/historicos-indexadores')) {
+        if (req.method === 'POST') {
+            return mockApiService.handleCreateHistoricoIndexador(req.body);
+        }
+        if (req.method === 'DELETE' && id !== null) {
+            return mockApiService.handleDeleteRequest(url, id);
+        }
+    }
+
     // Endpoints that return plain arrays instead of paginated responses
     const arrayEndpoints = ['/api/accounttypes', '/api/securitytypes', '/api/transactions/status', '/api/transactions/subtypes'];
     const isArrayEndpoint = arrayEndpoints.some(endpoint => url.includes(endpoint));

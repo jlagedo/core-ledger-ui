@@ -1,0 +1,28 @@
+// Add Value Modal — Form styling
+
+.indexador-info {
+  padding: 0.75rem 1rem;
+  background: rgba(255, 160, 40, 0.08);
+  border-left: 3px solid var(--bs-primary);
+  border-radius: 0.25rem;
+}
+
+.indexador-codigo {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--bs-primary);
+}
+
+.indexador-nome {
+  font-size: 0.875rem;
+}
+
+// Form styling
+.form-label {
+  font-weight: 500;
+  font-size: 0.8125rem;
+}
+
+.form-text {
+  font-size: 0.75rem;
+}

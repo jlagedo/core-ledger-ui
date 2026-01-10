@@ -12,4 +12,10 @@ export const CADASTRO_ROUTES: Routes = [
     loadChildren: () =>
       import('./calendario/calendario.routes').then((m) => m.CALENDARIO_ROUTES),
   },
+  {
+    path: 'indexadores',
+    data: { breadcrumb: 'Indexadores' },
+    loadChildren: () =>
+      import('./indexadores/indexadores.routes').then((m) => m.INDEXADORES_ROUTES),
+  },
 ];
