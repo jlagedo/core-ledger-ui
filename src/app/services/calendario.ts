@@ -18,7 +18,7 @@ export class CalendarioService {
   private readonly apiUrl = inject(API_URL);
   private readonly http = inject(HttpClient);
 
-  // Static enum options for dropdowns
+  // Opções de enum estáticas para menus suspensos
   readonly tipoDiaOptions: TipoDiaOption[] = [
     { value: TipoDia.Util, name: 'Dia Útil', description: 'Dia Útil' },
     {
@@ -58,7 +58,7 @@ export class CalendarioService {
   ];
 
   /**
-   * Get paginated list of calendarios with optional filtering and sorting
+   * Obtém lista paginada de calendários com filtro e ordenação opcionais
    */
   getCalendarios(
     limit: number = 100,
@@ -75,7 +75,7 @@ export class CalendarioService {
 
     if (sortBy) params['sortBy'] = sortBy;
 
-    // Add filter parameters
+    // Adicionar parâmetros de filtro
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
         params[key] = value;
@@ -89,28 +89,28 @@ export class CalendarioService {
   }
 
   /**
-   * Get a single calendario by ID
+   * Obtém um único calendário por ID
    */
   getCalendarioById(id: number): Observable<Calendario> {
     return this.http.get<Calendario>(`${this.apiUrl}/v1/calendario/${id}`);
   }
 
   /**
-   * Create a new calendario entry
+   * Cria uma nova entrada de calendário
    */
   createCalendario(calendario: CreateCalendario): Observable<Calendario> {
     return this.http.post<Calendario>(`${this.apiUrl}/v1/calendario`, calendario);
   }
 
   /**
-   * Update an existing calendario entry
+   * Atualiza uma entrada de calendário existente
    */
   updateCalendario(id: number, calendario: UpdateCalendario): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/v1/calendario/${id}`, calendario);
   }
 
   /**
-   * Delete a calendario entry
+   * Deleta uma entrada de calendário
    */
   deleteCalendario(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/v1/calendario/${id}`);

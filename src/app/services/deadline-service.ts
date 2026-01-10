@@ -1,8 +1,8 @@
 // ============================================================
-// DEADLINE SERVICE — Operational Cutoff Management
+// SERVIÇO DE PRAZOS — Gerenciamento de Cortes Operacionais
 //
-// Manages operational deadlines with real-time countdown
-// calculations and urgency state tracking.
+// Gerencia prazos operacionais com cálculos de contagem
+// regressiva em tempo real e rastreamento de estado de urgência.
 // ============================================================
 
 import { Injectable, signal, computed, OnDestroy } from '@angular/core';
@@ -10,44 +10,44 @@ import { Deadline, DeadlineState, DeadlineUrgency } from '../models/deadline.mod
 
 @Injectable({ providedIn: 'root' })
 export class DeadlineService implements OnDestroy {
-  // Configurable thresholds (in milliseconds)
-  private readonly WARNING_THRESHOLD = 60 * 60 * 1000; // 1 hour
-  private readonly CRITICAL_THRESHOLD = 15 * 60 * 1000; // 15 minutes
+  // Limites configuráveis (em milissegundos)
+  private readonly WARNING_THRESHOLD = 60 * 60 * 1000; // 1 hora
+  private readonly CRITICAL_THRESHOLD = 15 * 60 * 1000; // 15 minutos
 
   private readonly _deadlines = signal<Deadline[]>([]);
   private readonly _now = signal<Date>(new Date());
   private intervalId: ReturnType<typeof setInterval> | null = null;
 
-  /** All configured deadlines */
+  /** Todos os prazos configurados */
   readonly deadlines = this._deadlines.asReadonly();
 
-  /** Deadlines with calculated state (remaining time, urgency) */
+  /** Prazos com estado calculado (tempo restante, urgência) */
   readonly deadlineStates = computed<DeadlineState[]>(() => {
     const now = this._now();
     return this._deadlines()
       .map(d => this.calculateState(d, now))
       .sort((a, b) => {
-        // Expired items last, then by remaining time
+        // Itens expirados por último, depois por tempo restante
         if (a.expired && !b.expired) return 1;
         if (!a.expired && b.expired) return -1;
         return a.remainingMs - b.remainingMs;
       });
   });
 
-  /** Active (non-expired) deadlines sorted by urgency */
+  /** Prazos ativos (não expirados) ordenados por urgência */
   readonly activeDeadlines = computed(() =>
     this.deadlineStates().filter(d => !d.expired)
   );
 
-  /** Most urgent active deadline */
+  /** Prazo ativo mais urgente */
   readonly mostUrgent = computed(() => this.activeDeadlines()[0] ?? null);
 
-  /** Count of critical deadlines */
+  /** Contagem de prazos críticos */
   readonly criticalCount = computed(() =>
     this.activeDeadlines().filter(d => d.urgency === 'critical').length
   );
 
-  /** Whether any deadline is critical */
+  /** Se há algum prazo crítico */
   readonly hasCritical = computed(() => this.criticalCount() > 0);
 
   constructor() {
@@ -59,7 +59,7 @@ export class DeadlineService implements OnDestroy {
     this.stopTimer();
   }
 
-  /** Add or update a deadline */
+  /** Adicionar ou atualizar um prazo */
   setDeadline(deadline: Deadline): void {
     this._deadlines.update(current => {
       const index = current.findIndex(d => d.id === deadline.id);
@@ -72,23 +72,23 @@ export class DeadlineService implements OnDestroy {
     });
   }
 
-  /** Remove a deadline by ID */
+  /** Remover um prazo pelo ID */
   removeDeadline(id: string): void {
     this._deadlines.update(current => current.filter(d => d.id !== id));
   }
 
-  /** Set all deadlines at once */
+  /** Definir todos os prazos de uma vez */
   setDeadlines(deadlines: Deadline[]): void {
     this._deadlines.set(deadlines);
   }
 
-  /** Clear all deadlines */
+  /** Limpar todos os prazos */
   clearDeadlines(): void {
     this._deadlines.set([]);
   }
 
   private startTimer(): void {
-    // Update every second for countdown precision
+    // Atualizar a cada segundo para precisão de contagem regressiva
     this.intervalId = setInterval(() => {
       this._now.set(new Date());
     }, 1000);
@@ -131,7 +131,7 @@ export class DeadlineService implements OnDestroy {
     const seconds = totalSeconds % 60;
 
     if (hours > 99) {
-      // Show days for very long durations
+      // Mostrar dias para durações muito longas
       const days = Math.floor(hours / 24);
       const remainingHours = hours % 24;
       return `${days}d ${String(remainingHours).padStart(2, '0')}h`;
@@ -144,51 +144,51 @@ export class DeadlineService implements OnDestroy {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    // Default operational deadlines (configurable per deployment)
+    // Prazos operacionais padrão (configuráveis por implantação)
     const defaults: Deadline[] = [
       {
         id: 'settlement-t2',
-        label: 'SETTLEMENT T+2',
-        description: 'Trade settlement deadline',
-        deadline: new Date(today.getTime() + 16 * 60 * 60 * 1000), // 4 PM today
+        label: 'LIQUIDAÇÃO T+2',
+        description: 'Prazo de liquidação de operação',
+        deadline: new Date(today.getTime() + 16 * 60 * 60 * 1000), // 16h de hoje
         category: 'settlement',
         recurring: true,
         icon: 'bi-arrow-left-right',
       },
       {
         id: 'nav-cutoff',
-        label: 'NAV CUTOFF',
-        description: 'Net Asset Value calculation cutoff',
-        deadline: new Date(today.getTime() + 17 * 60 * 60 * 1000), // 5 PM today
+        label: 'CORTE NAV',
+        description: 'Corte de cálculo do Valor do Ativo Líquido',
+        deadline: new Date(today.getTime() + 17 * 60 * 60 * 1000), // 17h de hoje
         category: 'nav',
         recurring: true,
         icon: 'bi-calculator',
       },
       {
         id: 'batch-close',
-        label: 'BATCH CLOSE',
-        description: 'End of day batch processing',
-        deadline: new Date(today.getTime() + 23 * 60 * 60 * 1000 + 59 * 60 * 1000), // 11:59 PM
+        label: 'FECHAMENTO DE LOTE',
+        description: 'Processamento em lote de fim de dia',
+        deadline: new Date(today.getTime() + 23 * 60 * 60 * 1000 + 59 * 60 * 1000), // 23:59
         category: 'batch',
         recurring: true,
         icon: 'bi-collection',
       },
       {
         id: 'market-close',
-        label: 'MARKET CLOSE',
-        description: 'NYSE market close',
-        deadline: new Date(today.getTime() + 16 * 60 * 60 * 1000 + 30 * 60 * 1000), // 4:30 PM
+        label: 'FECHAMENTO DE MERCADO',
+        description: 'Fechamento do mercado NYSE',
+        deadline: new Date(today.getTime() + 16 * 60 * 60 * 1000 + 30 * 60 * 1000), // 16:30
         category: 'market',
         recurring: true,
         icon: 'bi-graph-up',
       },
     ];
 
-    // Filter out already expired deadlines for demo purposes
-    // In production, recurring deadlines would roll to next day
+    // Filtrar prazos já expirados para fins de demonstração
+    // Em produção, prazos recorrentes passariam para o próximo dia
     const active = defaults.filter(d => new Date(d.deadline).getTime() > now.getTime());
 
-    // If all expired (end of day), show tomorrow's deadlines
+    // Se todos expirarem (fim do dia), mostrar prazos de amanhã
     if (active.length === 0) {
       const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
       this.setDeadlines(

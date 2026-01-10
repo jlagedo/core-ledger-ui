@@ -1,13 +1,13 @@
-<app-page-header [title]="securityId() ? 'Edit Security' : 'Create Security'">
-  <button class="btn btn-sm btn-secondary" aria-label="Get help for this page">
-    <i class="bi bi-question-circle"></i> Help
+<app-page-header [title]="securityId() ? 'Editar Segurança' : 'Criar Segurança'">
+  <button class="btn btn-sm btn-secondary" aria-label="Obter ajuda para esta página">
+    <i class="bi bi-question-circle"></i> Ajuda
   </button>
 </app-page-header>
 
 <main class="container-form">
   <div class="card-form">
     <div class="card-header">
-      <h5 class="card-title">{{ securityId() ? 'Edit Security' : 'Create Security' }}</h5>
+      <h5 class="card-title">{{ securityId() ? 'Editar Segurança' : 'Criar Segurança' }}</h5>
     </div>
     <div class="card-body">
 
@@ -21,25 +21,25 @@
             @if (isInvalid('ticker')) {
               <div class="invalid-feedback">
                 @if (hasError('ticker', 'required')) {
-                  Ticker is required
+                  Ticker é obrigatório
                 }
                 @if (hasError('ticker', 'maxlength')) {
-                  Ticker must be at most 20 characters
+                  Ticker deve ter no máximo 20 caracteres
                 }
               </div>
             }
           </div>
           <div class="col-8">
-            <label class="form-label" for="name">Name</label>
+            <label class="form-label" for="name">Nome</label>
             <input [class.is-invalid]="isInvalid('name')" class="form-control" formControlName="name" id="name"
                    type="text">
             @if (isInvalid('name')) {
               <div class="invalid-feedback">
                 @if (hasError('name', 'required')) {
-                  Name is required
+                  Nome é obrigatório
                 }
                 @if (hasError('name', 'maxlength')) {
-                  Name must be at most 200 characters long
+                  Nome deve ter no máximo 200 caracteres
                 }
               </div>
             }
@@ -48,34 +48,34 @@
 
         <div class="row mb-3">
           <div class="col-4">
-            <label class="form-label" for="currency">Currency</label>
+            <label class="form-label" for="currency">Moeda</label>
             <input [class.is-invalid]="isInvalid('currency')" class="form-control text-uppercase font-monospace text-info text-nowrap" formControlName="currency"
                    id="currency" maxlength="3" placeholder="USD"
                    type="text">
             @if (isInvalid('currency')) {
               <div class="invalid-feedback">
                 @if (hasError('currency', 'required')) {
-                  Currency is required
+                  Moeda é obrigatória
                 }
                 @if (hasError('currency', 'minlength') || hasError('currency', 'maxlength')) {
-                  Currency must be a 3-letter ISO code
+                  Moeda deve ser um código ISO de 3 letras
                 }
                 @if (hasError('currency', 'pattern')) {
-                  Currency must contain only uppercase letters (A-Z)
+                  Moeda deve conter apenas letras maiúsculas (A-Z)
                 }
               </div>
             }
           </div>
 
           <div class="col-8">
-            <label class="form-label" for="isin">ISIN (Optional)</label>
+            <label class="form-label" for="isin">ISIN (Opcional)</label>
             <input [class.is-invalid]="isInvalid('isin')" class="form-control text-uppercase font-monospace text-info text-nowrap" formControlName="isin"
                    id="isin" maxlength="12" placeholder="US0378331005"
                    type="text">
             @if (isInvalid('isin')) {
               <div class="invalid-feedback">
                 @if (hasError('isin', 'maxlength')) {
-                  ISIN must be at most 12 characters
+                  ISIN deve ter no máximo 12 caracteres
                 }
               </div>
             }
@@ -84,24 +84,24 @@
         </div>
 
         <div class="col-12">
-          <label class="form-label" for="type">Security Type</label>
+          <label class="form-label" for="type">Tipo de Segurança</label>
             @defer (when securityTypes().length > 0) {
               <select [class.is-invalid]="isInvalid('type')" class="form-select" formControlName="type"
                       id="type">
-                <option [ngValue]="null">Select security type</option>
+                <option [ngValue]="null">Selecione o tipo de segurança</option>
                 @for (type of securityTypes(); track type.value) {
                   <option [ngValue]="type.value">{{ type.description }}</option>
                 }
               </select>
             } @placeholder {
               <select class="form-select" disabled>
-                <option>Loading types...</option>
+                <option>Carregando tipos...</option>
               </select>
             }
             @if (isInvalid('type')) {
               <div class="invalid-feedback">
                 @if (hasError('type', 'required')) {
-                  Security type is required
+                  Tipo de segurança é obrigatório
                 }
               </div>
             }
@@ -113,7 +113,7 @@
             <div class="alert alert-info d-flex align-items-center" role="status">
               <div aria-hidden="true" class="spinner-border spinner-border-sm me-2 text-primary"></div>
               <div>
-                {{ securityId() ? 'Updating' : 'Creating' }} security...
+                {{ securityId() ? 'Atualizando' : 'Criando' }} segurança...
               </div>
             </div>
           }
@@ -125,13 +125,13 @@
             @if (isSubmitting()) {
               <span aria-hidden="true" class="spinner-border spinner-border-sm me-1"></span>
             }
-            Submit
+            Enviar
           </button>
           <button (click)="onCancel()" class="btn btn-secondary" type="button">
-            Cancel and Go Back
+            Cancelar e Voltar
           </button>
           <button (click)="clearForm()" [disabled]="isSubmitting()" class="btn btn-outline-secondary"
-                  type="button">Clear
+                  type="button">Limpar
           </button>
           </div>
         </div>
@@ -140,13 +140,13 @@
       <!-- ARIA Live Region for Screen Reader Announcements -->
       <div aria-atomic="true" aria-live="polite" class="visually-hidden" role="status">
         @if (submitStatus() === 'loading') {
-          {{ securityId() ? 'Updating' : 'Creating' }} security, please wait...
+          {{ securityId() ? 'Atualizando' : 'Criando' }} segurança, por favor aguarde...
         }
         @if (submitStatus() === 'success') {
-          Security {{ securityId() ? 'updated' : 'created' }} successfully. Redirecting to Security List...
+          Segurança {{ securityId() ? 'atualizada' : 'criada' }} com sucesso. Redirecionando para Lista de Segurança...
         }
         @if (submitStatus() === 'error') {
-          Error: {{ errorMessage() }}
+          Erro: {{ errorMessage() }}
         }
       </div>
 
@@ -155,8 +155,8 @@
         <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
           <i aria-hidden="true" class="bi bi-check-circle-fill fs-4 me-2"></i>
           <div>
-            <strong>Success!</strong> Security {{ securityId() ? 'updated' : 'created' }} successfully. Redirecting to
-            Security List...
+            <strong>Sucesso!</strong> Segurança {{ securityId() ? 'atualizada' : 'criada' }} com sucesso. Redirecionando para
+            Lista de Segurança...
           </div>
         </div>
       }
@@ -166,11 +166,11 @@
         <div class="alert alert-danger d-flex align-items-start mb-3" role="alert">
           <i aria-hidden="true" class="bi bi-exclamation-triangle-fill fs-4 me-2 flex-shrink-0"></i>
           <div class="flex-grow-1">
-            <strong>Error!</strong> {{ errorMessage() }}
+            <strong>Erro!</strong> {{ errorMessage() }}
             <div class="mt-2">
               <button (click)="retrySubmit()" class="btn btn-sm btn-outline-danger" type="button">
                 <i aria-hidden="true" class="bi bi-arrow-clockwise me-1"></i>
-                Retry
+                Tentar Novamente
               </button>
             </div>
           </div>

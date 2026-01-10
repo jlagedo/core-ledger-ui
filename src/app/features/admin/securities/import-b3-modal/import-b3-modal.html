@@ -1,27 +1,27 @@
 <div class="modal-header">
-  <h5 class="modal-title fw-semibold">Import B3 Instruction File</h5>
-  <button (click)="activeModal.dismiss()" aria-label="Close" class="btn-close" type="button"></button>
+  <h5 class="modal-title fw-semibold">Importar Arquivo de Instruções B3</h5>
+  <button (click)="activeModal.dismiss()" aria-label="Fechar" class="btn-close" type="button"></button>
 </div>
 
 <div class="modal-body">
   <p class="text-info fw-semibold">
     <i class="bi bi-info-circle me-2"></i>
-    Are you sure you want to import the B3 instruction file?
+    Tem certeza de que deseja importar o arquivo de instruções B3?
   </p>
 
   <div class="alert alert-info mb-0" role="alert">
     <i class="bi bi-info-circle me-2"></i>
-    <strong>Note:</strong> This action will start an asynchronous job to import B3 instruction data.
-    The process may take a few moments to complete.
+    <strong>Nota:</strong> Esta ação iniciará um trabalho assíncrono para importar dados de instruções B3.
+    O processo pode levar alguns momentos para ser concluído.
   </div>
 </div>
 
 <div class="modal-footer">
   <button (click)="activeModal.dismiss()" class="btn btn-secondary" type="button">
-    Cancel
+    Cancelar
   </button>
   <button (click)="activeModal.close('confirm')" class="btn btn-primary" type="button">
     <i class="bi bi-download me-1"></i>
-    Import
+    Importar
   </button>
 </div>

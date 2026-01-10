@@ -5,23 +5,23 @@ import { fromEvent, filter } from 'rxjs';
 import { ENVIRONMENT } from '../config/environment.config';
 import { ToastService } from './toast-service';
 
-/** Keyboard shortcut definition */
+/** Definição de atalho de teclado */
 export interface KeyboardShortcut {
-  /** Unique identifier for the shortcut */
+  /** Identificador único para o atalho */
   id: string;
-  /** Display label for the shortcut */
+  /** Rótulo de exibição para o atalho */
   label: string;
-  /** Key combination (e.g., 'alt+n', 'ctrl+shift+s') */
+  /** Combinação de teclas (ex: 'alt+n', 'ctrl+shift+s') */
   keys: string;
-  /** Callback function when shortcut is triggered */
+  /** Função de retorno quando o atalho é acionado */
   callback: () => void;
-  /** Category for grouping in help dialog */
+  /** Categoria para agrupamento em diálogo de ajuda */
   category?: string;
-  /** Whether the shortcut is currently enabled */
+  /** Se o atalho está ativado no momento */
   enabled?: boolean;
 }
 
-/** Parsed key combination */
+/** Combinação de teclas analisada */
 interface ParsedKeys {
   ctrl: boolean;
   alt: boolean;
@@ -31,24 +31,24 @@ interface ParsedKeys {
 }
 
 /**
- * Global keyboard shortcuts service.
+ * Serviço global de atalhos de teclado.
  *
- * Provides a centralized way to register and manage keyboard shortcuts
- * across the application. Supports modifier keys (Ctrl, Alt, Shift, Meta).
- * Automatically detects platform and shows appropriate key symbols.
+ * Fornece uma forma centralizada de registrar e gerenciar atalhos de teclado
+ * em toda a aplicação. Suporta teclas modificadoras (Ctrl, Alt, Shift, Meta).
+ * Detecta automaticamente a plataforma e mostra os símbolos de tecla apropriados.
  *
  * @example
  * ```typescript
- * // In a component
+ * // Em um componente
  * private readonly keyboardService = inject(KeyboardShortcutsService);
  *
  * ngOnInit() {
  *   this.keyboardService.register({
  *     id: 'create-fund',
- *     label: 'Create new fund',
+ *     label: 'Criar novo fundo',
  *     keys: 'alt+n',
  *     callback: () => this.router.navigate(['/funds/new']),
- *     category: 'Navigation'
+ *     category: 'Navegação'
  *   });
  * }
  * ```
@@ -60,23 +60,23 @@ export class KeyboardShortcutsService {
   private readonly environment = inject(ENVIRONMENT);
   private readonly toastService = inject(ToastService);
 
-  /** Whether the user is on macOS */
+  /** Se o usuário está no macOS */
   private readonly isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
 
-  /** Whether we're in development mode (show debug toasts) */
+  /** Se estamos em modo de desenvolvimento (mostrar toasts de depuração) */
   private readonly isDevelopment = !this.environment.production;
 
-  /** Registered shortcuts */
+  /** Atalhos registrados */
   private readonly _shortcuts = signal<Map<string, KeyboardShortcut>>(new Map());
 
-  /** Public readonly list of shortcuts */
+  /** Lista pública somente leitura de atalhos */
   readonly shortcuts = computed(() => Array.from(this._shortcuts().values()));
 
-  /** Shortcuts grouped by category */
+  /** Atalhos agrupados por categoria */
   readonly shortcutsByCategory = computed(() => {
     const groups = new Map<string, KeyboardShortcut[]>();
     for (const shortcut of this.shortcuts()) {
-      const category = shortcut.category || 'General';
+      const category = shortcut.category || 'Geral';
       if (!groups.has(category)) {
         groups.set(category, []);
       }
@@ -85,12 +85,12 @@ export class KeyboardShortcutsService {
     return groups;
   });
 
-  /** Whether shortcuts are currently enabled (disabled during modal/form focus) */
+  /** Se os atalhos estão ativados no momento (desativado durante foco em modal/formulário) */
   private readonly _enabled = signal(true);
   readonly enabled = this._enabled.asReadonly();
 
   constructor() {
-    // Listen for global keydown events
+    // Ouvir eventos keydown globais
     fromEvent<KeyboardEvent>(document, 'keydown')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -99,12 +99,12 @@ export class KeyboardShortcutsService {
       )
       .subscribe((event) => this.handleKeydown(event));
 
-    // Register default global shortcuts
+    // Registrar atalhos globais padrão
     this.registerDefaults();
   }
 
   /**
-   * Register a keyboard shortcut
+   * Registra um atalho de teclado
    */
   register(shortcut: KeyboardShortcut): void {
     this._shortcuts.update((shortcuts) => {
@@ -115,7 +115,7 @@ export class KeyboardShortcutsService {
   }
 
   /**
-   * Unregister a keyboard shortcut
+   * Desregistra um atalho de teclado
    */
   unregister(id: string): void {
     this._shortcuts.update((shortcuts) => {
@@ -126,7 +126,7 @@ export class KeyboardShortcutsService {
   }
 
   /**
-   * Enable or disable a specific shortcut
+   * Ativa ou desativa um atalho específico
    */
   setEnabled(id: string, enabled: boolean): void {
     this._shortcuts.update((shortcuts) => {
@@ -141,55 +141,55 @@ export class KeyboardShortcutsService {
   }
 
   /**
-   * Enable all shortcuts
+   * Ativa todos os atalhos
    */
   enableAll(): void {
     this._enabled.set(true);
   }
 
   /**
-   * Disable all shortcuts (e.g., when modal is open)
+   * Desativa todos os atalhos (ex: quando modal está aberto)
    */
   disableAll(): void {
     this._enabled.set(false);
   }
 
   /**
-   * Get human-readable key combination label (platform-aware)
+   * Obtém rótulo de combinação de tecla legível (ciente de plataforma)
    */
   getKeyLabel(keys: string): string {
     return this.getKeyParts(keys).join(this.isMac ? '' : '+');
   }
 
   /**
-   * Get key parts as array for display (platform-aware)
+   * Obtém partes da tecla como array para exibição (ciente de plataforma)
    */
   getKeyParts(keys: string): string[] {
     const parsed = this.parseKeys(keys);
     const parts: string[] = [];
 
     if (this.isMac) {
-      // macOS uses symbols: ⌃ Control, ⌥ Option, ⇧ Shift, ⌘ Command
+      // macOS usa símbolos: ⌃ Control, ⌥ Option, ⇧ Shift, ⌘ Command
       if (parsed.ctrl) parts.push('⌃');
       if (parsed.alt) parts.push('⌥');
       if (parsed.shift) parts.push('⇧');
       if (parsed.meta) parts.push('⌘');
     } else {
-      // Windows/Linux uses text labels
+      // Windows/Linux usa rótulos de texto
       if (parsed.ctrl) parts.push('Ctrl');
       if (parsed.alt) parts.push('Alt');
       if (parsed.shift) parts.push('Shift');
       if (parsed.meta) parts.push('Win');
     }
 
-    // Capitalize single letter keys, format special keys
+    // Maiúscula em teclas de letra única, formatar teclas especiais
     let keyLabel = parsed.key;
     if (keyLabel.length === 1) {
       keyLabel = keyLabel.toUpperCase();
     } else if (keyLabel === '/') {
       keyLabel = '?';
     } else {
-      // Capitalize first letter for named keys
+      // Maiúscula primeira letra para teclas nomeadas
       keyLabel = keyLabel.charAt(0).toUpperCase() + keyLabel.slice(1);
     }
     parts.push(keyLabel);
@@ -198,78 +198,78 @@ export class KeyboardShortcutsService {
   }
 
   /**
-   * Check if running on macOS
+   * Verifica se está rodando no macOS
    */
   get isMacPlatform(): boolean {
     return this.isMac;
   }
 
   /**
-   * Register default application-wide shortcuts
+   * Registra atalhos padrão em toda a aplicação
    */
   private registerDefaults(): void {
-    // Help shortcut (show keyboard shortcuts)
+    // Atalho de ajuda (mostrar atalhos de teclado)
     this.register({
       id: 'show-help',
-      label: 'Show keyboard shortcuts',
+      label: 'Mostrar atalhos de teclado',
       keys: 'shift+?',
       callback: () => this.showHelp(),
-      category: 'Help',
+      category: 'Ajuda',
     });
 
-    // Navigation shortcuts
+    // Atalhos de navegação
     this.register({
       id: 'go-dashboard',
-      label: 'Go to Dashboard',
+      label: 'Ir para Painel',
       keys: 'alt+d',
       callback: () => this.router.navigate(['/dashboard']),
-      category: 'Navigation',
+      category: 'Navegação',
     });
 
     this.register({
       id: 'go-funds',
-      label: 'Go to Funds',
+      label: 'Ir para Fundos',
       keys: 'alt+f',
       callback: () => this.router.navigate(['/funds']),
-      category: 'Navigation',
+      category: 'Navegação',
     });
 
     this.register({
       id: 'go-accounts',
-      label: 'Go to Chart of Accounts',
+      label: 'Ir para Plano de Contas',
       keys: 'alt+a',
       callback: () => this.router.navigate(['/chart-of-accounts']),
-      category: 'Navigation',
+      category: 'Navegação',
     });
 
     this.register({
       id: 'go-transactions',
-      label: 'Go to Transactions',
+      label: 'Ir para Transações',
       keys: 'alt+t',
       callback: () => this.router.navigate(['/transactions']),
-      category: 'Navigation',
+      category: 'Navegação',
     });
 
-    // Focus shortcuts
+    // Atalhos de foco
     this.register({
       id: 'focus-search',
-      label: 'Focus search',
+      label: 'Foco em pesquisa',
       keys: 'ctrl+k',
       callback: () => this.focusSearch(),
-      category: 'Focus',
+      category: 'Foco',
     });
 
     this.register({
       id: 'focus-main',
-      label: 'Focus main content',
+      label: 'Foco em conteúdo principal',
       keys: 'alt+m',
       callback: () => this.focusMain(),
-      category: 'Focus',
+      category: 'Foco',
     });
   }
 
   /**
-   * Handle keydown event and trigger matching shortcut
+   * Trata evento keydown e dispara atalho correspondente
    */
   private handleKeydown(event: KeyboardEvent): void {
     const shortcuts = this._shortcuts();
@@ -282,12 +282,12 @@ export class KeyboardShortcutsService {
         event.preventDefault();
         event.stopPropagation();
 
-        // Show toast notification in development mode
+        // Mostrar notificação toast em modo de desenvolvimento
         if (this.isDevelopment) {
           const keyLabel = this.getKeyLabel(shortcut.keys);
           this.toastService.info(
-            `[SHORTCUT] ${keyLabel} → ${shortcut.label}`,
-            2000 // Short 2-second delay for keyboard feedback
+            `[ATALHO] ${keyLabel} → ${shortcut.label}`,
+            2000 // Atraso curto de 2 segundos para feedback de teclado
           );
         }
 
@@ -298,7 +298,7 @@ export class KeyboardShortcutsService {
   }
 
   /**
-   * Parse key combination string into components
+   * Analisa string de combinação de teclas em componentes
    */
   private parseKeys(keys: string): ParsedKeys {
     const parts = keys.toLowerCase().split('+');
@@ -309,15 +309,15 @@ export class KeyboardShortcutsService {
       alt: parts.includes('alt'),
       shift: parts.includes('shift'),
       meta: parts.includes('meta') || parts.includes('cmd'),
-      key: key === '?' ? '/' : key, // Handle ? as Shift+/
+      key: key === '?' ? '/' : key, // Tratar ? como Shift+/
     };
   }
 
   /**
-   * Check if keyboard event matches parsed key combination
+   * Verifica se evento de teclado corresponde à combinação de teclas analisada
    */
   private matchesEvent(event: KeyboardEvent, parsed: ParsedKeys): boolean {
-    // Check modifiers
+    // Verificar modificadores
     if (event.ctrlKey !== parsed.ctrl) return false;
     if (event.altKey !== parsed.alt) return false;
     if (event.shiftKey !== parsed.shift) return false;
@@ -325,17 +325,17 @@ export class KeyboardShortcutsService {
 
     const targetKey = parsed.key.toLowerCase();
 
-    // For letter keys, always use event.code (works on all platforms)
-    // This handles macOS Option+key producing special characters
+    // Para teclas de letra, sempre usar event.code (funciona em todas as plataformas)
+    // Isso trata macOS Option+tecla produzindo caracteres especiais
     if (targetKey.length === 1 && targetKey >= 'a' && targetKey <= 'z') {
       const expectedCode = `Key${targetKey.toUpperCase()}`;
       return event.code === expectedCode;
     }
 
-    // For special keys, check event.key
+    // Para teclas especiais, verificar event.key
     const eventKey = event.key.toLowerCase();
 
-    // Handle ? which requires Shift+/
+    // Tratar ? que requer Shift+/
     if (targetKey === '/' || targetKey === '?') {
       return eventKey === '/' || eventKey === '?';
     }
@@ -344,16 +344,16 @@ export class KeyboardShortcutsService {
   }
 
   /**
-   * Check if the event should be handled (not in input/textarea)
+   * Verifica se o evento deve ser tratado (não em input/textarea)
    */
   private shouldHandleEvent(event: KeyboardEvent): boolean {
     const target = event.target as HTMLElement;
     const tagName = target.tagName.toLowerCase();
 
-    // Don't handle shortcuts when typing in form fields
-    // unless it's a modifier-key combination
+    // Não tratar atalhos ao digitar em campos de formulário
+    // a menos que seja uma combinação de tecla modificadora
     if (tagName === 'input' || tagName === 'textarea' || target.isContentEditable) {
-      // Allow Ctrl/Alt/Meta combinations in inputs
+      // Permitir combinações Ctrl/Alt/Meta em inputs
       return event.ctrlKey || event.altKey || event.metaKey;
     }
 
@@ -361,11 +361,11 @@ export class KeyboardShortcutsService {
   }
 
   /**
-   * Show keyboard shortcuts help
+   * Mostrar ajuda de atalhos de teclado
    */
   private showHelp(): void {
-    // For now, log to console. Could be enhanced to show a modal.
-    console.group('Keyboard Shortcuts');
+    // Por enquanto, registrar no console. Poderia ser melhorado para mostrar um modal.
+    console.group('Atalhos de Teclado');
     for (const [category, shortcuts] of this.shortcutsByCategory()) {
       console.group(category);
       for (const shortcut of shortcuts) {
@@ -377,7 +377,7 @@ export class KeyboardShortcutsService {
   }
 
   /**
-   * Focus the search input
+   * Foca a entrada de pesquisa
    */
   private focusSearch(): void {
     const searchInput = document.querySelector<HTMLInputElement>(
@@ -387,7 +387,7 @@ export class KeyboardShortcutsService {
   }
 
   /**
-   * Focus the main content area
+   * Foca a área de conteúdo principal
    */
   private focusMain(): void {
     const mainContent = document.getElementById('main-content');

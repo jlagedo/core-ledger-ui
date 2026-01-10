@@ -19,7 +19,7 @@ export class TransactionService {
   private readonly http = inject(HttpClient);
 
   /**
-   * Get paginated list of transactions
+   * Obtém lista paginada de transações
    * GET /api/transactions?limit=&offset=&sortBy=&sortDirection=&filter=
    */
   getTransactions(
@@ -47,7 +47,7 @@ export class TransactionService {
   }
 
   /**
-   * Get transaction by ID
+   * Obtém transação por ID
    * GET /api/transactions/{id}
    */
   getTransactionById(id: number): Observable<Transaction> {
@@ -55,7 +55,7 @@ export class TransactionService {
   }
 
   /**
-   * Create a new transaction
+   * Cria uma nova transação
    * POST /api/transactions
    */
   createTransaction(dto: CreateTransaction): Observable<Transaction> {
@@ -63,7 +63,7 @@ export class TransactionService {
   }
 
   /**
-   * Update an existing transaction
+   * Atualiza uma transação existente
    * PUT /api/transactions/{id}
    */
   updateTransaction(id: number, dto: UpdateTransaction): Observable<void> {
@@ -71,7 +71,7 @@ export class TransactionService {
   }
 
   /**
-   * Get all transaction statuses
+   * Obtém todos os status de transação
    * GET /api/transactions/status
    */
   getTransactionStatuses(): Observable<TransactionStatus[]> {
@@ -79,7 +79,7 @@ export class TransactionService {
   }
 
   /**
-   * Get all transaction sub-types, optionally filtered by type ID
+   * Obtém todos os sub-tipos de transação, opcionalmente filtrados por ID de tipo
    * GET /api/transactions/subtypes?typeId={id}
    */
   getTransactionSubTypes(typeId?: number): Observable<TransactionSubType[]> {

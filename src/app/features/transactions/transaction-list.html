@@ -1,26 +1,26 @@
-<app-page-header title="Capture Transaction">
+<app-page-header title="Capturar Transação">
   <button type="button" class="btn btn-secondary" (click)="onRefresh()">
     <i class="bi bi-arrow-clockwise"></i>
-    <span>Refresh</span>
+    <span>Atualizar</span>
   </button>
   <button type="button" class="btn btn-secondary">
     <i class="bi bi-funnel"></i>
-    <span>Filters</span>
+    <span>Filtros</span>
   </button>
   <button type="button" class="btn btn-secondary">
     <i class="bi bi-download"></i>
-    <span>Export</span>
+    <span>Exportar</span>
   </button>
-  <button type="button" aria-label="Create new transaction" class="btn btn-primary" routerLink="/transactions/capture/new">
+  <button type="button" aria-label="Criar nova transação" class="btn btn-primary" routerLink="/transactions/capture/new">
     <i class="bi bi-plus-lg"></i>
-    <span>New Transaction</span>
+    <span>Nova Transação</span>
   </button>
 </app-page-header>
 
 <main class="container-data">
   <div class="card-data">
     <div class="card-body p-0">
-      <!-- Search Controls -->
+      <!-- Controles de Pesquisa -->
       <div class="d-flex align-items-center p-3 border-bottom gap-3">
         <div class="input-group" style="max-width: 300px;">
           <span class="input-group-text">
@@ -29,10 +29,10 @@
           <input
             type="text"
             class="form-control"
-            placeholder="Search transactions..."
+            placeholder="Pesquisar transações..."
             [(ngModel)]="searchTerm"
             (keydown.enter)="onSearch()"
-            aria-label="Search transactions"
+            aria-label="Pesquisar transações"
           />
           @if (searchTerm()) {
             <button class="btn btn-outline-secondary" type="button" (click)="onClearSearch()">
@@ -40,10 +40,10 @@
             </button>
           }
         </div>
-        <button class="btn btn-primary" (click)="onSearch()">Search</button>
+        <button class="btn btn-primary" (click)="onSearch()">Pesquisar</button>
       </div>
 
-      <!-- AG Grid with Bloomberg Terminal Theme -->
+      <!-- AG Grid com Tema Bloomberg Terminal -->
       <ag-grid-angular
         style="width: 100%; height: 600px;"
         [theme]="gridTheme()"

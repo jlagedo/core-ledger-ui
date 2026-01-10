@@ -7,50 +7,50 @@ import { MenuItem } from '../models/menu-item.model';
 export class MenuService {
   private readonly _menuItems = signal<MenuItem[]>([
     {
-      label: 'Overview',
+      label: 'Visão Geral',
       icon: 'bi-grid-fill',
       route: '/dashboard',
       exactMatch: true,
     },
     {
-      label: 'Funds',
+      label: 'Fundos',
       icon: 'bi-briefcase',
       children: [
         {
-          label: 'Fund List',
+          label: 'Lista de Fundos',
           icon: '',
           route: '/funds/list',
         },
       ],
     },
     {
-      label: 'Transactions',
+      label: 'Transações',
       icon: 'bi-arrow-left-right',
       children: [
         {
-          label: 'Capture Transaction',
+          label: 'Capturar Transação',
           icon: '',
           route: '/transactions/capture',
         },
       ],
     },
     {
-      label: 'Admin',
+      label: 'Administração',
       icon: 'bi-gear',
       children: [
         {
-          label: 'Securities',
+          label: 'Títulos',
           icon: '',
           route: '/admin/securities',
         },
       ],
     },
     {
-      label: 'Ledger',
+      label: 'Razão',
       icon: 'bi-book',
       children: [
         {
-          label: 'Chart of Accounts',
+          label: 'Plano de Contas',
           icon: '',
           route: '/chart-of-accounts',
           exactMatch: true,

@@ -1,15 +1,15 @@
-<app-page-header title="Chart of Accounts">
-  <button type="button" class="btn btn-secondary" aria-label="Filter accounts">
+<app-page-header title="Plano de Contas">
+  <button type="button" class="btn btn-secondary" aria-label="Filtrar contas">
     <i class="bi bi-funnel" aria-hidden="true"></i>
-    <span>Filters</span>
+    <span>Filtros</span>
   </button>
-  <button type="button" class="btn btn-secondary" aria-label="Export accounts to CSV">
+  <button type="button" class="btn btn-secondary" aria-label="Exportar contas para CSV">
     <i class="bi bi-download" aria-hidden="true"></i>
-    <span>Export</span>
+    <span>Exportar</span>
   </button>
-  <button type="button" aria-label="Create new account" class="btn btn-primary" routerLink="/chart-of-accounts/new">
+  <button type="button" aria-label="Criar nova conta" class="btn btn-primary" routerLink="/chart-of-accounts/new">
     <i class="bi bi-plus-lg"></i>
-    <span>New Account</span>
+    <span>Nova Conta</span>
   </button>
 </app-page-header>
 
@@ -18,29 +18,29 @@
     <div class="card-body">
 
       <app-data-grid [store]="store" [data]="accountsResponse()" [columns]="columns" [searchable]="true"
-        [searchPlaceholder]="'Search accounts...'" [emptyMessage]="'No accounts found'"
+        [searchPlaceholder]="'Pesquisar contas...'" [emptyMessage]="'Nenhuma conta encontrada'"
         [rowActionsTemplate]="actionsTemplate" (refresh)="loadAccounts()">
       </app-data-grid>
 
-      <!-- Actions template for each row -->
+      <!-- Modelo de ações para cada linha -->
       <ng-template #actionsTemplate let-account>
-        <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Account actions">
+        <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Ações de conta">
           <button type="button" class="btn btn-secondary" [routerLink]="['/chart-of-accounts', account.id, 'edit']"
-            [attr.aria-label]="'Edit account ' + account.name">
+            [attr.aria-label]="'Editar conta ' + account.name">
             <i class="bi bi-pencil" aria-hidden="true"></i>
           </button>
           <div class="btn-group btn-group-sm" container="body" ngbDropdown role="group">
             <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" ngbDropdownToggle
-              [attr.aria-label]="'More actions for account ' + account.name">
-              <span class="visually-hidden">Toggle Dropdown</span>
+              [attr.aria-label]="'Mais ações para conta ' + account.name">
+              <span class="visually-hidden">Alternar Menu Suspenso</span>
             </button>
             <div ngbDropdownMenu>
               <button type="button" [routerLink]="['/chart-of-accounts', account.id]" ngbDropdownItem>
-                <i class="bi bi-eye me-2"></i>View Details
+                <i class="bi bi-eye me-2"></i>Ver Detalhes
               </button>
               <hr class="dropdown-divider">
               <button type="button" (click)="openDeactivateModal(account)" class="text-danger" ngbDropdownItem>
-                <i class="bi bi-trash me-2"></i>Deactivate
+                <i class="bi bi-trash me-2"></i>Desativar
               </button>
             </div>
           </div>

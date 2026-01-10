@@ -21,7 +21,7 @@ export class AccountService {
   private readonly http = inject(HttpClient);
   private readonly logger = inject(LoggerService);
 
-  // Account CRUD operations
+  // Operações CRUD de conta
   getAccounts(
     limit: number = 100,
     offset: number = 0,
@@ -62,7 +62,7 @@ export class AccountService {
     return this.http.patch<void>(`${this.apiUrl}/accounts/${id}/deactivate`, null).pipe(
       catchError((error) => {
         this.logger.error(
-          `Failed to deactivate account ${id}`,
+          `Falha ao desativar conta ${id}`,
           {
             status: error.status,
             errorCode: error.error?.errorCode,
@@ -78,7 +78,7 @@ export class AccountService {
     );
   }
 
-  // Account Type CRUD operations
+  // Operações CRUD de Tipo de Conta
   getAccountTypes(): Observable<AccountType[]> {
     return this.http.get<AccountType[]>(`${this.apiUrl}/accounttypes`);
   }

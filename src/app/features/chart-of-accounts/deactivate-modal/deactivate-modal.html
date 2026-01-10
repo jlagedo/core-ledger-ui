@@ -1,7 +1,7 @@
 <div class="modal-header border-0">
-  <h5 id="modal-title" class="modal-title fw-semibold">Confirm Deactivation</h5>
+  <h5 id="modal-title" class="modal-title fw-semibold">Confirmar Desativação</h5>
   <button (click)="activeModal.dismiss()"
-          aria-label="Close dialog"
+          aria-label="Fechar diálogo"
           class="btn-close"
           type="button"></button>
 </div>
@@ -9,7 +9,7 @@
 <div class="modal-body">
 
   <p class="text-danger mb-3 fw-semibold">
-    Are you sure you want to deactivate the following account?
+    Tem certeza de que deseja desativar a seguinte conta?
   </p>
 
   @if (account(); as acc) {
@@ -18,15 +18,15 @@
 
       <dl class="row mb-0 small">
 
-        <dt class="col-sm-4 text-secondary">Code:</dt>
+        <dt class="col-sm-4 text-secondary">Código:</dt>
         <dd class="col-sm-8">
           <span class="numeric font-monospace">{{ acc.code }}</span>
         </dd>
 
-        <dt class="col-sm-4 text-secondary">Name:</dt>
+        <dt class="col-sm-4 text-secondary">Nome:</dt>
         <dd class="col-sm-8 fw-semibold">{{ acc.name }}</dd>
 
-        <dt class="col-sm-4 text-secondary">Type:</dt>
+        <dt class="col-sm-4 text-secondary">Tipo:</dt>
         <dd class="col-sm-8">{{ acc.typeDescription }}</dd>
 
         <dt class="col-sm-4 text-secondary">Status:</dt>
@@ -34,7 +34,7 @@
           <span class="badge bg-success">{{ acc.statusDescription }}</span>
         </dd>
 
-        <dt class="col-sm-4 text-secondary">Normal Balance:</dt>
+        <dt class="col-sm-4 text-secondary">Saldo Normal:</dt>
         <dd class="col-sm-8">{{ acc.normalBalanceDescription }}</dd>
 
       </dl>
@@ -47,9 +47,9 @@
 
 <div class="modal-footer border-0">
   <button (click)="activeModal.dismiss()" class="btn btn-secondary" type="button">
-    Cancel
+    Cancelar
   </button>
   <button (click)="activeModal.close('confirm')" class="btn btn-danger" type="button">
-    Deactivate
+    Desativar
   </button>
 </div>

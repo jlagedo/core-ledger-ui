@@ -22,7 +22,7 @@ export class LoggerService {
   private microSentry = inject(MicroSentryService);
   private environment = inject(ENVIRONMENT);
 
-  // Configuration from environment
+  // Configuração do ambiente
   private readonly logLevel: LogLevel = this.environment.logLevel;
   private readonly isDevelopment = !this.environment.production;
   private readonly enableSentry = this.environment.enableSentry;
@@ -51,7 +51,7 @@ export class LoggerService {
   }
 
   /**
-   * Log an HTTP error and optionally show a toast notification to the user
+   * Registra um erro HTTP e opcionalmente mostra uma notificação toast ao usuário
    */
   logHttpError(
     operation: string,
@@ -70,7 +70,7 @@ export class LoggerService {
       };
     };
 
-    const errorMessage = `HTTP Error in ${operation}`;
+    const errorMessage = `Erro HTTP em ${operation}`;
     const errorData = {
       status: httpError.status,
       errorCode: httpError.error?.errorCode,
@@ -80,17 +80,17 @@ export class LoggerService {
       validationErrors: httpError.error?.errors,
     };
 
-    // Send to Sentry with enhanced context
+    // Enviar para Sentry com contexto aprimorado
     this.sendHttpErrorToSentry(operation, errorMessage, errorData);
 
-    // Also log locally
+    // Também registrar localmente
     this.error(errorMessage, errorData, operation);
 
     if (showToast) {
       const displayMessage =
         userMessage ||
         httpError.error?.message ||
-        `An error occurred during ${operation}`;
+        `Ocorreu um erro durante ${operation}`;
       this.toastService.error(displayMessage);
     }
   }
@@ -108,12 +108,12 @@ export class LoggerService {
       context,
     };
 
-    // In development, log to console with appropriate method
+    // Em desenvolvimento, registrar no console com método apropriado
     if (this.isDevelopment) {
       this.logToConsole(entry);
     }
 
-    // Send errors and warnings to Sentry
+    // Enviar erros e avisos para Sentry
     this.sendToSentry(entry);
   }
 
@@ -142,37 +142,37 @@ export class LoggerService {
   }
 
   private sendToSentry(entry: LogEntry) {
-    // Only send errors and warnings to Sentry
+    // Enviar apenas erros e avisos para o Sentry
     if (entry.level !== 'error' && entry.level !== 'warn') {
       return;
     }
 
-    // Check if Sentry is enabled
+    // Verificar se Sentry está habilitado
     if (!this.enableSentry) {
       return;
     }
 
     try {
-      // Use withScope to add context for this specific log entry
+      // Usar withScope para adicionar contexto para esta entrada de log específica
       this.microSentry.withScope((scope) => {
-        // Add context as tags
+        // Adicionar contexto como tags
         if (entry.context) {
           scope.setTag('context', entry.context);
         }
 
-        // Add level as tag
+        // Adicionar nível como tag
         scope.setTag('logLevel', entry.level);
 
-        // Add any additional data as extras
+        // Adicionar dados adicionais como extras
         if (entry.data) {
           scope.setExtra('data', JSON.stringify(entry.data));
         }
 
-        // Add timestamp
+        // Adicionar timestamp
         scope.setExtra('timestamp', entry.timestamp.toISOString());
 
-        // For errors, if data is an Error object, report it directly
-        // Otherwise, capture as a message
+        // Para erros, se dados forem um objeto Error, reportar diretamente
+        // Caso contrário, capturar como mensagem
         if (entry.level === 'error' && entry.data instanceof Error) {
           scope.report(entry.data);
         } else {
@@ -181,8 +181,8 @@ export class LoggerService {
         }
       });
     } catch (error) {
-      // Prevent logging errors from breaking the application
-      console.error('Failed to send log to Sentry:', error);
+      // Evitar que erros de logging quebrem a aplicação
+      console.error('Falha ao enviar log para Sentry:', error);
     }
   }
 
@@ -198,28 +198,28 @@ export class LoggerService {
       validationErrors?: Record<string, string[]>;
     }
   ) {
-    // Check if Sentry is enabled
+    // Verificar se Sentry está habilitado
     if (!this.enableSentry) {
       return;
     }
 
     try {
       this.microSentry.withScope((scope) => {
-        // Add operation context
+        // Adicionar contexto de operação
         scope.setTag('operation', operation);
         scope.setTag('errorType', 'http');
 
-        // Add HTTP status as tag for easier filtering
+        // Adicionar status HTTP como tag para filtro mais fácil
         if (errorData.status) {
           scope.setTag('httpStatus', errorData.status.toString());
         }
 
-        // Add error code if available
+        // Adicionar código de erro se disponível
         if (errorData.errorCode) {
           scope.setTag('errorCode', errorData.errorCode);
         }
 
-        // Add correlation/trace IDs as tags for tracing
+        // Adicionar IDs de correlação/rastreamento como tags para rastreamento
         if (errorData.correlationId) {
           scope.setExtra('correlationId', errorData.correlationId);
         }
@@ -227,19 +227,19 @@ export class LoggerService {
           scope.setExtra('traceId', errorData.traceId);
         }
 
-        // Add validation errors if present
+        // Adicionar erros de validação se presentes
         if (errorData.validationErrors) {
           scope.setExtra('validationErrors', JSON.stringify(errorData.validationErrors));
         }
 
-        // Add all error data as extras
+        // Adicionar todos os dados de erro como extras
         scope.setExtra('httpErrorData', JSON.stringify(errorData));
 
-        // Capture the error message
+        // Capturar a mensagem de erro
         scope.captureMessage(message, Severity.error);
       });
     } catch (error) {
-      console.error('Failed to send HTTP error to Sentry:', error);
+      console.error('Falha ao enviar erro HTTP para Sentry:', error);
     }
   }
 }

@@ -1,15 +1,15 @@
 <main class="dashboard container-fluid px-3 pb-4">
 
   <!-- ============================================================
-       HERO METRICS BAR
+       BARRA DE MÉTRICAS PRINCIPAIS
        ============================================================ -->
-  <section class="hero-metrics" aria-label="Key Metrics">
+  <section class="hero-metrics" aria-label="Métricas-chave">
     @for (metric of heroMetrics(); track metric.label) {
       <div class="hero-metrics__item" [class.hero-metrics__item--primary]="metric.isPrimary">
         <div class="hero-metrics__label">
           {{ metric.label }}
           @if (metric.isLive) {
-            <span class="live-indicator" title="Live data"></span>
+            <span class="live-indicator" title="Dados ao vivo"></span>
           }
         </div>
         <div class="hero-metrics__value"
@@ -28,9 +28,9 @@
   </section>
 
   <!-- ============================================================
-       MARKET PULSE TICKER
+       TICKER DE PULSO DE MERCADO
        ============================================================ -->
-  <section class="market-pulse" aria-label="Fund Performance Ticker">
+  <section class="market-pulse" aria-label="Ticker de Desempenho de Fundos">
     <div class="market-pulse__track">
       @for (item of tickerTrack(); track $index) {
         <div class="market-pulse__item">
@@ -47,22 +47,22 @@
   </section>
 
   <!-- ============================================================
-       COMMAND CENTER GRID
+       GRID DO CENTRO DE COMANDO
        ============================================================ -->
   <div class="command-grid">
 
-    <!-- LEFT: Main Chart Area (spans 2 rows) -->
+    <!-- ESQUERDA: Área Principal do Gráfico (ocupa 2 linhas) -->
     <section class="terminal-panel terminal-panel--chart" style="animation-delay: 0.1s">
       <header class="terminal-panel__header">
         <h2 class="terminal-panel__title">
           <span class="fn-key">F7</span>
-          Asset Allocation
+          Alocação de Ativos
         </h2>
         <div class="terminal-panel__actions">
-          <button class="btn btn-sm btn-link text-secondary p-1" title="Refresh">
+          <button class="btn btn-sm btn-link text-secondary p-1" title="Atualizar">
             <i class="bi bi-arrow-clockwise"></i>
           </button>
-          <button class="btn btn-sm btn-link text-secondary p-1" title="Expand">
+          <button class="btn btn-sm btn-link text-secondary p-1" title="Expandir">
             <i class="bi bi-arrows-fullscreen"></i>
           </button>
         </div>
@@ -76,32 +76,32 @@
           </div>
         }
 
-        <!-- Compact Stats Grid -->
+        <!-- Grid de Estatísticas Compacto -->
         <div class="stats-grid mt-3">
           <div class="stats-grid__item">
-            <div class="stats-grid__label">Securities</div>
+            <div class="stats-grid__label">Títulos</div>
             <div class="stats-grid__value">{{ statsData().totalSecurities | number }}</div>
           </div>
           <div class="stats-grid__item">
-            <div class="stats-grid__label">Accounts</div>
+            <div class="stats-grid__label">Contas</div>
             <div class="stats-grid__value">{{ statsData().activeAccounts | number }}</div>
           </div>
           <div class="stats-grid__item">
-            <div class="stats-grid__label">Pending</div>
+            <div class="stats-grid__label">Pendente</div>
             <div class="stats-grid__value">{{ statsData().pendingSettlements }}</div>
           </div>
           <div class="stats-grid__item">
-            <div class="stats-grid__label">Overdue</div>
+            <div class="stats-grid__label">Vencido</div>
             <div class="stats-grid__value">{{ statsData().overdueItems }}</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- RIGHT TOP: Quick Actions -->
+    <!-- DIREITA SUPERIOR: Ações Rápidas -->
     <section class="terminal-panel" style="animation-delay: 0.2s">
       <header class="terminal-panel__header">
-        <h2 class="terminal-panel__title">Quick Actions</h2>
+        <h2 class="terminal-panel__title">Ações Rápidas</h2>
       </header>
       <div class="terminal-panel__body">
         <div class="quick-actions">
@@ -116,14 +116,14 @@
       </div>
     </section>
 
-    <!-- RIGHT BOTTOM: Fund Summary -->
+    <!-- DIREITA INFERIOR: Resumo de Fundos -->
     <section class="terminal-panel" style="animation-delay: 0.3s">
       <header class="terminal-panel__header">
         <h2 class="terminal-panel__title">
           <span class="fn-key">F8</span>
-          Fund NAV Summary
+          Resumo de NAV de Fundos
         </h2>
-        <a routerLink="/funds" class="btn btn-sm btn-link text-secondary p-1" title="View All">
+        <a routerLink="/funds" class="btn btn-sm btn-link text-secondary p-1" title="Ver Tudo">
           <i class="bi bi-arrow-right"></i>
         </a>
       </header>
@@ -146,21 +146,21 @@
   </div>
 
   <!-- ============================================================
-       BOTTOM ROW: Activity & Periods
+       LINHA INFERIOR: Atividade e Períodos
        ============================================================ -->
   <div class="row g-3 mt-0">
 
-    <!-- Activity Feed -->
+    <!-- Feed de Atividade -->
     <div class="col-lg-8">
       <section class="terminal-panel terminal-panel--tall" style="animation-delay: 0.4s">
         <header class="terminal-panel__header">
           <h2 class="terminal-panel__title">
             <span class="fn-key">F9</span>
-            Activity Feed
+            Feed de Atividade
           </h2>
           <div class="terminal-panel__actions">
-            <span class="live-indicator me-2" title="Live updates"></span>
-            <button class="btn btn-sm btn-link text-secondary p-1" title="Filter">
+            <span class="live-indicator me-2" title="Atualizações ao vivo"></span>
+            <button class="btn btn-sm btn-link text-secondary p-1" title="Filtrar">
               <i class="bi bi-funnel"></i>
             </button>
           </div>
@@ -189,15 +189,15 @@
       </section>
     </div>
 
-    <!-- Posting Periods -->
+    <!-- Períodos de Lançamento -->
     <div class="col-lg-4">
       <section class="terminal-panel terminal-panel--tall" style="animation-delay: 0.5s">
         <header class="terminal-panel__header">
           <h2 class="terminal-panel__title">
             <span class="fn-key">F10</span>
-            Posting Periods
+            Períodos de Lançamento
           </h2>
-          <a routerLink="/posting-periods" class="btn btn-sm btn-link text-secondary p-1" title="Manage">
+          <a routerLink="/posting-periods" class="btn btn-sm btn-link text-secondary p-1" title="Gerenciar">
             <i class="bi bi-gear"></i>
           </a>
         </header>
@@ -213,9 +213,9 @@
                 </div>
                 <span class="period-timeline__status period-timeline__status--{{ period.status }}">
                   @switch (period.status) {
-                    @case ('current') { Active }
-                    @case ('open') { Open }
-                    @case ('closed') { Closed }
+                    @case ('current') { Ativo }
+                    @case ('open') { Aberto }
+                    @case ('closed') { Fechado }
                   }
                 </span>
               </div>
@@ -228,7 +228,7 @@
   </div>
 
   <!-- ============================================================
-       BOTTOM: Accounts Chart (from existing)
+       INFERIOR: Gráfico de Contas (existente)
        ============================================================ -->
   <div class="row g-3 mt-0">
     <div class="col-12">
@@ -236,7 +236,7 @@
         <header class="terminal-panel__header">
           <h2 class="terminal-panel__title">
             <span class="fn-key">F11</span>
-            Active Accounts by Type
+            Contas Ativas por Tipo
           </h2>
         </header>
         <div class="terminal-panel__body">

@@ -49,7 +49,7 @@ export class SecurityService {
   deactivateSecurity(id: number): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/securities/${id}/deactivate`, null).pipe(
       catchError((error) => {
-        this.logger.error(`Failed to deactivate security`, {
+        this.logger.error(`Falha ao desativar título`, {
           status: error.status,
           errorCode: error.error?.errorCode,
           message: error.error?.message,
@@ -66,7 +66,7 @@ export class SecurityService {
   importB3InstructionFile(): Observable<ImportB3InstructionFileResponse> {
     return this.http.post<ImportB3InstructionFileResponse>(`${this.apiUrl}/jobs-ingestion/import-b3-instruction-file`, null).pipe(
       catchError((error) => {
-        this.logger.error(`Failed to import B3 instruction file`, {
+        this.logger.error(`Falha ao importar arquivo de instrução B3`, {
           status: error.status,
           errorCode: error.error?.errorCode,
           message: error.error?.message,

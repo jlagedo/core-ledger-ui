@@ -1,15 +1,15 @@
-<app-page-header title="Fund Explorer">
+<app-page-header title="Explorador de Fundos">
   <button type="button" class="btn btn-secondary">
     <i class="bi bi-funnel"></i>
-    <span>Filters</span>
+    <span>Filtros</span>
   </button>
   <button type="button" class="btn btn-secondary">
     <i class="bi bi-download"></i>
-    <span>Export</span>
+    <span>Exportar</span>
   </button>
-  <button type="button" aria-label="Create new fund" class="btn btn-primary" routerLink="/funds/new">
+  <button type="button" aria-label="Criar novo fundo" class="btn btn-primary" routerLink="/funds/new">
     <i class="bi bi-plus-lg"></i>
-    <span>New Fund</span>
+    <span>Novo Fundo</span>
   </button>
 </app-page-header>
 
@@ -22,20 +22,20 @@
         [data]="fundsResponse()"
         [columns]="columns"
         [searchable]="true"
-        [searchPlaceholder]="'Search funds...'"
-        [emptyMessage]="'No funds found'"
+        [searchPlaceholder]="'Pesquisar fundos...'"
+        [emptyMessage]="'Nenhum fundo encontrado'"
         [rowActionsTemplate]="actionsTemplate"
         (refresh)="loadFunds()">
       </app-data-grid>
 
-      <!-- Actions template for each row -->
+      <!-- Modelo de ações para cada linha -->
       <ng-template #actionsTemplate let-fund>
-        <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Fund actions">
+        <div class="btn-group btn-group-sm table-row-actions" role="group" aria-label="Ações de fundos">
           <button
             type="button"
             class="btn btn-secondary"
             [routerLink]="['/funds', fund.id, 'edit']"
-            [attr.aria-label]="'Edit fund ' + fund.name">
+            [attr.aria-label]="'Editar fundo ' + fund.name">
             <i class="bi bi-pencil" aria-hidden="true"></i>
           </button>
           <div class="btn-group btn-group-sm" container="body" ngbDropdown role="group">
@@ -43,22 +43,22 @@
               type="button"
               class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
               ngbDropdownToggle
-              [attr.aria-label]="'More actions for fund ' + fund.name">
-              <span class="visually-hidden">Toggle Dropdown</span>
+              [attr.aria-label]="'Mais ações para fundo ' + fund.name">
+              <span class="visually-hidden">Alternar Menu Suspenso</span>
             </button>
             <div ngbDropdownMenu>
               <button type="button" [routerLink]="['/funds', fund.id]" ngbDropdownItem>
-                <i class="bi bi-eye me-2"></i>View Details
+                <i class="bi bi-eye me-2"></i>Ver Detalhes
               </button>
               <hr class="dropdown-divider">
               <button type="button" ngbDropdownItem>
-                <i class="bi bi-toggle-on me-2"></i>Manage Fund Status
+                <i class="bi bi-toggle-on me-2"></i>Gerenciar Status do Fundo
               </button>
               <button type="button" ngbDropdownItem>
-                <i class="bi bi-clock-history me-2"></i>Audit Log
+                <i class="bi bi-clock-history me-2"></i>Log de Auditoria
               </button>
               <button type="button" ngbDropdownItem>
-                <i class="bi bi-download me-2"></i>Export Fund Information
+                <i class="bi bi-download me-2"></i>Exportar Informações do Fundo
               </button>
             </div>
           </div>

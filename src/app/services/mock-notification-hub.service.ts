@@ -7,15 +7,15 @@ import { HubConnectionState, NotificationMessage } from '../models/notification.
 import { environment } from '../../environments/environment';
 
 /**
- * Mock notification hub service for development and testing.
- * Simulates the SignalR hub behavior without requiring a real connection.
+ * Serviço mock de hub de notificação para desenvolvimento e testes.
+ * Simula o comportamento do hub SignalR sem exigir uma conexão real.
  *
- * IMPORTANT: Only for development. Will throw error if used in production.
+ * IMPORTANTE: Apenas para desenvolvimento. Lançará erro se usado em produção.
  *
- * Usage:
- * - Automatically "connects" when user logs in
- * - Provides methods to trigger test notifications
- * - Simulates connection states for UI testing
+ * Uso:
+ * - "Conecta" automaticamente quando usuário faz login
+ * - Fornece métodos para disparar notificações de teste
+ * - Simula estados de conexão para testes de UI
  */
 @Injectable()
 export class MockNotificationHubService {
@@ -25,29 +25,29 @@ export class MockNotificationHubService {
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
 
-  // Private writable signals
+  // Sinais privados graváveis
   private readonly _connectionState = signal<HubConnectionState>('disconnected');
   private readonly _lastError = signal<string | null>(null);
   private readonly _reconnectAttempts = signal<number>(0);
 
-  // Public read-only signals
+  // Sinais públicos somente leitura
   readonly connectionState = this._connectionState.asReadonly();
   readonly lastError = this._lastError.asReadonly();
   readonly reconnectAttempts = this._reconnectAttempts.asReadonly();
 
-  // Computed signals
+  // Sinais computados
   readonly isConnected = computed(() => this._connectionState() === 'connected');
   readonly isReconnecting = computed(() => this._connectionState() === 'reconnecting');
 
   constructor() {
-    // Production safety check
+    // Verificação de segurança de produção
     if (environment.production) {
-      throw new Error('CRITICAL: Mock notification hub cannot be enabled in production!');
+      throw new Error('CRÍTICO: Hub de notificação mock não pode ser ativado em produção!');
     }
 
-    this.logger.debug('MockNotificationHubService initialized', undefined, 'MockNotificationHubService');
+    this.logger.debug('MockNotificationHubService inicializado', undefined, 'MockNotificationHubService');
 
-    // Reactive effect: simulate connect/disconnect based on auth state
+    // Efeito reativo: simular conectar/desconectar baseado no estado de autenticação
     effect(() => {
       const isLoggedIn = this.authService.isLoggedIn();
 
@@ -58,33 +58,33 @@ export class MockNotificationHubService {
       }
     });
 
-    // Cleanup on destroy
+    // Limpeza ao destruir
     this.destroyRef.onDestroy(() => {
       this.disconnect();
     });
   }
 
   /**
-   * Simulates establishing connection to the SignalR hub.
+   * Simula estabelecer conexão com o hub SignalR.
    */
   async connect(): Promise<void> {
     this._connectionState.set('connecting');
-    this.logger.debug('Mock: Connecting to notification hub', undefined, 'MockNotificationHubService');
+    this.logger.debug('Mock: Conectando ao hub de notificações', undefined, 'MockNotificationHubService');
 
-    // Simulate connection delay
+    // Simular atraso de conexão
     await this.delay(200);
 
     this._connectionState.set('connected');
     this._lastError.set(null);
     this._reconnectAttempts.set(0);
 
-    this.logger.info('Mock: Connected to notification hub', undefined, 'MockNotificationHubService');
+    this.logger.info('Mock: Conectado ao hub de notificações', undefined, 'MockNotificationHubService');
 
-    // Show welcome notification after a short delay
+    // Mostrar notificação de boas-vindas após breve atraso
     setTimeout(() => {
       if (this.isConnected()) {
         this.sendTestNotification({
-          message: 'Real-time notifications enabled (Mock Mode)',
+          message: 'Notificações em tempo real ativadas (Modo Mock)',
           type: 'info',
         });
       }
@@ -92,35 +92,35 @@ export class MockNotificationHubService {
   }
 
   /**
-   * Simulates disconnecting from the SignalR hub.
+   * Simula desconectar do hub SignalR.
    */
   async disconnect(): Promise<void> {
     this._connectionState.set('disconnected');
     this._lastError.set(null);
     this._reconnectAttempts.set(0);
 
-    this.logger.info('Mock: Disconnected from notification hub', undefined, 'MockNotificationHubService');
+    this.logger.info('Mock: Desconectado do hub de notificações', undefined, 'MockNotificationHubService');
   }
 
   /**
-   * Sends a test notification through the mock hub.
-   * Useful for testing notification handling without a real backend.
+   * Envia uma notificação de teste através do hub mock.
+   * Útil para testar a manipulação de notificações sem um backend real.
    *
-   * @param notification The notification to send
+   * @param notification A notificação a enviar
    */
   sendTestNotification(notification: NotificationMessage): void {
     if (!this.isConnected()) {
       this.logger.warn(
-        'Mock: Cannot send notification - not connected',
+        'Mock: Não é possível enviar notificação - não conectado',
         undefined,
         'MockNotificationHubService'
       );
       return;
     }
 
-    this.logger.debug('Mock: Sending test notification', { notification }, 'MockNotificationHubService');
+    this.logger.debug('Mock: Enviando notificação de teste', { notification }, 'MockNotificationHubService');
 
-    // Display notification via ToastService
+    // Exibir notificação via ToastService
     switch (notification.type) {
       case 'success':
         this.toastService.success(notification.message);
@@ -139,38 +139,38 @@ export class MockNotificationHubService {
   }
 
   /**
-   * Simulates a reconnection scenario for testing.
+   * Simula um cenário de reconexão para testes.
    */
   async simulateReconnect(): Promise<void> {
     this._connectionState.set('reconnecting');
     this._reconnectAttempts.update((n) => n + 1);
 
-    this.logger.debug('Mock: Simulating reconnection', undefined, 'MockNotificationHubService');
+    this.logger.debug('Mock: Simulando reconexão', undefined, 'MockNotificationHubService');
 
     await this.delay(1000);
 
     this._connectionState.set('connected');
     this._reconnectAttempts.set(0);
 
-    this.logger.info('Mock: Reconnected', undefined, 'MockNotificationHubService');
+    this.logger.info('Mock: Reconectado', undefined, 'MockNotificationHubService');
   }
 
   /**
-   * Simulates a connection failure for testing.
+   * Simula uma falha de conexão para testes.
    */
   simulateConnectionFailure(errorMessage: string): void {
     this._connectionState.set('failed');
     this._lastError.set(errorMessage);
 
     this.logger.error(
-      'Mock: Simulated connection failure',
+      'Mock: Falha de conexão simulada',
       { error: errorMessage },
       'MockNotificationHubService'
     );
   }
 
   /**
-   * Utility method to create a delay.
+   * Método utilitário para criar um atraso.
    */
   private delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));

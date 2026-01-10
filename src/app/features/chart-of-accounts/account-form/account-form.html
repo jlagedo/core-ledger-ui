@@ -1,13 +1,13 @@
-<app-page-header title="Create Account">
-  <button class="btn btn-sm btn-secondary" aria-label="Get help for this page">
-    <i class="bi bi-question-circle"></i> Help
+<app-page-header title="Criar Conta">
+  <button class="btn btn-sm btn-secondary" aria-label="Obter ajuda para esta página">
+    <i class="bi bi-question-circle"></i> Ajuda
   </button>
 </app-page-header>
 
 <main class="container-form">
   <div class="card-form">
     <div class="card-header">
-      <h5 class="card-title">Create Account</h5>
+      <h5 class="card-title">Criar Conta</h5>
     </div>
     <div class="card-body">
 
@@ -16,7 +16,7 @@
         <div class="col-12">
           <div class="row">
             <div class="col-3">
-              <label class="form-label" for="accountNumber">Number</label>
+              <label class="form-label" for="accountNumber">Número</label>
               <input [class.is-invalid]="isInvalid('accountNumber')"
                      appOnlyNumbers
                      autofocus
@@ -29,22 +29,22 @@
               @if (isInvalid('accountNumber')) {
                 <div class="invalid-feedback">
                   @if (hasError('accountNumber', 'required')) {
-                    Account number is required
+                    Número da conta é obrigatório
                   }
                   @if (hasError('accountNumber', 'maxlength')) {
-                    Account number must be at most 10 characters long
+                    Número da conta deve ter no máximo 10 caracteres
                   }
                 </div>
               }
             </div>
             <div class="col-9">
-              <label class="form-label" for="accountDesc">Description</label>
+              <label class="form-label" for="accountDesc">Descrição</label>
               <input [class.is-invalid]="isInvalid('description')" class="form-control" formControlName="description" id="accountDesc"
                      type="text">
               @if (isInvalid('description')) {
                 <div class="invalid-feedback">
                   @if (hasError('description', 'required')) {
-                    Description is required
+                    Descrição é obrigatória
                   }
                 </div>
               }
@@ -55,54 +55,54 @@
         <div class="col-12">
           <div class="row">
             <div class="col-3">
-              <label class="form-label" for="accountType">Type</label>
+              <label class="form-label" for="accountType">Tipo</label>
 
               @defer (when accountTypes().length > 0) {
                 <select [class.is-invalid]="isInvalid('type')" class="form-select" formControlName="type"
                         id="accountType">
-                  <option value="">Select account type</option>
+                  <option value="">Selecione tipo de conta</option>
                   @for (t of accountTypes(); track t.id) {
                     <option [value]="t.id">{{ t.description }}</option>
                   }
                 </select>
               } @placeholder {
                 <select class="form-select" disabled>
-                  <option>Loading...</option>
+                  <option>Carregando...</option>
                 </select>
               } @error {
                 <select class="form-select" disabled>
-                  <option>Error loading account types</option>
+                  <option>Erro ao carregar tipos de conta</option>
                 </select>
               }
               @if (isInvalid('type')) {
                 <div class="invalid-feedback">
                   @if (hasError('type', 'required')) {
-                    Account type is required
+                    Tipo de conta é obrigatório
                   }
                 </div>
               }
             </div>
 
             <div class="col-9">
-              <label class="form-label d-block mb-3">Normal Balance</label>
+              <label class="form-label d-block mb-3">Saldo Normal</label>
 
               <div class="form-check form-check-inline">
                 <input [class.is-invalid]="isInvalid('normalBalance')" class="form-check-input" formControlName="normalBalance" id="normalBalanceDebit"
                        name="normalBalance" tabindex="0" type="radio"
                        value="1">
-                <label class="form-check-label" for="normalBalanceDebit">Debit</label>
+                <label class="form-check-label" for="normalBalanceDebit">Débito</label>
               </div>
               <div class="form-check form-check-inline">
                 <input [class.is-invalid]="isInvalid('normalBalance')" class="form-check-input" formControlName="normalBalance" id="normalBalanceCredit"
                        name="normalBalance" tabindex="0" type="radio"
                        value="2">
-                <label class="form-check-label" for="normalBalanceCredit">Credit</label>
+                <label class="form-check-label" for="normalBalanceCredit">Crédito</label>
               </div>
 
               @if (isInvalid('normalBalance')) {
                 <div class="invalid-feedback d-block">
                   @if (hasError('normalBalance', 'required')) {
-                    Normal balance is required
+                    Saldo normal é obrigatório
                   }
                 </div>
               }
@@ -110,13 +110,13 @@
           </div>
         </div>
 
-        <!-- Loading Status Message -->
+        <!-- Mensagem de Status de Carregamento -->
         <div class="col-12">
           @if (submitStatus() === 'loading') {
             <div class="alert alert-info d-flex align-items-center" role="status">
               <div aria-hidden="true" class="spinner-border spinner-border-sm me-2 text-primary"></div>
               <div>
-                Creating account...
+                Criando conta...
               </div>
             </div>
           }
@@ -129,52 +129,52 @@
               @if (isSubmitting()) {
                 <span aria-hidden="true" class="spinner-border spinner-border-sm me-1"></span>
               }
-              Submit
+              Enviar
             </button>
             <button (click)="cancelback()" class="btn btn-secondary" type="button">
-              Cancel and Go Back
+              Cancelar e Voltar
             </button>
             <button (click)="clearForm()" [disabled]="isSubmitting()"
                     class="btn btn-outline-secondary"
-                    type="button">Clear
+                    type="button">Limpar
             </button>
           </div>
         </div>
       </form>
 
-      <!-- ARIA Live Region for Screen Reader Announcements -->
+      <!-- Região ARIA Live para Anúncios do Leitor de Tela -->
       <div aria-atomic="true" aria-live="polite" class="visually-hidden" role="status">
         @if (submitStatus() === 'loading') {
-          Creating account, please wait...
+          Criando conta, aguarde...
         }
         @if (submitStatus() === 'success') {
-          Account created successfully. Redirecting to Chart of Accounts...
+          Conta criada com sucesso. Redirecionando para Plano de Contas...
         }
         @if (submitStatus() === 'error') {
-          Error: {{ errorMessage() }}
+          Erro: {{ errorMessage() }}
         }
       </div>
 
-      <!-- Success Message -->
+      <!-- Mensagem de Sucesso -->
       @if (submitStatus() === 'success') {
         <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
           <i aria-hidden="true" class="bi bi-check-circle-fill fs-4 me-2"></i>
           <div>
-            <strong>Success!</strong> Account created successfully. Redirecting to Chart of Accounts...
+            <strong>Sucesso!</strong> Conta criada com sucesso. Redirecionando para Plano de Contas...
           </div>
         </div>
       }
 
-      <!-- Error Message -->
+      <!-- Mensagem de Erro -->
       @if (submitStatus() === 'error') {
         <div class="alert alert-danger d-flex align-items-start mb-3" role="alert">
           <i aria-hidden="true" class="bi bi-exclamation-triangle-fill fs-4 me-2 flex-shrink-0"></i>
           <div class="flex-grow-1">
-            <strong>Error!</strong> {{ errorMessage() }}
+            <strong>Erro!</strong> {{ errorMessage() }}
             <div class="mt-2">
               <button (click)="retrySubmit()" class="btn btn-sm btn-outline-danger" type="button">
                 <i aria-hidden="true" class="bi bi-arrow-clockwise me-1"></i>
-                Retry
+                Tentar Novamente
               </button>
             </div>
           </div>

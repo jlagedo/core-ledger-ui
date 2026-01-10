@@ -16,25 +16,25 @@ export class UserService {
   private readonly logger = inject(LoggerService);
   private readonly toastService = inject(ToastService);
 
-  // Private writable signal
+  // Sinal privado gravável
   private readonly _currentUser = signal<UserDto | null>(null);
 
-  // Public read-only signal
+  // Sinal público somente leitura
   readonly currentUser = this._currentUser.asReadonly();
 
   /**
-   * Fetches the current user from the backend.
-   * This triggers the backend's first-login flow if the user doesn't exist.
+   * Busca o usuário atual do backend.
+   * Isso aciona o fluxo de primeiro login do backend se o usuário não existir.
    *
    * @returns Observable<UserDto>
    */
   fetchCurrentUser(): Observable<UserDto> {
     return this.http.get<UserDto>(`${this.apiUrl}/users/me`).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Special handling for 503 Service Unavailable
+        // Tratamento especial para 503 Serviço Indisponível
         if (error.status === 503) {
           this.logger.error(
-            'Backend service unavailable during user fetch',
+            'Serviço backend indisponível durante busca de usuário',
             {
               status: error.status,
               message: error.error?.message,
@@ -43,13 +43,13 @@ export class UserService {
             'UserService.fetchCurrentUser'
           );
           this.toastService.error(
-            'User service is temporarily unavailable. Some features may be limited.',
-            15000 // Show for 15 seconds
+            'Serviço de usuário está temporariamente indisponível. Alguns recursos podem ser limitados.',
+            15000 // Mostrar por 15 segundos
           );
         } else {
-          // Log other errors without showing toast
+          // Registrar outros erros sem mostrar toast
           this.logger.error(
-            'Failed to fetch current user',
+            'Falha ao buscar usuário atual',
             {
               status: error.status,
               errorCode: error.error?.errorCode,
@@ -60,27 +60,27 @@ export class UserService {
           );
         }
 
-        // Return error to allow caller to handle if needed
+        // Retornar erro para permitir que o chamador trate se necessário
         return throwError(() => error);
       })
     );
   }
 
   /**
-   * Sets the current user in the signal.
-   * Called internally after successful fetch.
+   * Define o usuário atual no sinal.
+   * Chamado internamente após busca bem-sucedida.
    */
   setUser(user: UserDto): void {
     this._currentUser.set(user);
-    this.logger.info('User data loaded', { userId: user.id }, 'UserService.setUser');
+    this.logger.info('Dados do usuário carregados', { userId: user.id }, 'UserService.setUser');
   }
 
   /**
-   * Clears the current user.
-   * Should be called during logout.
+   * Limpa o usuário atual.
+   * Deve ser chamado durante logout.
    */
   clearUser(): void {
     this._currentUser.set(null);
-    this.logger.debug('User data cleared', undefined, 'UserService.clearUser');
+    this.logger.debug('Dados do usuário limpos', undefined, 'UserService.clearUser');
   }
 }

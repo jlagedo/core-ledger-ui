@@ -7,13 +7,13 @@ export class ThemeService {
   private readonly STORAGE_KEY = this.environment.storage.theme;
   private readonly document = inject(DOCUMENT);
 
-  // Private writable signal
+  // Sinal privado gravável
   private readonly _currentTheme = signal<'light' | 'dark'>('dark');
 
-  // Public read-only signal
+  // Sinal público somente leitura
   readonly currentTheme = this._currentTheme.asReadonly();
 
-  // Computed signal for UI state
+  // Sinal computado para estado da UI
   readonly isDarkMode = computed(() => this._currentTheme() === 'dark');
 
   constructor() {
@@ -35,7 +35,7 @@ export class ThemeService {
       }
       return null;
     } catch (error) {
-      console.warn('Failed to read theme from localStorage:', error);
+      console.warn('Falha ao ler tema do localStorage:', error);
       return null;
     }
   }
@@ -59,7 +59,7 @@ export class ThemeService {
     try {
       localStorage.setItem(this.STORAGE_KEY, theme);
     } catch (error) {
-      console.warn('Failed to persist theme to localStorage:', error);
+      console.warn('Falha ao persistir tema no localStorage:', error);
     }
   }
 }

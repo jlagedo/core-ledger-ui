@@ -24,8 +24,8 @@ export class App {
   }
 
   /**
-   * Skip to main content for keyboard navigation accessibility.
-   * Prevents default anchor behavior and programmatically focuses main content.
+   * Pula para conteúdo principal para navegação por teclado acessível.
+   * Impede comportamento padrão de âncora e foca no conteúdo principal programaticamente.
    */
   skipToMain(event: Event): void {
     event.preventDefault();

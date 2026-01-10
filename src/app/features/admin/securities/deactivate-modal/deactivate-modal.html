@@ -1,7 +1,7 @@
 <div class="modal-header">
-  <h5 id="modal-title" class="modal-title fw-semibold">Confirm Deactivation</h5>
+  <h5 id="modal-title" class="modal-title fw-semibold">Confirmar Desativação</h5>
   <button (click)="activeModal.dismiss()"
-          aria-label="Close dialog"
+          aria-label="Fechar diálogo"
           class="btn-close"
           type="button"></button>
 </div>
@@ -9,7 +9,7 @@
 <div class="modal-body">
   <p class="text-danger fw-semibold">
     <i class="bi bi-exclamation-triangle me-2"></i>
-    Are you sure you want to deactivate the following security?
+    Tem certeza de que deseja desativar a seguinte segurança?
   </p>
 
   @if (security(); as sec) {
@@ -21,16 +21,16 @@
             <span class="badge bg-info text-dark">{{ sec.ticker }}</span>
           </dd>
 
-          <dt class="col-sm-4">Name:</dt>
+          <dt class="col-sm-4">Nome:</dt>
           <dd class="col-sm-8 fw-semibold">{{ sec.name }}</dd>
 
           <dt class="col-sm-4">ISIN:</dt>
           <dd class="col-sm-8">{{ sec.isin || 'N/A' }}</dd>
 
-          <dt class="col-sm-4">Type:</dt>
+          <dt class="col-sm-4">Tipo:</dt>
           <dd class="col-sm-8">{{ sec.typeDescription }}</dd>
 
-          <dt class="col-sm-4">Currency:</dt>
+          <dt class="col-sm-4">Moeda:</dt>
           <dd class="col-sm-8">{{ sec.currency }}</dd>
 
           <dt class="col-sm-4">Status:</dt>
@@ -47,18 +47,18 @@
 
     <div class="alert alert-warning mt-3 mb-0" role="alert">
       <i class="bi bi-info-circle me-2"></i>
-      <strong>Note:</strong> This action will mark the security as inactive. The security data will be preserved for
-      historical reference.
+      <strong>Nota:</strong> Esta ação marcará a segurança como inativa. Os dados da segurança serão preservados para
+      referência histórica.
     </div>
   }
 </div>
 
 <div class="modal-footer">
   <button (click)="activeModal.dismiss()" class="btn btn-secondary" type="button">
-    Cancel
+    Cancelar
   </button>
   <button (click)="activeModal.close('confirm')" class="btn btn-danger" type="button">
     <i class="bi bi-x-circle me-1"></i>
-    Deactivate
+    Desativar
   </button>
 </div>

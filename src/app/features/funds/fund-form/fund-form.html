@@ -1,13 +1,13 @@
-<app-page-header title="Create Fund">
-  <button class="btn btn-sm btn-secondary" aria-label="Get help for this page">
-    <i class="bi bi-question-circle"></i> Help
+<app-page-header title="Criar Fundo">
+  <button class="btn btn-sm btn-secondary" aria-label="Obter ajuda para esta página">
+    <i class="bi bi-question-circle"></i> Ajuda
   </button>
 </app-page-header>
 
 <main class="container-form">
   <div class="card-form">
     <div class="card-header">
-      <h5 class="card-title">Create Fund</h5>
+      <h5 class="card-title">Criar Fundo</h5>
     </div>
     <div class="card-body">
 
@@ -15,34 +15,34 @@
         <div class="col-12">
           <div class="row">
             <div class="col-4">
-              <label class="form-label" for="fundCode">Fund Code</label>
+              <label class="form-label" for="fundCode">Código do Fundo</label>
               <input [class.is-invalid]="isInvalid('code')" autofocus class="form-control text-uppercase font-monospace text-info text-nowrap" formControlName="code"
                      id="fundCode" maxlength="10" placeholder="FND001" type="text">
               @if (isInvalid('code')) {
                 <div class="invalid-feedback">
                   @if (hasError('code', 'required')) {
-                    Fund code is required
+                    Código do fundo é obrigatório
                   }
                   @if (hasError('code', 'maxlength')) {
-                    Fund code must be at most 10 characters
+                    Código do fundo deve ter no máximo 10 caracteres
                   }
                   @if (hasError('code', 'pattern')) {
-                    Fund code must contain only uppercase letters and numbers (A-Z, 0-9)
+                    Código do fundo deve conter apenas letras maiúsculas e números (A-Z, 0-9)
                   }
                 </div>
               }
             </div>
             <div class="col-8">
-              <label class="form-label" for="fundName">Fund Name</label>
+              <label class="form-label" for="fundName">Nome do Fundo</label>
               <input [class.is-invalid]="isInvalid('name')" class="form-control" formControlName="name" id="fundName"
                      type="text">
               @if (isInvalid('name')) {
                 <div class="invalid-feedback">
                   @if (hasError('name', 'required')) {
-                    Fund name is required
+                    Nome do fundo é obrigatório
                   }
                   @if (hasError('name', 'maxlength')) {
-                    Fund name must be at most 200 characters long
+                    Nome do fundo deve ter no máximo 200 caracteres
                   }
                 </div>
               }
@@ -53,29 +53,29 @@
         <div class="col-12">
           <div class="row">
             <div class="col-4">
-              <label class="form-label" for="baseCurrency">Base Currency</label>
+              <label class="form-label" for="baseCurrency">Moeda Base</label>
               <input [class.is-invalid]="isInvalid('baseCurrency')" class="form-control text-uppercase font-monospace text-info text-nowrap" formControlName="baseCurrency"
                      id="baseCurrency" maxlength="3" placeholder="USD"
                      type="text">
               @if (isInvalid('baseCurrency')) {
                 <div class="invalid-feedback">
                   @if (hasError('baseCurrency', 'required')) {
-                    Currency is required
+                    Moeda é obrigatória
                   }
                   @if (hasError('baseCurrency', 'minlength') || hasError('baseCurrency', 'maxlength')) {
-                    Currency must be a 3-letter ISO code
+                    Moeda deve ser um código ISO de 3 letras
                   }
                 </div>
               }
             </div>
 
             <div class="col-8">
-              <label class="form-label" for="inceptionDate">Inception Date</label>
+              <label class="form-label" for="inceptionDate">Data de Início</label>
               <div class="input-group">
                 <input #d="ngbDatepicker" [class.is-invalid]="isInvalid('inceptionDate')" class="form-control font-monospace text-nowrap" formControlName="inceptionDate"
-                       id="inceptionDate" ngbDatepicker placeholder="yyyy-mm-dd"
+                       id="inceptionDate" ngbDatepicker placeholder="aaaa-mm-dd"
                        type="text">
-                <button (click)="d.toggle()" [attr.aria-label]="'Toggle calendar'" class="btn btn-outline-secondary"
+                <button (click)="d.toggle()" [attr.aria-label]="'Alternar calendário'" class="btn btn-outline-secondary"
                         type="button">
                   <i aria-hidden="true" class="bi bi-calendar3"></i>
                 </button>
@@ -83,7 +83,7 @@
               @if (isInvalid('inceptionDate')) {
                 <div class="invalid-feedback d-block">
                   @if (hasError('inceptionDate', 'required')) {
-                    Inception date is required
+                    Data de início é obrigatória
                   }
                 </div>
               }
@@ -92,37 +92,37 @@
         </div>
 
         <div class="col-12">
-          <label class="form-label d-block mb-3">Valuation Frequency</label>
+          <label class="form-label d-block mb-3">Frequência de Avaliação</label>
 
           <div class="form-check form-check-inline">
             <input [class.is-invalid]="isInvalid('valuationFrequency')" class="form-check-input" formControlName="valuationFrequency" id="valuationDaily"
                    name="valuationFrequency" tabindex="0"
                    type="radio" value="1">
-            <label class="form-check-label" for="valuationDaily">Daily</label>
+            <label class="form-check-label" for="valuationDaily">Diário</label>
           </div>
           <div class="form-check form-check-inline">
             <input [class.is-invalid]="isInvalid('valuationFrequency')" class="form-check-input" formControlName="valuationFrequency" id="valuationWeekly"
                    name="valuationFrequency" tabindex="0"
                    type="radio" value="2">
-            <label class="form-check-label" for="valuationWeekly">Weekly</label>
+            <label class="form-check-label" for="valuationWeekly">Semanal</label>
           </div>
 
           @if (isInvalid('valuationFrequency')) {
             <div class="invalid-feedback d-block">
               @if (hasError('valuationFrequency', 'required')) {
-                Valuation frequency is required
+                Frequência de avaliação é obrigatória
               }
             </div>
           }
         </div>
 
-        <!-- Loading Status Message -->
+        <!-- Mensagem de Status de Carregamento -->
         <div class="col-12">
           @if (submitStatus() === 'loading') {
             <div class="alert alert-info d-flex align-items-center" role="status">
               <div aria-hidden="true" class="spinner-border spinner-border-sm me-2 text-primary"></div>
               <div>
-                Creating fund...
+                Criando fundo...
               </div>
             </div>
           }
@@ -134,51 +134,51 @@
               @if (isSubmitting()) {
                 <span aria-hidden="true" class="spinner-border spinner-border-sm me-1"></span>
               }
-              Submit
+              Enviar
             </button>
             <button (click)="cancelback()" class="btn btn-secondary" type="button">
-              Cancel and Go Back
+              Cancelar e Voltar
             </button>
             <button (click)="clearForm()" [disabled]="isSubmitting()" class="btn btn-outline-secondary"
-                    type="button">Clear
+                    type="button">Limpar
             </button>
           </div>
         </div>
       </form>
 
-      <!-- ARIA Live Region for Screen Reader Announcements -->
+      <!-- Região ARIA Live para Anúncios do Leitor de Tela -->
       <div aria-atomic="true" aria-live="polite" class="visually-hidden" role="status">
         @if (submitStatus() === 'loading') {
-          Creating fund, please wait...
+          Criando fundo, aguarde...
         }
         @if (submitStatus() === 'success') {
-          Fund created successfully. Redirecting to Fund List...
+          Fundo criado com sucesso. Redirecionando para Lista de Fundos...
         }
         @if (submitStatus() === 'error') {
-          Error: {{ errorMessage() }}
+          Erro: {{ errorMessage() }}
         }
       </div>
 
-      <!-- Success Message -->
+      <!-- Mensagem de Sucesso -->
       @if (submitStatus() === 'success') {
         <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
           <i aria-hidden="true" class="bi bi-check-circle-fill fs-4 me-2"></i>
           <div>
-            <strong>Success!</strong> Fund created successfully. Redirecting to Fund List...
+            <strong>Sucesso!</strong> Fundo criado com sucesso. Redirecionando para Lista de Fundos...
           </div>
         </div>
       }
 
-      <!-- Error Message -->
+      <!-- Mensagem de Erro -->
       @if (submitStatus() === 'error') {
         <div class="alert alert-danger d-flex align-items-start mb-3" role="alert">
           <i aria-hidden="true" class="bi bi-exclamation-triangle-fill fs-4 me-2 flex-shrink-0"></i>
           <div class="flex-grow-1">
-            <strong>Error!</strong> {{ errorMessage() }}
+            <strong>Erro!</strong> {{ errorMessage() }}
             <div class="mt-2">
               <button (click)="retrySubmit()" class="btn btn-sm btn-outline-danger" type="button">
                 <i aria-hidden="true" class="bi bi-arrow-clockwise me-1"></i>
-                Retry
+                Tentar Novamente
               </button>
             </div>
           </div>

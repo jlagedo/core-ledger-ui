@@ -1,26 +1,26 @@
-<div [attr.aria-label]="store.isSidenavCollapsed() ? 'Collapsed sidenav' : 'Expanded sidenav'"
+<div [attr.aria-label]="store.isSidenavCollapsed() ? 'Sidenav recolhida' : 'Sidenav expandida'"
      [style.width]="store.isSidenavCollapsed() ? '4rem' : '15rem'"
      [class.sidenav-wrapper--collapsed]="store.isSidenavCollapsed()"
      class="d-flex flex-column flex-shrink-0 sidenav-width-transition sidenav-wrapper vh-100">
 
-  <!-- Left accent line -->
+  <!-- Linha de destaque esquerda -->
   <span class="sidenav-accent-line" aria-hidden="true"></span>
 
-  <!-- Header Section (Logo & Toggle) - FIXED -->
+  <!-- Seção de Cabeçalho (Logo e Alternância) - FIXO -->
   <header class="d-flex align-items-center header-section flex-shrink-0"
           [class.justify-content-center]="store.isSidenavCollapsed()"
           [class.justify-content-between]="!store.isSidenavCollapsed()">
     @if (store.isSidenavCollapsed()) {
-      <!-- Collapsed: Show hamburger menu icon only -->
+      <!-- Recolhido: Mostrar apenas ícone de menu hambúrguer -->
       <button (click)="toggleSidenav()"
               aria-expanded="false"
-              aria-label="Expand sidenav"
+              aria-label="Expandir sidenav"
               class="sidenav-toggle">
         <i class="bi bi-list"></i>
       </button>
     } @else {
-      <!-- Expanded: Show logo and close button -->
-      <a aria-label="Go to dashboard"
+      <!-- Expandido: Mostrar logo e botão de fechar -->
+      <a aria-label="Ir para dashboard"
          class="sidenav-logo"
          routerLink="/dashboard">
         <i class="bi bi-boxes sidenav-logo__icon"></i>
@@ -29,14 +29,14 @@
       </a>
 
       <button (click)="toggleSidenav()"
-              aria-label="Collapse sidenav"
+              aria-label="Recolher sidenav"
               class="sidenav-toggle">
         <i class="bi bi-x-lg"></i>
       </button>
     }
   </header>
 
-  <!-- Search Filter - Only visible when expanded -->
+  <!-- Filtro de Pesquisa - Visível apenas quando expandido -->
   @if (!store.isSidenavCollapsed()) {
     <div class="sidenav-search"
          [class.sidenav-search--active]="searchQuery() || isSearchFocused()">
@@ -45,18 +45,18 @@
         <input #searchInput
                type="text"
                class="sidenav-search__input"
-               placeholder="Filter menu..."
+               placeholder="Filtrar menu..."
                [value]="searchQuery()"
                (input)="onSearchInput($event)"
                (focus)="isSearchFocused.set(true)"
                (blur)="isSearchFocused.set(false)"
                (keydown)="onSearchKeydown($event)"
-               aria-label="Filter navigation menu">
+               aria-label="Filtrar menu de navegação">
         @if (searchQuery()) {
           <button class="sidenav-search__clear"
                   type="button"
                   (click)="clearSearch()"
-                  aria-label="Clear search">
+                  aria-label="Limpar pesquisa">
             <i class="bi bi-x" aria-hidden="true"></i>
           </button>
         }
@@ -64,41 +64,41 @@
       @if (searchQuery() && !hasSearchResults()) {
         <div class="sidenav-search__no-results">
           <i class="bi bi-inbox" aria-hidden="true"></i>
-          <span>No matches</span>
+          <span>Nenhuma correspondência</span>
         </div>
       }
     </div>
   }
 
-  <!-- Navigation Menu - SCROLLABLE -->
+  <!-- Menu de Navegação - ROLÁVEL -->
   <nav #navElement
        class="sidenav-scroll-container flex-grow-1"
-       aria-label="Main navigation"
+       aria-label="Navegação principal"
        role="navigation">
-    <ul class="nav nav-pills flex-column sidenav-nav" role="menubar" aria-label="Main menu">
+    <ul class="nav nav-pills flex-column sidenav-nav" role="menubar" aria-label="Menu principal">
     @for (item of filteredMenuItems(); track item.label; let i = $index) {
-      <!-- Section divider before Ledger -->
+      <!-- Divisor de seção antes de Razão -->
       @if (item.label === 'Ledger') {
         <li>
           <div class="sidenav-section"
                [class.sidenav-section--collapsed]="store.isSidenavCollapsed()">
             <span class="sidenav-section__label">
-              <span>Ledger</span>
+              <span>Razão</span>
             </span>
           </div>
         </li>
       }
 
       @if (item.children) {
-        <!-- Menu item with submenu -->
+        <!-- Item de menu com submenu -->
         <li class="nav-item nav-item--parent" role="none">
           @if (store.isSidenavCollapsed()) {
-            <!-- Collapsed state: Trigger for flyout -->
+            <!-- Estado recolhido: Gatilho para menu flutuante -->
             <a class="nav-link nav-link--parent nav-flyout-trigger d-flex align-items-center justify-content-center"
                [class.parent-active]="isParentActive(item)"
                role="menuitem"
                tabindex="0"
-               [attr.aria-label]="item.label + ' menu, ' + item.children.length + ' items'"
+               [attr.aria-label]="item.label + ' menu, ' + item.children.length + ' itens'"
                aria-haspopup="true"
                [attr.aria-expanded]="activeFlyoutItem()?.label === item.label"
                (mouseenter)="showFlyout($event, item)"
@@ -107,11 +107,11 @@
                (keydown.enter)="showFlyoutFromKeyboard(item, $event)"
                (keydown.space)="showFlyoutFromKeyboard(item, $event)">
               <i class="bi {{ item.icon }}" aria-hidden="true"></i>
-              <!-- Child count indicator -->
+              <!-- Indicador de contagem de itens filhos -->
               <span class="nav-child-indicator" aria-hidden="true">{{ item.children.length }}</span>
             </a>
           } @else {
-            <!-- Expanded state: Normal collapsible submenu -->
+            <!-- Estado expandido: Submenu normal recolhível -->
             <a (click)="store.toggleMenuItem(item.label)"
                [attr.aria-controls]="item.label + 'Submenu'"
                [attr.aria-expanded]="shouldShowExpanded(item.label)"
@@ -152,7 +152,7 @@
           }
         </li>
       } @else {
-        <!-- Simple menu item without submenu -->
+        <!-- Item de menu simples sem submenu -->
         <li class="nav-item" role="none">
           <a [class.justify-content-center]="store.isSidenavCollapsed()"
              [ngbTooltip]="store.isSidenavCollapsed() ? item.label : ''"
@@ -175,7 +175,7 @@
     </ul>
   </nav>
 
-  <!-- Footer - FIXED -->
+  <!-- Rodapé - FIXO -->
   <footer class="sidenav-footer flex-shrink-0">
     <div class="sidenav-footer__inner"
          [class.sidenav-footer__inner--collapsed]="store.isSidenavCollapsed()">
@@ -187,7 +187,7 @@
     </div>
   </footer>
 
-  <!-- Flyout Panel - Rendered OUTSIDE scroll container to avoid clipping -->
+  <!-- Painel Flutuante - Renderizado FORA do contêiner de rolagem para evitar corte -->
   @if (activeFlyoutItem(); as item) {
     <div class="nav-flyout"
          [style.top.px]="flyoutTop()"

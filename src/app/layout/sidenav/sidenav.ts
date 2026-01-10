@@ -41,25 +41,25 @@ export class Sidenav {
   readonly menuItems = this.menuService.menuItems;
   sidenavToggle = output<boolean>();
 
-  // Track current URL for parent active state detection
+  // Rastrear URL atual para detecção de estado ativo do pai
   private readonly currentUrl = toSignal(
     this.router.events.pipe(map(() => this.router.url)),
     { initialValue: this.router.url }
   );
 
-  // Search functionality
+  // Funcionalidade de pesquisa
   readonly searchQuery = signal('');
   readonly isSearchFocused = signal(false);
   private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
 
-  // Keyboard navigation
-  /** Reference to the navigation element for keyboard navigation */
+  // Navegação por teclado
+  /** Referência ao elemento de navegação para navegação por teclado */
   private readonly navElement = viewChild<ElementRef<HTMLElement>>('navElement');
 
-  /** Currently focused menu item index (for keyboard navigation) */
+  /** Índice do item de menu atualmente focado (para navegação por teclado) */
   private readonly focusedItemIndex = signal<number>(-1);
 
-  // Filtered menu items based on search query
+  // Itens de menu filtrados baseado em consulta de pesquisa
   readonly filteredMenuItems = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
     const items = this.menuItems();
@@ -68,48 +68,48 @@ export class Sidenav {
 
     return items
       .map(item => {
-        // Check if parent label matches
+        // Verificar se o rótulo do pai corresponde
         const parentMatches = item.label.toLowerCase().includes(query);
 
-        // Check if any children match
+        // Verificar se algum filho corresponde
         const matchingChildren = item.children?.filter(child =>
           child.label.toLowerCase().includes(query)
         );
 
-        // Include item if parent matches OR has matching children
+        // Incluir item se pai corresponder OU tiver filhos correspondentes
         if (parentMatches) {
-          return item; // Return full item with all children
+          return item; // Retornar item completo com todos os filhos
         } else if (matchingChildren && matchingChildren.length > 0) {
-          return { ...item, children: matchingChildren }; // Return with filtered children
+          return { ...item, children: matchingChildren }; // Retornar com filhos filtrados
         }
         return null;
       })
       .filter((item): item is MenuItem => item !== null);
   });
 
-  // Check if search has results
+  // Verificar se a pesquisa tem resultados
   readonly hasSearchResults = computed(() => this.filteredMenuItems().length > 0);
 
-  // Check if we're actively searching
+  // Verificar se estamos pesquisando ativamente
   readonly isSearching = computed(() => this.searchQuery().trim().length > 0);
 
-  // Determine if a submenu should be shown expanded
-  // When searching: always expand to show matching children
-  // When not searching: use the stored collapsed state
+  // Determinar se um submenu deve ser mostrado expandido
+  // Ao pesquisar: sempre expandir para mostrar filhos correspondentes
+  // Quando não está pesquisando: usar o estado de recolhimento armazenado
   shouldShowExpanded(itemLabel: string): boolean {
     if (this.isSearching()) {
-      return true; // Always expand when searching
+      return true; // Sempre expandir ao pesquisar
     }
     return !this.store.isMenuItemCollapsed(itemLabel);
   }
 
-  // Flyout state - stores full item data for rendering outside scroll container
+  // Estado do menu flutuante - armazena dados completos do item para renderizar fora do contêiner de rolagem
   readonly flyoutTop = signal<number | null>(null);
   readonly activeFlyoutItem = signal<MenuItem | null>(null);
   private hideTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
-    // Initialize collapsed state for all menu items with children
+    // Inicializar estado recolhido para todos os itens de menu com filhos
     const menuLabelsWithChildren = this.menuItems()
       .filter((item) => item.children && item.children.length > 0)
       .map((item) => item.label);
@@ -123,25 +123,25 @@ export class Sidenav {
   }
 
   showFlyout(event: MouseEvent, item: MenuItem) {
-    // Cancel any pending hide
+    // Cancelar qualquer ocultação pendente
     if (this.hideTimeout) {
       clearTimeout(this.hideTimeout);
       this.hideTimeout = null;
     }
 
     const target = event.currentTarget as HTMLElement;
-    // Get position relative to the sidenav-wrapper (positioned ancestor)
+    // Obter posição relativa ao sidenav-wrapper (ancestral posicionado)
     const wrapper = target.closest('.sidenav-wrapper') as HTMLElement;
     const wrapperRect = wrapper?.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
-    // Calculate top relative to wrapper
+    // Calcular topo relativo ao wrapper
     const relativeTop = targetRect.top - (wrapperRect?.top ?? 0);
     this.flyoutTop.set(relativeTop);
     this.activeFlyoutItem.set(item);
   }
 
   hideFlyout() {
-    // Add a small delay before hiding to allow mouse to reach the flyout
+    // Adicionar um pequeno atraso antes de ocultar para permitir que o mouse chegue ao menu flutuante
     this.hideTimeout = setTimeout(() => {
       this.flyoutTop.set(null);
       this.activeFlyoutItem.set(null);
@@ -149,7 +149,7 @@ export class Sidenav {
     }, 100);
   }
 
-  // Keep flyout visible - cancels any pending hide timeout
+  // Manter menu flutuante visível - cancela qualquer timeout de ocultação pendente
   keepFlyoutVisible() {
     if (this.hideTimeout) {
       clearTimeout(this.hideTimeout);
@@ -157,18 +157,18 @@ export class Sidenav {
     }
   }
 
-  // Check if a parent menu item has any active child route
+  // Verificar se um item de menu pai tem alguma rota filha ativa
   isParentActive(item: MenuItem): boolean {
     if (!item.children) return false;
     const url = this.currentUrl();
     return item.children.some((child) => {
       if (!child.route) return false;
-      // Check if current URL starts with the child route
+      // Verificar se a URL atual começa com a rota do filho
       return url.startsWith(child.route);
     });
   }
 
-  // Search methods
+  // Métodos de pesquisa
   onSearchInput(event: Event) {
     const input = event.target as HTMLInputElement;
     this.searchQuery.set(input.value);
@@ -186,7 +186,7 @@ export class Sidenav {
     }
   }
 
-  // Highlight matching text in labels
+  // Destacar texto correspondente nos rótulos
   highlightMatch(text: string): string {
     const query = this.searchQuery().trim();
     if (!query) return text;
@@ -200,17 +200,17 @@ export class Sidenav {
   }
 
   // ============================================================
-  // KEYBOARD NAVIGATION
+  // NAVEGAÇÃO POR TECLADO
   // ============================================================
 
   /**
-   * Handle keyboard events for menu navigation.
-   * Supports arrow keys, Enter, Space, Home, End, and Escape.
+   * Lidar com eventos de teclado para navegação de menu.
+   * Oferece suporte a teclas de seta, Enter, Espaço, Home, End e Escape.
    */
   onKeydown(event: KeyboardEvent): void {
     const target = event.target as HTMLElement;
 
-    // Don't interfere with search input typing
+    // Não interferir com a digitação de entrada de pesquisa
     if (target.matches('input')) {
       return;
     }
@@ -232,7 +232,7 @@ export class Sidenav {
         break;
 
       case 'ArrowRight':
-        // Expand submenu or show flyout
+        // Expandir submenu ou mostrar menu flutuante
         if (this.store.isSidenavCollapsed()) {
           this.handleFlyoutOpen(event, navLinks, currentIndex);
         } else {
@@ -241,7 +241,7 @@ export class Sidenav {
         break;
 
       case 'ArrowLeft':
-        // Collapse submenu or close flyout
+        // Recolher submenu ou fechar menu flutuante
         if (this.store.isSidenavCollapsed()) {
           this.handleFlyoutClose();
         } else {
@@ -266,7 +266,7 @@ export class Sidenav {
         break;
 
       case 'Escape':
-        // Close flyout if open, otherwise blur
+        // Fechar menu flutuante se aberto, caso contrário desfocar
         if (this.activeFlyoutItem()) {
           this.handleFlyoutClose();
         } else {
@@ -277,7 +277,7 @@ export class Sidenav {
   }
 
   /**
-   * Get all navigable elements in the menu (links and parent buttons)
+   * Obter todos os elementos navegáveis no menu (links e botões pai)
    */
   private getNavigableElements(): HTMLElement[] {
     const nav = this.navElement()?.nativeElement;
@@ -291,14 +291,14 @@ export class Sidenav {
   }
 
   /**
-   * Check if element is visible
+   * Verificar se o elemento está visível
    */
   private isVisible(el: HTMLElement): boolean {
     return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
   }
 
   /**
-   * Focus the next menu item
+   * Focar o próximo item de menu
    */
   private focusNextItem(navLinks: HTMLElement[], currentIndex: number): void {
     const nextIndex = currentIndex < navLinks.length - 1 ? currentIndex + 1 : 0;
@@ -306,7 +306,7 @@ export class Sidenav {
   }
 
   /**
-   * Focus the previous menu item
+   * Focar o item de menu anterior
    */
   private focusPreviousItem(navLinks: HTMLElement[], currentIndex: number): void {
     const prevIndex = currentIndex > 0 ? currentIndex - 1 : navLinks.length - 1;
@@ -314,21 +314,21 @@ export class Sidenav {
   }
 
   /**
-   * Focus the first menu item
+   * Focar o primeiro item de menu
    */
   private focusFirstItem(navLinks: HTMLElement[]): void {
     this.focusItem(navLinks, 0);
   }
 
   /**
-   * Focus the last menu item
+   * Focar o último item de menu
    */
   private focusLastItem(navLinks: HTMLElement[]): void {
     this.focusItem(navLinks, navLinks.length - 1);
   }
 
   /**
-   * Focus a specific menu item
+   * Focar um item de menu específico
    */
   private focusItem(navLinks: HTMLElement[], index: number): void {
     if (index >= 0 && index < navLinks.length) {
@@ -338,26 +338,26 @@ export class Sidenav {
   }
 
   /**
-   * Activate the focused item (click or navigate)
+   * Ativar o item focado (clicar ou navegar)
    */
   private activateItem(navLinks: HTMLElement[], currentIndex: number): void {
     if (currentIndex >= 0 && currentIndex < navLinks.length) {
       const element = navLinks[currentIndex];
 
-      // Check if it's a parent menu with children (has aria-expanded)
+      // Verificar se é um menu pai com filhos (possui aria-expanded)
       const isParent = element.hasAttribute('aria-expanded');
       if (isParent) {
-        // Toggle the submenu
+        // Alternar o submenu
         element.click();
       } else {
-        // Navigate to the route
+        // Navegar para a rota
         element.click();
       }
     }
   }
 
   /**
-   * Handle expanding submenu with right arrow
+   * Lidar com a expansão de submenu com seta para a direita
    */
   private handleExpandSubmenu(navLinks: HTMLElement[], currentIndex: number): void {
     if (currentIndex >= 0 && currentIndex < navLinks.length) {
@@ -365,9 +365,9 @@ export class Sidenav {
       const isParent = element.hasAttribute('aria-expanded');
 
       if (isParent && element.getAttribute('aria-expanded') === 'false') {
-        element.click(); // Expand the submenu
+        element.click(); // Expandir o submenu
       } else if (isParent) {
-        // Already expanded, focus first child
+        // Já expandido, focar no primeiro filho
         afterNextRender(
           () => {
             const submenuId = element.getAttribute('aria-controls');
@@ -386,14 +386,14 @@ export class Sidenav {
   }
 
   /**
-   * Handle collapsing submenu with left arrow
+   * Lidar com o recolhimento de submenu com seta para a esquerda
    */
   private handleCollapseSubmenu(navLinks: HTMLElement[], currentIndex: number): void {
     if (currentIndex >= 0 && currentIndex < navLinks.length) {
       const element = navLinks[currentIndex];
       const isParent = element.hasAttribute('aria-expanded');
 
-      // If we're in a submenu, focus the parent
+      // Se estamos em um submenu, focar no pai
       const submenuParent = element.closest('.btn-toggle-nav');
       if (submenuParent) {
         const parentLink = submenuParent.previousElementSibling as HTMLElement;
@@ -403,7 +403,7 @@ export class Sidenav {
         }
       }
 
-      // If on a parent that's expanded, collapse it
+      // Se em um pai expandido, recolhê-lo
       if (isParent && element.getAttribute('aria-expanded') === 'true') {
         element.click();
       }
@@ -411,7 +411,7 @@ export class Sidenav {
   }
 
   /**
-   * Handle opening flyout with keyboard (collapsed mode)
+   * Lidar com abertura de menu flutuante com teclado (modo recolhido)
    */
   private handleFlyoutOpen(event: KeyboardEvent, navLinks: HTMLElement[], currentIndex: number): void {
     if (currentIndex >= 0 && currentIndex < navLinks.length) {
@@ -428,7 +428,7 @@ export class Sidenav {
         this.flyoutTop.set(relativeTop);
         this.activeFlyoutItem.set(menuItem);
 
-        // Focus first item in flyout after render
+        // Focar no primeiro item do menu flutuante após renderização
         afterNextRender(
           () => {
             const flyout = document.querySelector('.nav-flyout');
@@ -444,7 +444,7 @@ export class Sidenav {
   }
 
   /**
-   * Handle closing flyout with keyboard
+   * Lidar com fechamento de menu flutuante com teclado
    */
   private handleFlyoutClose(): void {
     this.flyoutTop.set(null);
@@ -452,7 +452,7 @@ export class Sidenav {
   }
 
   /**
-   * Get menu item data from DOM element
+   * Obter dados do item de menu a partir do elemento DOM
    */
   private getMenuItemFromElement(element: HTMLElement): MenuItem | null {
     const items = this.filteredMenuItems();
@@ -465,7 +465,7 @@ export class Sidenav {
   }
 
   /**
-   * Show flyout from keyboard event (Enter/Space)
+   * Mostrar menu flutuante a partir de evento de teclado (Enter/Espaço)
    */
   showFlyoutFromKeyboard(item: MenuItem, event: Event): void {
     event.preventDefault();
@@ -478,7 +478,7 @@ export class Sidenav {
     this.flyoutTop.set(relativeTop);
     this.activeFlyoutItem.set(item);
 
-    // Focus first item in flyout after render
+    // Focar no primeiro item do menu flutuante após renderização
     afterNextRender(
       () => {
         const flyout = document.querySelector('.nav-flyout');
@@ -492,7 +492,7 @@ export class Sidenav {
   }
 
   /**
-   * Track focus changes for roving tabindex
+   * Rastrear mudanças de foco para índice de tabulação móvel
    */
   onMenuItemFocus(index: number): void {
     this.focusedItemIndex.set(index);
