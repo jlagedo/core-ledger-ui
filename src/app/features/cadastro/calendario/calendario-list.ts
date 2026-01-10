@@ -227,24 +227,19 @@ export class CalendarioList {
     {
       field: 'data',
       headerName: 'Data',
-      width: 130,
+      width: 110,
+      minWidth: 100,
+      maxWidth: 130,
       sortable: true,
+      cellClass: 'text-center',
+      headerClass: 'text-center',
       valueFormatter: (params) => this.datePipe.transform(params.value, 'dd/MM/yyyy') || '',
-    },
-    {
-      field: 'tipoDia',
-      headerName: 'Tipo de Dia',
-      width: 160,
-      sortable: true,
-      valueFormatter: (params) => {
-        const option = this.tipoDiaOptions.find((opt) => opt.value === params.value);
-        return option?.name || '';
-      },
     },
     {
       field: 'praca',
       headerName: 'Praça',
-      width: 140,
+      width: 130,
+      minWidth: 110,
       sortable: true,
       valueFormatter: (params) => {
         const option = this.pracaOptions.find((opt) => opt.value === params.value);
@@ -252,10 +247,25 @@ export class CalendarioList {
       },
     },
     {
+      field: 'tipoDia',
+      headerName: 'Tipo de Dia',
+      width: 150,
+      minWidth: 130,
+      sortable: true,
+      valueFormatter: (params) => {
+        const option = this.tipoDiaOptions.find((opt) => opt.value === params.value);
+        return option?.name || '';
+      },
+    },
+    {
       field: 'diaUtil',
       headerName: 'Dia Útil',
-      width: 100,
+      width: 110,
+      minWidth: 110,
+      maxWidth: 130,
       sortable: true,
+      cellClass: 'text-center',
+      headerClass: 'text-center',
       cellRenderer: (params: { value: boolean }) => {
         if (params.value === true) {
           return '<span class="status-badge status-badge--active">Sim</span>';
@@ -267,19 +277,22 @@ export class CalendarioList {
     {
       field: 'descricao',
       headerName: 'Descrição',
-      minWidth: 200,
+      minWidth: 180,
       flex: 1,
       sortable: false,
       valueFormatter: (params) => params.value || '—',
     },
     {
-      headerName: 'Ações',
+      headerName: '',
       colId: 'actions',
-      width: 100,
-      minWidth: 100,
+      width: 80,
+      minWidth: 80,
+      maxWidth: 80,
       sortable: false,
       suppressMovable: true,
       lockPosition: 'right',
+      cellClass: 'text-center',
+      headerClass: 'text-center',
       cellRenderer: (params: { data: Calendario }) => {
         if (!params.data) return '';
         return `
