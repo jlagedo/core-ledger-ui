@@ -20,37 +20,10 @@ export const routes: Routes = [
     loadChildren: () => import('./features/funds/funds.routes').then(m => m.FUNDS_ROUTES),
   },
   {
-    path: 'portfolio',
-    data: { breadcrumb: 'Portfolio' },
-    canActivate: [authGuard],
-    loadChildren: () => import('./features/portfolio/portfolio.routes').then(m => m.PORTFOLIO_ROUTES),
-  },
-  {
     path: 'transactions',
     data: { breadcrumb: 'Transactions' },
     canActivate: [authGuard],
     loadChildren: () => import('./features/transactions/transactions.routes').then(m => m.TRANSACTIONS_ROUTES),
-  },
-  {
-    path: 'pricing-valuation',
-    data: { breadcrumb: 'Pricing & Valuation' },
-    canActivate: [authGuard],
-    loadChildren: () =>
-      import('./features/pricing-valuation/pricing-valuation.routes').then(
-        m => m.PRICING_VALUATION_ROUTES
-      ),
-  },
-  {
-    path: 'nav',
-    data: { breadcrumb: 'NAV' },
-    canActivate: [authGuard],
-    loadChildren: () => import('./features/nav/nav.routes').then(m => m.NAV_ROUTES),
-  },
-  {
-    path: 'reports',
-    data: { breadcrumb: 'Reports' },
-    canActivate: [authGuard],
-    loadChildren: () => import('./features/reports/reports.routes').then(m => m.REPORTS_ROUTES),
   },
   {
     path: 'admin',
@@ -68,40 +41,16 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'journal-entries',
-    data: { breadcrumb: 'Journal' },
-    canActivate: [authGuard],
-    loadChildren: () =>
-      import('./features/journal-entries/journal-entries.routes').then(m => m.JOURNAL_ENTRIES_ROUTES),
-  },
-  {
-    path: 'posting-periods',
-    data: { breadcrumb: 'Periods' },
-    canActivate: [authGuard],
-    loadChildren: () =>
-      import('./features/posting-periods/posting-periods.routes').then(m => m.POSTING_PERIODS_ROUTES),
-  },
-  {
-    path: 'balances-reports',
-    data: { breadcrumb: 'Balances & Reports' },
-    canActivate: [authGuard],
-    loadChildren: () =>
-      import('./features/balances-reports/balances-reports.routes').then(
-        m => m.BALANCES_REPORTS_ROUTES
-      ),
-  },
-  {
-    path: 'administration',
-    data: { breadcrumb: 'Administration' },
-    canActivate: [authGuard],
-    loadChildren: () =>
-      import('./features/administration/administration.routes').then(m => m.ADMINISTRATION_ROUTES),
-  },
-  {
     path: 'profile',
     data: { breadcrumb: 'Profile' },
     canActivate: [authGuard],
     loadComponent: () => import('./features/profile/profile').then(m => m.Profile),
+  },
+  {
+    path: 'cadastro',
+    data: { breadcrumb: 'Cadastro' },
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/cadastro/cadastro.routes').then(m => m.CADASTRO_ROUTES),
   },
   { path: '**', redirectTo: '/login' },
 ];
