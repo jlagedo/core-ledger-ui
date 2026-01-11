@@ -14,25 +14,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard),
   },
   {
-    path: 'funds',
-    data: { breadcrumb: 'Fundos' },
-    canActivate: [authGuard],
-    loadChildren: () => import('./features/funds/funds.routes').then(m => m.FUNDS_ROUTES),
-  },
-  {
     path: 'admin',
     data: { breadcrumb: 'Administração' },
     canActivate: [authGuard],
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES),
-  },
-  {
-    path: 'chart-of-accounts',
-    data: { breadcrumb: 'Plano de Contas' },
-    canActivate: [authGuard],
-    loadChildren: () =>
-      import('./features/chart-of-accounts/chart-of-accounts.routes').then(
-        m => m.CHART_OF_ACCOUNTS_ROUTES
-      ),
   },
   {
     path: 'profile',

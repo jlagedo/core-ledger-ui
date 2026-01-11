@@ -169,7 +169,7 @@ export function setupLocalStorageMock(): {
 /**
  * Verify HTTP request was made and return the request for assertions
  * @example
- * const request = expectHttpRequest(httpMock, 'GET', '/api/funds');
+ * const request = expectHttpRequest(httpMock, 'GET', '/api/securities');
  * request.flush(mockResponse);
  */
 export function expectHttpRequest(
@@ -184,53 +184,10 @@ export function expectHttpRequest(
 }
 
 /**
- * Test data builders using builder pattern
- * Use for cleaner, more readable test data creation
- *
- * @example
- * const fund = new FundBuilder()
- *   .withName('Test Fund')
- *   .withBaseCurrency('USD')
- *   .build();
- */
-export class FundBuilder {
-  private data: { [key: string]: any } = {
-    id: Math.random(),
-    name: 'Test Fund',
-    description: 'Test Description',
-    baseCurrencyCode: 'USD',
-  };
-
-  withId(id: number): FundBuilder {
-    this.data['id'] = id;
-    return this;
-  }
-
-  withName(name: string): FundBuilder {
-    this.data['name'] = name;
-    return this;
-  }
-
-  withDescription(description: string): FundBuilder {
-    this.data['description'] = description;
-    return this;
-  }
-
-  withBaseCurrency(code: string): FundBuilder {
-    this.data['baseCurrencyCode'] = code;
-    return this;
-  }
-
-  build() {
-    return this.data;
-  }
-}
-
-/**
  * Create mock paginated response
  * @example
  * const response = createMockPaginatedResponse(
- *   [new FundBuilder().build()],
+ *   [{ id: 1, name: 'Item 1' }],
  *   1,
  *   100,
  *   0

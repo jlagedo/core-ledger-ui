@@ -102,7 +102,7 @@ function routeRequest(req: any, mockApiService: MockApiService): HttpResponse<an
     const urlParts = url.split('?')[0].split('/').filter(Boolean);
     const params = new URLSearchParams(req.url.split('?')[1] || '');
 
-    // Extract ID from URL if present (e.g., /api/funds/123 or /api/accounttypes/1)
+    // Extract ID from URL if present (e.g., /api/securities/123)
     const lastPart = urlParts[urlParts.length - 1];
     const id = /^\d+$/.test(lastPart) ? parseInt(lastPart, 10) : null;
 
@@ -135,23 +135,16 @@ function routeRequest(req: any, mockApiService: MockApiService): HttpResponse<an
     }
 
     // Endpoints that return plain arrays instead of paginated responses
-    const arrayEndpoints = ['/api/accounttypes', '/api/securitytypes'];
+    const arrayEndpoints = ['/api/securitytypes'];
     const isArrayEndpoint = arrayEndpoints.some(endpoint => url.includes(endpoint));
-
-    // Report endpoints that return arrays directly
-    const reportEndpoints = ['/api/accounts/reports/by-type'];
-    const isReportEndpoint = reportEndpoints.some(endpoint => url.includes(endpoint));
 
     switch (req.method) {
         case 'GET':
             if (id !== null) {
-                // GET /api/funds/123
+                // GET /api/securities/123
                 return mockApiService.handleGetByIdRequest(url, id);
-            } else if (isReportEndpoint) {
-                // GET /api/accounts/reports/by-type - return report data directly
-                return mockApiService.handleReportRequest(url);
             } else if (isArrayEndpoint) {
-                // GET /api/accounttypes or /api/securitytypes - return array directly
+                // GET /api/securitytypes - return array directly
                 const paginatedResponse = mockApiService.handleListRequest(url, params);
                 if (paginatedResponse) {
                     return new HttpResponse({
@@ -162,18 +155,18 @@ function routeRequest(req: any, mockApiService: MockApiService): HttpResponse<an
                 }
                 return null;
             } else {
-                // GET /api/funds?limit=10&offset=0
+                // GET /api/securities?limit=10&offset=0
                 return mockApiService.handleListRequest(url, params);
             }
 
         case 'POST':
-            // POST /api/funds
+            // POST /api/securities
             return mockApiService.handleCreateRequest(url, req.body);
 
         case 'PUT':
         case 'PATCH':
             if (id !== null) {
-                // PUT /api/funds/123
+                // PUT /api/securities/123
                 return mockApiService.handleUpdateRequest(url, id, req.body);
             }
             return new HttpResponse({
@@ -184,7 +177,7 @@ function routeRequest(req: any, mockApiService: MockApiService): HttpResponse<an
 
         case 'DELETE':
             if (id !== null) {
-                // DELETE /api/funds/123
+                // DELETE /api/securities/123
                 return mockApiService.handleDeleteRequest(url, id);
             }
             return new HttpResponse({

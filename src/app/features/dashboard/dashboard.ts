@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe, DatePipe, CurrencyPipe } from '@angular/common';
-import { DashboardChart } from './dashboard-chart';
 import { DashboardAllocationChart } from './dashboard-allocation-chart';
 
 // ============================================================
@@ -211,7 +210,7 @@ const QUICK_ACTIONS: QuickAction[] = [
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, DecimalPipe, DatePipe, CurrencyPipe, DashboardChart, DashboardAllocationChart],
+  imports: [RouterLink, DecimalPipe, DatePipe, CurrencyPipe, DashboardAllocationChart],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

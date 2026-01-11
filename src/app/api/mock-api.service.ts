@@ -2,17 +2,19 @@ import { Injectable, inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ENVIRONMENT } from '../config/environment.config';
 import {
-    MOCK_ACCOUNTS,
-    MOCK_ACCOUNTS_BY_TYPE_REPORT,
-    MOCK_ACCOUNT_TYPES,
-    MOCK_FUNDS,
     MOCK_INDEXADORES,
     MOCK_HISTORICO_INDEXADORES,
     MOCK_SECURITIES,
     MOCK_SECURITY_TYPES,
     MOCK_USERS,
 } from './mock-data';
-import { PaginatedResponse } from '../models/fund.model';
+
+export interface PaginatedResponse<T> {
+    items: T[];
+    totalCount: number;
+    limit: number;
+    offset: number;
+}
 
 /**
  * Mock API Service provides in-memory CRUD operations for all API entities.
@@ -25,9 +27,6 @@ export class MockApiService {
     private readonly environment = inject(ENVIRONMENT);
 
     // In-memory storage with auto-reset on instantiation
-    private accounts = new Map(MOCK_ACCOUNTS.map(a => [a.id, { ...a }]));
-    private accountTypes = new Map(MOCK_ACCOUNT_TYPES.map(at => [at.id, { ...at }]));
-    private funds = new Map(MOCK_FUNDS.map(f => [f.id, { ...f }]));
     private indexadores = new Map(MOCK_INDEXADORES.map(i => [i.id, { ...i }]));
     private historicosIndexadores = new Map(MOCK_HISTORICO_INDEXADORES.map(h => [h.id, { ...h }]));
     private securities = new Map(MOCK_SECURITIES.map(s => [s.id, { ...s }]));
@@ -35,9 +34,6 @@ export class MockApiService {
     private users = new Map(MOCK_USERS.map(u => [u.id, { ...u }]));
 
     // Auto-increment ID counters
-    private nextAccountId = Math.max(...MOCK_ACCOUNTS.map(a => a.id), 0) + 1;
-    private nextAccountTypeId = 6; // Account types use string IDs
-    private nextFundId = Math.max(...MOCK_FUNDS.map(f => f.id), 0) + 1;
     private nextIndexadorId = Math.max(...MOCK_INDEXADORES.map(i => i.id), 0) + 1;
     private nextHistoricoIndexadorId = Math.max(...MOCK_HISTORICO_INDEXADORES.map(h => h.id), 0) + 1;
     private nextSecurityId = Math.max(...MOCK_SECURITIES.map(s => s.id), 0) + 1;
@@ -241,9 +237,6 @@ export class MockApiService {
      * Get the appropriate data map based on URL
      */
     private getDataMapForUrl(url: string): Map<any, any> | null {
-        if (url.includes('/accounts')) return this.accounts;
-        if (url.includes('/accounttypes')) return this.accountTypes;
-        if (url.includes('/funds')) return this.funds;
         // Indexadores endpoints - order matters: more specific patterns first
         if (url.includes('/historicos-indexadores')) return this.historicosIndexadores;
         if (url.includes('/indexadores') && url.includes('/historico')) return this.historicosIndexadores;
@@ -258,27 +251,10 @@ export class MockApiService {
      * Get next auto-increment ID based on URL
      */
     private getNextIdForUrl(url: string): string | number {
-        if (url.includes('/accounts') && !url.includes('/accounttypes')) return this.nextAccountId++;
-        if (url.includes('/accounttypes')) return this.nextAccountTypeId++;
-        if (url.includes('/funds')) return this.nextFundId++;
         if (url.includes('/historicos-indexadores')) return this.nextHistoricoIndexadorId++;
         if (url.includes('/indexadores')) return this.nextIndexadorId++;
         if (url.includes('/securities')) return this.nextSecurityId++;
         return 1;
-    }
-
-    /**
-     * Handle GET requests for report endpoints that return arrays directly
-     */
-    handleReportRequest(url: string): HttpResponse<any[]> | null {
-        if (url.includes('/accounts/reports/by-type')) {
-            return new HttpResponse({
-                status: 200,
-                statusText: 'OK',
-                body: MOCK_ACCOUNTS_BY_TYPE_REPORT,
-            });
-        }
-        return null;
     }
 
     /**
@@ -433,18 +409,12 @@ export class MockApiService {
      * Reset all data to initial mock state (useful for testing)
      */
     reset(): void {
-        this.accounts = new Map(MOCK_ACCOUNTS.map(a => [a.id, { ...a }]));
-        this.accountTypes = new Map(MOCK_ACCOUNT_TYPES.map(at => [at.id, { ...at }]));
-        this.funds = new Map(MOCK_FUNDS.map(f => [f.id, { ...f }]));
         this.indexadores = new Map(MOCK_INDEXADORES.map(i => [i.id, { ...i }]));
         this.historicosIndexadores = new Map(MOCK_HISTORICO_INDEXADORES.map(h => [h.id, { ...h }]));
         this.securities = new Map(MOCK_SECURITIES.map(s => [s.id, { ...s }]));
         this.securityTypes = new Map(MOCK_SECURITY_TYPES.map(st => [st.value, { ...st }]));
         this.users = new Map(MOCK_USERS.map(u => [u.id, { ...u }]));
 
-        this.nextAccountId = Math.max(...MOCK_ACCOUNTS.map(a => a.id), 0) + 1;
-        this.nextAccountTypeId = 6; // Account types use string IDs
-        this.nextFundId = Math.max(...MOCK_FUNDS.map(f => f.id), 0) + 1;
         this.nextIndexadorId = Math.max(...MOCK_INDEXADORES.map(i => i.id), 0) + 1;
         this.nextHistoricoIndexadorId = Math.max(...MOCK_HISTORICO_INDEXADORES.map(h => h.id), 0) + 1;
         this.nextSecurityId = Math.max(...MOCK_SECURITIES.map(s => s.id), 0) + 1;

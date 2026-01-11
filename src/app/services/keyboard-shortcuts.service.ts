@@ -44,10 +44,10 @@ interface ParsedKeys {
  *
  * ngOnInit() {
  *   this.keyboardService.register({
- *     id: 'create-fund',
- *     label: 'Criar novo fundo',
+ *     id: 'create-item',
+ *     label: 'Criar novo item',
  *     keys: 'alt+n',
- *     callback: () => this.router.navigate(['/funds/new']),
+ *     callback: () => this.router.navigate(['/items/new']),
  *     category: 'Navegação'
  *   });
  * }
@@ -223,22 +223,6 @@ export class KeyboardShortcutsService {
       label: 'Ir para Painel',
       keys: 'alt+d',
       callback: () => this.router.navigate(['/dashboard']),
-      category: 'Navegação',
-    });
-
-    this.register({
-      id: 'go-funds',
-      label: 'Ir para Fundos',
-      keys: 'alt+f',
-      callback: () => this.router.navigate(['/funds']),
-      category: 'Navegação',
-    });
-
-    this.register({
-      id: 'go-accounts',
-      label: 'Ir para Plano de Contas',
-      keys: 'alt+a',
-      callback: () => this.router.navigate(['/chart-of-accounts']),
       category: 'Navegação',
     });
 

@@ -49,8 +49,6 @@ export interface Environment {
   storage: {
     theme: string;
     sidenavState: string;
-    fundsSearch: string;
-    accountsSearch: string;
     securitiesSearch: string;
   };
 

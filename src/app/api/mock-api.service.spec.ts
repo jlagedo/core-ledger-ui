@@ -3,7 +3,6 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { HttpResponse } from '@angular/common/http';
 import { MockApiService } from './mock-api.service';
 import { ENVIRONMENT } from '../config/environment.config';
-import { Fund } from '../models/fund.model';
 
 describe('MockApiService', () => {
     let service: MockApiService;
@@ -47,7 +46,7 @@ describe('MockApiService', () => {
     describe('handleListRequest', () => {
         it('should return all items without pagination params', () => {
             const params = new URLSearchParams();
-            const response = service.handleListRequest<Fund>('/api/funds', params);
+            const response = service.handleListRequest<any>('/api/securities', params);
 
             expect(response).not.toBeNull();
             expect(response!.body!.items).toBeDefined();
@@ -57,37 +56,37 @@ describe('MockApiService', () => {
 
         it('should support pagination with limit and offset', () => {
             const params = new URLSearchParams('limit=3&offset=2');
-            const response = service.handleListRequest<Fund>('/api/funds', params);
+            const response = service.handleListRequest<any>('/api/securities', params);
 
             expect(response!.body!.items.length).toBeLessThanOrEqual(3);
         });
 
         it('should support sorting in ascending order', () => {
-            const params = new URLSearchParams('sortBy=name&sortDirection=asc');
-            const response = service.handleListRequest<Fund>('/api/funds', params);
+            const params = new URLSearchParams('sortBy=codigo&sortDirection=asc');
+            const response = service.handleListRequest<any>('/api/securities', params);
 
-            const names = response!.body!.items.map((f) => f.name);
-            const sortedNames = [...names].sort();
-            expect(names).toEqual(sortedNames);
+            const codes = response!.body!.items.map((s) => s.codigo);
+            const sortedCodes = [...codes].sort();
+            expect(codes).toEqual(sortedCodes);
         });
 
         it('should support sorting in descending order', () => {
-            const params = new URLSearchParams('sortBy=name&sortDirection=desc');
-            const response = service.handleListRequest<Fund>('/api/funds', params);
+            const params = new URLSearchParams('sortBy=codigo&sortDirection=desc');
+            const response = service.handleListRequest<any>('/api/securities', params);
 
-            const names = response!.body!.items.map((f) => f.name);
-            const sortedNames = [...names].sort().reverse();
-            expect(names).toEqual(sortedNames);
+            const codes = response!.body!.items.map((s) => s.codigo);
+            const sortedCodes = [...codes].sort().reverse();
+            expect(codes).toEqual(sortedCodes);
         });
 
         it('should support case-insensitive filtering', () => {
-            const params = new URLSearchParams('filter=equity');
-            const response = service.handleListRequest<Fund>('/api/funds', params);
+            const params = new URLSearchParams('filter=security');
+            const response = service.handleListRequest<any>('/api/securities', params);
 
             expect(response!.body!.items.length).toBeGreaterThan(0);
-            response!.body!.items.forEach((fund) => {
-                const searchableText = JSON.stringify(fund).toLowerCase();
-                expect(searchableText).toContain('equity');
+            response!.body!.items.forEach((security) => {
+                const searchableText = JSON.stringify(security).toLowerCase();
+                expect(searchableText).toContain('security');
             });
         });
 
@@ -99,29 +98,29 @@ describe('MockApiService', () => {
         });
 
         it('should filter correctly across all entity fields', () => {
-            const params = new URLSearchParams('filter=usd');
-            const response = service.handleListRequest<Fund>('/api/funds', params);
+            const params = new URLSearchParams('filter=security');
+            const response = service.handleListRequest<any>('/api/securities', params);
 
             expect(response!.body!.items.length).toBeGreaterThan(0);
-            // Search should find funds with USD in their fields
-            const hasUsd = response!.body!.items.some((fund) => {
-                const searchableText = JSON.stringify(fund).toLowerCase();
-                return searchableText.includes('usd');
+            // Search should find securities with "security" in their fields
+            const hasKeyword = response!.body!.items.some((security) => {
+                const searchableText = JSON.stringify(security).toLowerCase();
+                return searchableText.includes('security');
             });
-            expect(hasUsd).toBe(true);
+            expect(hasKeyword).toBe(true);
         });
     });
 
     describe('handleGetByIdRequest', () => {
-        it('should return existing fund by ID', () => {
-            const response = service.handleGetByIdRequest<Fund>('/api/funds', 1);
+        it('should return existing security by ID', () => {
+            const response = service.handleGetByIdRequest<any>('/api/securities', 1);
 
             expect(response.status).toBe(200);
             expect(response.body!.id).toBe(1);
         });
 
         it('should return 404 for non-existent ID', () => {
-            const response = service.handleGetByIdRequest('/api/funds', 99999);
+            const response = service.handleGetByIdRequest('/api/securities', 99999);
 
             expect(response.status).toBe(404);
         });
@@ -134,39 +133,39 @@ describe('MockApiService', () => {
     });
 
     describe('handleCreateRequest', () => {
-        it('should create new fund with auto-incremented ID', () => {
-            const newFund = {
-                name: 'Test Fund',
-                description: 'Test Description',
-                currency: 'USD',
+        it('should create new security with auto-incremented ID', () => {
+            const newSecurity = {
+                codigo: 'NEWS',
+                descricao: 'Test Security',
+                tipo: 'Equity',
             };
 
-            const response = service.handleCreateRequest<any>('/api/funds', newFund);
+            const response = service.handleCreateRequest<any>('/api/securities', newSecurity);
 
             expect(response.status).toBe(201);
             expect(response.body!.id).toBeDefined();
-            expect(response.body!.name).toBe(newFund.name);
+            expect(response.body!.codigo).toBe(newSecurity.codigo);
             expect(response.body!.createdAt).toBeDefined();
             expect(response.body!.updatedAt).toBeDefined();
         });
 
         it('should auto-generate sequential IDs', () => {
-            const fund1 = service.handleCreateRequest<any>('/api/funds', { name: 'Fund 1' });
-            const fund2 = service.handleCreateRequest<any>('/api/funds', { name: 'Fund 2' });
+            const security1 = service.handleCreateRequest<any>('/api/securities', { codigo: 'SEC1' });
+            const security2 = service.handleCreateRequest<any>('/api/securities', { codigo: 'SEC2' });
 
-            expect(fund2.body!.id).toBeGreaterThan(fund1.body!.id);
+            expect(security2.body!.id).toBeGreaterThan(security1.body!.id);
         });
 
         it('should persist created entities', () => {
-            const newFund = { name: 'Persistent Fund', currency: 'EUR' };
-            const createResponse = service.handleCreateRequest<any>('/api/funds', newFund);
+            const newSecurity = { codigo: 'PERSIST', descricao: 'Persistent Security' };
+            const createResponse = service.handleCreateRequest<any>('/api/securities', newSecurity);
             const createdId = createResponse.body!.id;
 
-            const getResponse = service.handleGetByIdRequest<Fund>('/api/funds', createdId);
+            const getResponse = service.handleGetByIdRequest<any>('/api/securities', createdId);
 
             expect(getResponse.status).toBe(200);
             expect(getResponse.body!.id).toBe(createdId);
-            expect(getResponse.body!.name).toBe(newFund.name);
+            expect(getResponse.body!.codigo).toBe(newSecurity.codigo);
         });
 
         it('should return 404 for unsupported URL', () => {
@@ -177,29 +176,28 @@ describe('MockApiService', () => {
     });
 
     describe('handleUpdateRequest', () => {
-        it('should update existing fund', () => {
-            const updates = { name: 'Updated Fund Name', description: 'Updated description' };
-            const response = service.handleUpdateRequest<any>('/api/funds', 1, updates);
+        it('should update existing security', () => {
+            const updates = { descricao: 'Updated Security Description' };
+            const response = service.handleUpdateRequest<any>('/api/securities', 1, updates);
 
             expect(response.status).toBe(200);
-            expect(response.body!.name).toBe(updates.name);
-            expect(response.body!.description).toBe(updates.description);
+            expect(response.body!.descricao).toBe(updates.descricao);
             expect(response.body!.updatedAt).toBeDefined();
         });
 
-        it('should return 404 for non-existent fund', () => {
-            const response = service.handleUpdateRequest('/api/funds', 99999, { name: 'Test' });
+        it('should return 404 for non-existent security', () => {
+            const response = service.handleUpdateRequest('/api/securities', 99999, { descricao: 'Test' });
 
             expect(response.status).toBe(404);
         });
 
         it('should persist updates', () => {
-            const updates = { baseCurrency: 'GBP' };
-            service.handleUpdateRequest('/api/funds', 1, updates);
+            const updates = { tipo: 'Updated' };
+            service.handleUpdateRequest('/api/securities', 1, updates);
 
-            const getResponse = service.handleGetByIdRequest<Fund>('/api/funds', 1);
+            const getResponse = service.handleGetByIdRequest<any>('/api/securities', 1);
 
-            expect(getResponse.body!.baseCurrency).toBe('GBP');
+            expect(getResponse.body!.tipo).toBe('Updated');
         });
 
         it('should return 404 for unsupported URL', () => {
@@ -210,16 +208,16 @@ describe('MockApiService', () => {
     });
 
     describe('handleDeleteRequest', () => {
-        it('should delete existing fund', () => {
-            const deleteResponse = service.handleDeleteRequest('/api/funds', 1);
+        it('should delete existing security', () => {
+            const deleteResponse = service.handleDeleteRequest('/api/securities', 1);
             expect(deleteResponse.status).toBe(204);
 
-            const getResponse = service.handleGetByIdRequest('/api/funds', 1);
+            const getResponse = service.handleGetByIdRequest('/api/securities', 1);
             expect(getResponse.status).toBe(404);
         });
 
-        it('should return 404 for non-existent fund', () => {
-            const response = service.handleDeleteRequest('/api/funds', 99999);
+        it('should return 404 for non-existent security', () => {
+            const response = service.handleDeleteRequest('/api/securities', 99999);
             expect(response.status).toBe(404);
         });
 
@@ -232,17 +230,17 @@ describe('MockApiService', () => {
     describe('reset', () => {
         it('should reset all data to initial state', () => {
             // Modify data
-            const newFund = { name: 'Temp Fund' };
-            service.handleCreateRequest('/api/funds', newFund);
-            service.handleDeleteRequest('/api/funds', 1);
+            const newSecurity = { codigo: 'TEST' };
+            service.handleCreateRequest('/api/securities', newSecurity);
+            service.handleDeleteRequest('/api/securities', 1);
 
             // Reset
             service.reset();
 
             // Verify reset
             const params = new URLSearchParams();
-            const listResponse = service.handleListRequest<Fund>('/api/funds', params);
-            const getResponse = service.handleGetByIdRequest<Fund>('/api/funds', 1);
+            const listResponse = service.handleListRequest<any>('/api/securities', params);
+            const getResponse = service.handleGetByIdRequest<any>('/api/securities', 1);
 
             expect(listResponse!.body!.totalCount).toBeGreaterThan(0); // Original data restored
             expect(getResponse.status).toBe(200); // Deleted item restored
@@ -250,14 +248,14 @@ describe('MockApiService', () => {
 
         it('should reset auto-increment counters', () => {
             // Create some entities
-            service.handleCreateRequest('/api/funds', { name: 'Fund 1' });
-            const beforeResetId = service.handleCreateRequest<any>('/api/funds', { name: 'Fund 2' }).body!.id;
+            service.handleCreateRequest('/api/securities', { codigo: 'SEC1' });
+            const beforeResetId = service.handleCreateRequest<any>('/api/securities', { codigo: 'SEC2' }).body!.id;
 
             // Reset
             service.reset();
 
             // Create new entity
-            const afterResetId = service.handleCreateRequest<any>('/api/funds', { name: 'Fund 3' }).body!.id;
+            const afterResetId = service.handleCreateRequest<any>('/api/securities', { codigo: 'SEC3' }).body!.id;
 
             // ID should be reset to lower value
             expect(afterResetId).toBeLessThan(beforeResetId);
@@ -265,9 +263,9 @@ describe('MockApiService', () => {
     });
 
     describe('Entity-specific handling', () => {
-        it('should handle account types with string IDs', () => {
+        it('should handle security types with string IDs', () => {
             const params = new URLSearchParams();
-            const response = service.handleListRequest('/api/accounttypes', params);
+            const response = service.handleListRequest('/api/securitytypes', params);
 
             expect(response).not.toBeNull();
             expect(response!.body!.items.length).toBeGreaterThan(0);
@@ -276,9 +274,6 @@ describe('MockApiService', () => {
 
         it('should handle all supported entity types', () => {
             const urls = [
-                '/api/funds',
-                '/api/accounts',
-                '/api/accounttypes',
                 '/api/securities',
                 '/api/securitytypes',
                 '/api/users',
@@ -297,7 +292,7 @@ describe('MockApiService', () => {
     describe('Edge cases', () => {
         it('should handle empty search results', () => {
             const params = new URLSearchParams('filter=XYZ_NONEXISTENT_TERM_XYZ');
-            const response = service.handleListRequest<Fund>('/api/funds', params);
+            const response = service.handleListRequest<any>('/api/securities', params);
 
             expect(response!.body!.items.length).toBe(0);
             expect(response!.body!.totalCount).toBe(0);
@@ -305,22 +300,22 @@ describe('MockApiService', () => {
 
         it('should handle large offset gracefully', () => {
             const params = new URLSearchParams('limit=10&offset=1000');
-            const response = service.handleListRequest<Fund>('/api/funds', params);
+            const response = service.handleListRequest<any>('/api/securities', params);
 
             expect(response!.body!.items.length).toBe(0);
         });
 
         it('should handle partial updates without overwriting entire object', () => {
-            const originalFund = service.handleGetByIdRequest<Fund>('/api/funds', 1).body!;
-            const originalCurrency = originalFund.baseCurrency;
+            const originalSecurity = service.handleGetByIdRequest<any>('/api/securities', 1).body!;
+            const originalTipo = originalSecurity.tipo;
 
-            const partialUpdate = { name: 'Only Name Updated' };
-            service.handleUpdateRequest('/api/funds', 1, partialUpdate);
+            const partialUpdate = { descricao: 'Only Description Updated' };
+            service.handleUpdateRequest('/api/securities', 1, partialUpdate);
 
-            const updatedFund = service.handleGetByIdRequest<Fund>('/api/funds', 1).body!;
+            const updatedSecurity = service.handleGetByIdRequest<any>('/api/securities', 1).body!;
 
-            expect(updatedFund.name).toBe('Only Name Updated');
-            expect(updatedFund.baseCurrency).toBe(originalCurrency); // Should remain unchanged
+            expect(updatedSecurity.descricao).toBe('Only Description Updated');
+            expect(updatedSecurity.tipo).toBe(originalTipo); // Should remain unchanged
         });
     });
 });

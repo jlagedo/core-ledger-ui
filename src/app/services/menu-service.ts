@@ -13,17 +13,6 @@ export class MenuService {
       exactMatch: true,
     },
     {
-      label: 'Fundos',
-      icon: 'bi-briefcase',
-      children: [
-        {
-          label: 'Lista de Fundos',
-          icon: '',
-          route: '/funds/list',
-        },
-      ],
-    },
-    {
       label: 'Administração',
       icon: 'bi-gear',
       children: [
@@ -31,18 +20,6 @@ export class MenuService {
           label: 'Títulos',
           icon: '',
           route: '/admin/securities',
-        },
-      ],
-    },
-    {
-      label: 'Razão',
-      icon: 'bi-book',
-      children: [
-        {
-          label: 'Plano de Contas',
-          icon: '',
-          route: '/chart-of-accounts',
-          exactMatch: true,
         },
       ],
     },

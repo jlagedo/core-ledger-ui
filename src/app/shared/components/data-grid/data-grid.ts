@@ -45,7 +45,7 @@ export interface PaginatedResponse<T> {
  *
  * @example
  * ```typescript
- * columns: ColumnDefinition<Fund>[] = [
+ * columns: ColumnDefinition<Item>[] = [
  *   { key: 'code', label: 'Code', sortable: true, align: 'end' },
  *   { key: 'name', label: 'Name', sortable: true },
  * ];
@@ -54,10 +54,10 @@ export interface PaginatedResponse<T> {
  * ```html
  * <app-data-grid
  *   [store]="store"
- *   [data]="fundsResponse()"
+ *   [data]="itemsResponse()"
  *   [columns]="columns"
  *   [searchable]="true"
- *   (refresh)="loadFunds()">
+ *   (refresh)="loadItems()">
  * </app-data-grid>
  * ```
  */
