@@ -20,12 +20,6 @@ export const routes: Routes = [
     loadChildren: () => import('./features/funds/funds.routes').then(m => m.FUNDS_ROUTES),
   },
   {
-    path: 'transactions',
-    data: { breadcrumb: 'Transações' },
-    canActivate: [authGuard],
-    loadChildren: () => import('./features/transactions/transactions.routes').then(m => m.TRANSACTIONS_ROUTES),
-  },
-  {
     path: 'admin',
     data: { breadcrumb: 'Administração' },
     canActivate: [authGuard],

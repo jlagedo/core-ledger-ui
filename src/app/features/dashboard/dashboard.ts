@@ -28,7 +28,7 @@ interface TickerItem {
 interface ActivityItem {
   id: number;
   time: Date;
-  type: 'journal' | 'transaction' | 'nav' | 'period';
+  type: 'journal' | 'nav' | 'period';
   entity: string;
   description: string;
   amount?: number;
@@ -124,15 +124,6 @@ const MOCK_ACTIVITY: ActivityItem[] = [
   },
   {
     id: 2,
-    time: new Date(Date.now() - 1000 * 60 * 12),
-    type: 'transaction',
-    entity: 'TXN-8834',
-    description: 'Buy AAPL 500 shares',
-    amount: 95250,
-    status: 'posted',
-  },
-  {
-    id: 3,
     time: new Date(Date.now() - 1000 * 60 * 25),
     type: 'nav',
     entity: 'Alpha Fund',
@@ -140,7 +131,7 @@ const MOCK_ACTIVITY: ActivityItem[] = [
     status: 'posted',
   },
   {
-    id: 4,
+    id: 3,
     time: new Date(Date.now() - 1000 * 60 * 45),
     type: 'journal',
     entity: 'JE-2025-1246',
@@ -149,16 +140,7 @@ const MOCK_ACTIVITY: ActivityItem[] = [
     status: 'pending',
   },
   {
-    id: 5,
-    time: new Date(Date.now() - 1000 * 60 * 60),
-    type: 'transaction',
-    entity: 'TXN-8833',
-    description: 'Sell MSFT 200 shares',
-    amount: 68400,
-    status: 'posted',
-  },
-  {
-    id: 6,
+    id: 4,
     time: new Date(Date.now() - 1000 * 60 * 90),
     type: 'period',
     entity: 'Dec 2024',
@@ -166,7 +148,7 @@ const MOCK_ACTIVITY: ActivityItem[] = [
     status: 'pending',
   },
   {
-    id: 7,
+    id: 5,
     time: new Date(Date.now() - 1000 * 60 * 120),
     type: 'journal',
     entity: 'JE-2025-1245',
@@ -216,12 +198,11 @@ const MOCK_FUNDS: FundSummary[] = [
 ];
 
 const QUICK_ACTIONS: QuickAction[] = [
-  { key: 'F1', label: 'New Transaction', icon: 'bi-plus-circle', route: '/transactions/new' },
-  { key: 'F2', label: 'Journal Entry', icon: 'bi-journal-plus', route: '/journal-entries' },
-  { key: 'F3', label: 'Run NAV', icon: 'bi-calculator', route: '/nav/calculation' },
-  { key: 'F4', label: 'Trial Balance', icon: 'bi-file-earmark-spreadsheet', route: '/reports' },
-  { key: 'F5', label: 'Load Prices', icon: 'bi-cloud-download', route: '/pricing-valuation/load-prices' },
-  { key: 'F6', label: 'Period Close', icon: 'bi-calendar-check', route: '/posting-periods' },
+  { key: 'F1', label: 'Journal Entry', icon: 'bi-journal-plus', route: '/journal-entries' },
+  { key: 'F2', label: 'Run NAV', icon: 'bi-calculator', route: '/nav/calculation' },
+  { key: 'F3', label: 'Trial Balance', icon: 'bi-file-earmark-spreadsheet', route: '/reports' },
+  { key: 'F4', label: 'Load Prices', icon: 'bi-cloud-download', route: '/pricing-valuation/load-prices' },
+  { key: 'F5', label: 'Period Close', icon: 'bi-calendar-check', route: '/posting-periods' },
 ];
 
 // ============================================================

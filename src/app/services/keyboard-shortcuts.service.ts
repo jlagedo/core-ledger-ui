@@ -242,14 +242,6 @@ export class KeyboardShortcutsService {
       category: 'Navegação',
     });
 
-    this.register({
-      id: 'go-transactions',
-      label: 'Ir para Transações',
-      keys: 'alt+t',
-      callback: () => this.router.navigate(['/transactions']),
-      category: 'Navegação',
-    });
-
     // Atalhos de foco
     this.register({
       id: 'focus-search',

@@ -10,9 +10,6 @@ import {
     MOCK_HISTORICO_INDEXADORES,
     MOCK_SECURITIES,
     MOCK_SECURITY_TYPES,
-    MOCK_TRANSACTIONS,
-    MOCK_TRANSACTION_STATUSES,
-    MOCK_TRANSACTION_SUBTYPES,
     MOCK_USERS,
 } from './mock-data';
 import { PaginatedResponse } from '../models/fund.model';
@@ -35,9 +32,6 @@ export class MockApiService {
     private historicosIndexadores = new Map(MOCK_HISTORICO_INDEXADORES.map(h => [h.id, { ...h }]));
     private securities = new Map(MOCK_SECURITIES.map(s => [s.id, { ...s }]));
     private securityTypes = new Map(MOCK_SECURITY_TYPES.map(st => [st.value, { ...st }]));
-    private transactions = new Map(MOCK_TRANSACTIONS.map(t => [t.id, { ...t }]));
-    private transactionStatuses = new Map(MOCK_TRANSACTION_STATUSES.map(s => [s.id, { ...s }]));
-    private transactionSubTypes = new Map(MOCK_TRANSACTION_SUBTYPES.map(st => [st.id, { ...st }]));
     private users = new Map(MOCK_USERS.map(u => [u.id, { ...u }]));
 
     // Auto-increment ID counters
@@ -47,7 +41,6 @@ export class MockApiService {
     private nextIndexadorId = Math.max(...MOCK_INDEXADORES.map(i => i.id), 0) + 1;
     private nextHistoricoIndexadorId = Math.max(...MOCK_HISTORICO_INDEXADORES.map(h => h.id), 0) + 1;
     private nextSecurityId = Math.max(...MOCK_SECURITIES.map(s => s.id), 0) + 1;
-    private nextTransactionId = Math.max(...MOCK_TRANSACTIONS.map(t => t.id), 0) + 1;
     private nextUserId = Math.max(...MOCK_USERS.map(u => u.id), 0) + 1;
 
     constructor() {
@@ -257,10 +250,6 @@ export class MockApiService {
         if (url.includes('/indexadores')) return this.indexadores;
         if (url.includes('/securities') && !url.includes('/securitytypes')) return this.securities;
         if (url.includes('/securitytypes')) return this.securityTypes;
-        // Transaction endpoints - order matters: more specific patterns first
-        if (url.includes('/transactions/status')) return this.transactionStatuses;
-        if (url.includes('/transactions/subtypes')) return this.transactionSubTypes;
-        if (url.includes('/transactions')) return this.transactions;
         if (url.includes('/users')) return this.users;
         return null;
     }
@@ -275,7 +264,6 @@ export class MockApiService {
         if (url.includes('/historicos-indexadores')) return this.nextHistoricoIndexadorId++;
         if (url.includes('/indexadores')) return this.nextIndexadorId++;
         if (url.includes('/securities')) return this.nextSecurityId++;
-        if (url.includes('/transactions')) return this.nextTransactionId++;
         return 1;
     }
 
@@ -452,9 +440,6 @@ export class MockApiService {
         this.historicosIndexadores = new Map(MOCK_HISTORICO_INDEXADORES.map(h => [h.id, { ...h }]));
         this.securities = new Map(MOCK_SECURITIES.map(s => [s.id, { ...s }]));
         this.securityTypes = new Map(MOCK_SECURITY_TYPES.map(st => [st.value, { ...st }]));
-        this.transactions = new Map(MOCK_TRANSACTIONS.map(t => [t.id, { ...t }]));
-        this.transactionStatuses = new Map(MOCK_TRANSACTION_STATUSES.map(s => [s.id, { ...s }]));
-        this.transactionSubTypes = new Map(MOCK_TRANSACTION_SUBTYPES.map(st => [st.id, { ...st }]));
         this.users = new Map(MOCK_USERS.map(u => [u.id, { ...u }]));
 
         this.nextAccountId = Math.max(...MOCK_ACCOUNTS.map(a => a.id), 0) + 1;
@@ -463,7 +448,6 @@ export class MockApiService {
         this.nextIndexadorId = Math.max(...MOCK_INDEXADORES.map(i => i.id), 0) + 1;
         this.nextHistoricoIndexadorId = Math.max(...MOCK_HISTORICO_INDEXADORES.map(h => h.id), 0) + 1;
         this.nextSecurityId = Math.max(...MOCK_SECURITIES.map(s => s.id), 0) + 1;
-        this.nextTransactionId = Math.max(...MOCK_TRANSACTIONS.map(t => t.id), 0) + 1;
         this.nextUserId = Math.max(...MOCK_USERS.map(u => u.id), 0) + 1;
     }
 }

@@ -24,17 +24,6 @@ export class MenuService {
       ],
     },
     {
-      label: 'Transações',
-      icon: 'bi-arrow-left-right',
-      children: [
-        {
-          label: 'Capturar Transação',
-          icon: '',
-          route: '/transactions/capture',
-        },
-      ],
-    },
-    {
       label: 'Administração',
       icon: 'bi-gear',
       children: [
