@@ -228,14 +228,14 @@
     position: relative;
     display: flex;
     align-items: center;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--sidenav-link-hover-bg);
     border: 1px solid var(--sidenav-divider);
     border-radius: 2px;
     transition: all 0.2s ease;
 
     &:focus-within {
       border-color: var(--terminal-glow-muted);
-      background: rgba(0, 0, 0, 0.3);
+      background: var(--sidenav-active-bg);
       animation: search-glow-pulse 2s ease-in-out infinite;
     }
   }
@@ -980,7 +980,7 @@
 
   // Flyout light mode - use white for contrast against warm body bg
   .nav-flyout {
-    background: #FFFFFF !important;
+    background: var(--surface-base) !important;
     border-color: var(--bs-border-color) !important;
     box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 
@@ -1000,11 +1000,11 @@
   // Search light mode - more subtle styling
   .sidenav-search {
     &__wrapper {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.15);
+      background: var(--sidenav-link-hover-bg);
+      border-color: var(--sidenav-divider);
 
       &:focus-within {
-        background: rgba(255, 255, 255, 0.12);
+        background: var(--sidenav-active-bg);
         animation: none;
         box-shadow: 0 0 0 1px var(--terminal-glow-muted);
       }

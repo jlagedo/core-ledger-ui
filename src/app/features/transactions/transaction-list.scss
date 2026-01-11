@@ -113,7 +113,7 @@ ag-grid-angular {
 [data-bs-theme="dark"] :host ::ng-deep {
   // Subtle amber glow on header
   .ag-header {
-    border-bottom: 1px solid rgba(255, 160, 40, 0.3);
+    border-bottom: 1px solid var(--amber-30);
   }
 
   // Selected row amber accent
@@ -270,17 +270,17 @@ ag-grid-angular {
 [data-bs-theme="dark"] {
   .grid-status-bar {
     --status-bg: rgba(10, 10, 10, 0.95);
-    --status-border: rgba(255, 160, 40, 0.2);
+    --status-border: var(--amber-20);
     background: var(--status-bg);
     backdrop-filter: blur(4px);
 
     // Amber accent line at top
     border-top: 1px solid var(--status-border);
-    box-shadow: inset 0 1px 0 rgba(255, 160, 40, 0.1);
+    box-shadow: inset 0 1px 0 var(--amber-10);
   }
 
   .status-bar__percentage {
-    background: rgba(255, 160, 40, 0.1);
+    background: var(--amber-10);
     color: var(--status-accent);
   }
 }
@@ -408,8 +408,8 @@ ag-grid-angular {
       color: var(--accent-amber, #FFA028);
 
       &:hover {
-        background: rgba(255, 160, 40, 0.15);
-        border-color: rgba(255, 160, 40, 0.3);
+        background: var(--amber-15);
+        border-color: var(--amber-30);
         color: var(--accent-amber, #FFA028);
       }
     }
@@ -481,16 +481,16 @@ ag-grid-angular {
 
 @keyframes pulse-selection {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(255, 160, 40, 0.4);
+    box-shadow: 0 0 0 0 var(--amber-40);
   }
   50% {
-    box-shadow: 0 0 0 4px rgba(255, 160, 40, 0);
+    box-shadow: 0 0 0 4px transparent;
   }
 }
 
 .bulk-action-bar {
   --bar-bg: rgba(20, 20, 20, 0.97);
-  --bar-border: rgba(255, 160, 40, 0.4);
+  --bar-border: var(--amber-40);
   --bar-text: #FFFFFF;
   --bar-text-muted: rgba(255, 255, 255, 0.6);
   --bar-accent: var(--accent-amber, #FFA028);
@@ -513,7 +513,7 @@ ag-grid-angular {
   border-radius: 8px;
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 160, 40, 0.1),
+    0 0 0 1px var(--amber-10),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
 

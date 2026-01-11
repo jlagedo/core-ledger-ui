@@ -1,12 +1,12 @@
-<app-page-header title="Calendário">
+<app-page-header title="Indexadores">
   <button type="button" class="btn btn-secondary btn-sm" (click)="onRefresh()">
     <i class="bi bi-arrow-clockwise"></i>
   </button>
   <button
     type="button"
-    aria-label="Criar novo calendário"
+    aria-label="Criar novo indexador"
     class="btn btn-primary"
-    routerLink="/cadastro/calendario/new"
+    routerLink="/cadastro/indexadores/new"
   >
     <i class="bi bi-plus-lg"></i>
     <span>Novo</span>
@@ -56,7 +56,7 @@
             placeholder="Buscar..."
             [(ngModel)]="searchTerm"
             (keydown.enter)="onSearch()"
-            aria-label="Buscar calendários"
+            aria-label="Buscar indexadores"
           />
           @if (searchTerm()) {
             <button
@@ -74,89 +74,60 @@
 
         <!-- Filter Dropdowns -->
         <div class="filter-bar__filters">
-          <!-- Praça Filter -->
+          <!-- Tipo Filter -->
           <div class="filter-dropdown" ngbDropdown>
             <button
               class="filter-dropdown__trigger"
-              [class.filter-dropdown__trigger--active]="filters().praca !== null"
-              ngbDropdownToggle
-            >
-              <span class="filter-dropdown__label">Praça</span>
-              @if (selectedPracaLabel()) {
-                <span class="filter-dropdown__value">{{ selectedPracaLabel() }}</span>
-              }
-              <i class="bi bi-chevron-down filter-dropdown__chevron"></i>
-            </button>
-            <div ngbDropdownMenu class="filter-dropdown__menu">
-              <button ngbDropdownItem (click)="onPracaChange(null)" [class.active]="filters().praca === null">
-                <span>Todos</span>
-              </button>
-              <div class="dropdown-divider"></div>
-              @for (option of pracaOptions; track option.value) {
-                <button
-                  ngbDropdownItem
-                  (click)="onPracaChange(option.value)"
-                  [class.active]="filters().praca === option.value"
-                >
-                  <span>{{ option.name }}</span>
-                </button>
-              }
-            </div>
-          </div>
-
-          <!-- Tipo de Dia Filter -->
-          <div class="filter-dropdown" ngbDropdown>
-            <button
-              class="filter-dropdown__trigger"
-              [class.filter-dropdown__trigger--active]="filters().tipoDia !== null"
+              [class.filter-dropdown__trigger--active]="filters().tipo !== null"
               ngbDropdownToggle
             >
               <span class="filter-dropdown__label">Tipo</span>
-              @if (selectedTipoDiaLabel()) {
-                <span class="filter-dropdown__value">{{ selectedTipoDiaLabel() }}</span>
+              @if (selectedTipoLabel()) {
+                <span class="filter-dropdown__value">{{ selectedTipoLabel() }}</span>
               }
               <i class="bi bi-chevron-down filter-dropdown__chevron"></i>
             </button>
             <div ngbDropdownMenu class="filter-dropdown__menu">
-              <button ngbDropdownItem (click)="onTipoDiaChange(null)" [class.active]="filters().tipoDia === null">
+              <button ngbDropdownItem (click)="onTipoChange(null)" [class.active]="filters().tipo === null">
                 <span>Todos</span>
               </button>
               <div class="dropdown-divider"></div>
-              @for (option of tipoDiaOptions; track option.value) {
+              @for (option of tipoOptions; track option.value) {
                 <button
                   ngbDropdownItem
-                  (click)="onTipoDiaChange(option.value)"
-                  [class.active]="filters().tipoDia === option.value"
+                  (click)="onTipoChange(option.value)"
+                  [class.active]="filters().tipo === option.value"
                 >
+                  <i class="bi {{ option.icon }} me-2" [style.color]="option.color"></i>
                   <span>{{ option.name }}</span>
                 </button>
               }
             </div>
           </div>
 
-          <!-- Dia Útil Filter -->
+          <!-- Periodicidade Filter -->
           <div class="filter-dropdown" ngbDropdown>
             <button
               class="filter-dropdown__trigger"
-              [class.filter-dropdown__trigger--active]="filters().diaUtil !== null"
+              [class.filter-dropdown__trigger--active]="filters().periodicidade !== null"
               ngbDropdownToggle
             >
-              <span class="filter-dropdown__label">Dia Útil</span>
-              @if (selectedDiaUtilLabel()) {
-                <span class="filter-dropdown__value">{{ selectedDiaUtilLabel() }}</span>
+              <span class="filter-dropdown__label">Period.</span>
+              @if (selectedPeriodicidadeLabel()) {
+                <span class="filter-dropdown__value">{{ selectedPeriodicidadeLabel() }}</span>
               }
               <i class="bi bi-chevron-down filter-dropdown__chevron"></i>
             </button>
             <div ngbDropdownMenu class="filter-dropdown__menu">
-              <button ngbDropdownItem (click)="onDiaUtilChange(null)" [class.active]="filters().diaUtil === null">
+              <button ngbDropdownItem (click)="onPeriodicidadeChange(null)" [class.active]="filters().periodicidade === null">
                 <span>Todos</span>
               </button>
               <div class="dropdown-divider"></div>
-              @for (option of diaUtilOptions; track option.value) {
+              @for (option of periodicidadeOptions; track option.value) {
                 <button
                   ngbDropdownItem
-                  (click)="onDiaUtilChange(option.value)"
-                  [class.active]="filters().diaUtil === option.value"
+                  (click)="onPeriodicidadeChange(option.value)"
+                  [class.active]="filters().periodicidade === option.value"
                 >
                   <span>{{ option.name }}</span>
                 </button>
@@ -164,87 +135,93 @@
             </div>
           </div>
 
-          <!-- Date Range Filter -->
-          <div class="filter-dropdown" ngbDropdown #dateDropdown="ngbDropdown">
+          <!-- Fonte Filter -->
+          <div class="filter-dropdown" ngbDropdown>
             <button
               class="filter-dropdown__trigger"
-              [class.filter-dropdown__trigger--active]="filters().dataInicio || filters().dataFim"
+              [class.filter-dropdown__trigger--active]="filters().fonte !== null"
               ngbDropdownToggle
             >
-              <span class="filter-dropdown__label">Período</span>
-              @if (selectedDateRangeLabel()) {
-                <span class="filter-dropdown__value">{{ selectedDateRangeLabel() }}</span>
+              <span class="filter-dropdown__label">Fonte</span>
+              @if (selectedFonteLabel()) {
+                <span class="filter-dropdown__value">{{ selectedFonteLabel() }}</span>
               }
               <i class="bi bi-chevron-down filter-dropdown__chevron"></i>
             </button>
-            <div ngbDropdownMenu class="filter-dropdown__menu filter-dropdown__menu--datepicker">
-              <div class="date-range-picker">
-                <!-- NgbDatepicker with custom day template for range highlighting -->
-                <ngb-datepicker
-                  #dp
-                  (dateSelect)="onDateSelection($event)"
-                  [displayMonths]="2"
-                  [dayTemplate]="dayTemplate"
-                  [showWeekNumbers]="false"
-                  outsideDays="hidden"
-                  navigation="arrows"
-                />
-
-                <ng-template
-                  #dayTemplate
-                  let-date
-                  let-focused="focused"
+            <div ngbDropdownMenu class="filter-dropdown__menu">
+              <button ngbDropdownItem (click)="onFonteChange(null)" [class.active]="filters().fonte === null">
+                <span>Todos</span>
+              </button>
+              <div class="dropdown-divider"></div>
+              @for (option of fonteOptions; track option.value) {
+                <button
+                  ngbDropdownItem
+                  (click)="onFonteChange(option.value)"
+                  [class.active]="filters().fonte === option.value"
                 >
-                  <span
-                    class="dp-custom-day"
-                    [class.focused]="focused"
-                    [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)"
-                    [class.faded]="isHovered(date) || isInside(date)"
-                    [class.from]="isFrom(date)"
-                    [class.to]="isTo(date)"
-                    (mouseenter)="hoveredDate.set(date)"
-                    (mouseleave)="hoveredDate.set(null)"
-                  >
-                    {{ date.day }}
-                  </span>
-                </ng-template>
+                  <span>{{ option.name }}</span>
+                </button>
+              }
+            </div>
+          </div>
 
-                <!-- Selected range display -->
-                @if (fromDate() || toDate()) {
-                  <div class="date-range-picker__selection">
-                    <span class="date-range-picker__selection-label">Selecionado:</span>
-                    <span class="date-range-picker__selection-value">
-                      @if (fromDate()) {
-                        {{ fromDate()!.day | number: '2.0-0' }}/{{ fromDate()!.month | number: '2.0-0' }}/{{ fromDate()!.year }}
-                      }
-                      @if (fromDate() && toDate()) {
-                        <span class="date-range-picker__selection-separator">—</span>
-                      }
-                      @if (toDate()) {
-                        {{ toDate()!.day | number: '2.0-0' }}/{{ toDate()!.month | number: '2.0-0' }}/{{ toDate()!.year }}
-                      }
-                    </span>
-                  </div>
-                }
+          <!-- Status Filter -->
+          <div class="filter-dropdown" ngbDropdown>
+            <button
+              class="filter-dropdown__trigger"
+              [class.filter-dropdown__trigger--active]="filters().ativo !== null"
+              ngbDropdownToggle
+            >
+              <span class="filter-dropdown__label">Status</span>
+              @if (selectedAtivoLabel()) {
+                <span class="filter-dropdown__value">{{ selectedAtivoLabel() }}</span>
+              }
+              <i class="bi bi-chevron-down filter-dropdown__chevron"></i>
+            </button>
+            <div ngbDropdownMenu class="filter-dropdown__menu">
+              <button ngbDropdownItem (click)="onAtivoChange(null)" [class.active]="filters().ativo === null">
+                <span>Todos</span>
+              </button>
+              <div class="dropdown-divider"></div>
+              @for (option of ativoOptions; track option.value) {
+                <button
+                  ngbDropdownItem
+                  (click)="onAtivoChange(option.value)"
+                  [class.active]="filters().ativo === option.value"
+                >
+                  <span>{{ option.name }}</span>
+                </button>
+              }
+            </div>
+          </div>
 
-                <div class="date-range-picker__actions">
-                  <button
-                    type="button"
-                    class="date-range-picker__btn date-range-picker__btn--clear"
-                    (click)="onClearDateRange(); dateDropdown.close()"
-                  >
-                    Limpar
-                  </button>
-                  <button
-                    type="button"
-                    class="date-range-picker__btn date-range-picker__btn--apply"
-                    [disabled]="!fromDate()"
-                    (click)="onDateRangeApply(); dateDropdown.close()"
-                  >
-                    Aplicar
-                  </button>
-                </div>
-              </div>
+          <!-- Importacao Auto Filter -->
+          <div class="filter-dropdown" ngbDropdown>
+            <button
+              class="filter-dropdown__trigger"
+              [class.filter-dropdown__trigger--active]="filters().importacaoAutomatica !== null"
+              ngbDropdownToggle
+            >
+              <span class="filter-dropdown__label">Import.</span>
+              @if (selectedImportacaoAutoLabel()) {
+                <span class="filter-dropdown__value">{{ selectedImportacaoAutoLabel() }}</span>
+              }
+              <i class="bi bi-chevron-down filter-dropdown__chevron"></i>
+            </button>
+            <div ngbDropdownMenu class="filter-dropdown__menu">
+              <button ngbDropdownItem (click)="onImportacaoAutoChange(null)" [class.active]="filters().importacaoAutomatica === null">
+                <span>Todos</span>
+              </button>
+              <div class="dropdown-divider"></div>
+              @for (option of importacaoAutoOptions; track option.value) {
+                <button
+                  ngbDropdownItem
+                  (click)="onImportacaoAutoChange(option.value)"
+                  [class.active]="filters().importacaoAutomatica === option.value"
+                >
+                  <span>{{ option.name }}</span>
+                </button>
+              }
             </div>
           </div>
         </div>
@@ -281,38 +258,47 @@
               </button>
             </span>
           }
-          @if (selectedPracaLabel()) {
-            <span class="filter-pill">
-              <span class="filter-pill__label">Praça:</span>
-              <span class="filter-pill__value">{{ selectedPracaLabel() }}</span>
-              <button class="filter-pill__remove" (click)="clearFilter('praca')">
-                <i class="bi bi-x"></i>
-              </button>
-            </span>
-          }
-          @if (selectedTipoDiaLabel()) {
+          @if (selectedTipoLabel()) {
             <span class="filter-pill">
               <span class="filter-pill__label">Tipo:</span>
-              <span class="filter-pill__value">{{ selectedTipoDiaLabel() }}</span>
-              <button class="filter-pill__remove" (click)="clearFilter('tipoDia')">
+              <span class="filter-pill__value">{{ selectedTipoLabel() }}</span>
+              <button class="filter-pill__remove" (click)="clearFilter('tipo')">
                 <i class="bi bi-x"></i>
               </button>
             </span>
           }
-          @if (selectedDiaUtilLabel()) {
+          @if (selectedPeriodicidadeLabel()) {
             <span class="filter-pill">
-              <span class="filter-pill__label">Dia Útil:</span>
-              <span class="filter-pill__value">{{ selectedDiaUtilLabel() }}</span>
-              <button class="filter-pill__remove" (click)="clearFilter('diaUtil')">
+              <span class="filter-pill__label">Period.:</span>
+              <span class="filter-pill__value">{{ selectedPeriodicidadeLabel() }}</span>
+              <button class="filter-pill__remove" (click)="clearFilter('periodicidade')">
                 <i class="bi bi-x"></i>
               </button>
             </span>
           }
-          @if (selectedDateRangeLabel()) {
+          @if (selectedFonteLabel()) {
             <span class="filter-pill">
-              <span class="filter-pill__label">Período:</span>
-              <span class="filter-pill__value">{{ selectedDateRangeLabel() }}</span>
-              <button class="filter-pill__remove" (click)="clearFilter('dateRange')">
+              <span class="filter-pill__label">Fonte:</span>
+              <span class="filter-pill__value">{{ selectedFonteLabel() }}</span>
+              <button class="filter-pill__remove" (click)="clearFilter('fonte')">
+                <i class="bi bi-x"></i>
+              </button>
+            </span>
+          }
+          @if (selectedAtivoLabel()) {
+            <span class="filter-pill">
+              <span class="filter-pill__label">Status:</span>
+              <span class="filter-pill__value">{{ selectedAtivoLabel() }}</span>
+              <button class="filter-pill__remove" (click)="clearFilter('ativo')">
+                <i class="bi bi-x"></i>
+              </button>
+            </span>
+          }
+          @if (selectedImportacaoAutoLabel()) {
+            <span class="filter-pill">
+              <span class="filter-pill__label">Import.:</span>
+              <span class="filter-pill__value">{{ selectedImportacaoAutoLabel() }}</span>
+              <button class="filter-pill__remove" (click)="clearFilter('importacaoAutomatica')">
                 <i class="bi bi-x"></i>
               </button>
             </span>

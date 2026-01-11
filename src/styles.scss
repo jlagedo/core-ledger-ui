@@ -1,5 +1,5 @@
 /* ============================================================
-   Core Ledger UI Theme — v3.1
+   Core Ledger UI Theme — v3.2
 
    Modular SCSS Architecture:
 
@@ -13,7 +13,8 @@
    ├── _theme-modes.scss    → Theme blocks (light/dark CSS vars)
    ├── _components.scss     → Component styles
    ├── _utilities.scss      → Utility classes
-   └── _accessibility.scss  → Accessibility media queries
+   ├── _accessibility.scss  → Accessibility media queries
+   └── _data-grid.scss      → AG Grid list components (filter bar, presets, etc.)
 
 ============================================================ */
 
@@ -27,6 +28,7 @@
 @use "styles/components";
 @use "styles/utilities";
 @use "styles/accessibility";
+@use "styles/data-grid";
 
 // ============================================================
 // 2. EXTERNAL FONTS (@import rules must come after @use)

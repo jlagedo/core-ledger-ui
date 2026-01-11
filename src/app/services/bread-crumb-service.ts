@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {toSignal} from '@angular/core/rxjs-interop';
-import {filter, map} from 'rxjs';
+import {defer, filter, map, startWith} from 'rxjs';
 
 export interface Breadcrumb {
   label: string;
@@ -16,12 +16,15 @@ export class BreadCrumbService {
   private activatedRoute = inject(ActivatedRoute);
 
   breadcrumbs = toSignal(
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      map(() => {
-        const breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
-        return this.deduplicateBreadcrumbs(breadcrumbs);
-      })
+    defer(() =>
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(null), // Emit immediately to capture initial route state
+        map(() => {
+          const breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
+          return this.deduplicateBreadcrumbs(breadcrumbs);
+        })
+      )
     ),
     {initialValue: []}
   );
@@ -38,9 +41,28 @@ export class BreadCrumbService {
     }
 
     for (const child of children) {
-      const routeURL: string = child.snapshot.url
-        .map(segment => segment.path)
-        .join('/');
+      let routeURL: string = child.snapshot.url.map(segment => segment.path).join('/');
+
+      // For routes with loadChildren but no component, the URL segment might be
+      // in routeConfig.path. Use it if snapshot.url is empty but path is defined.
+      if (routeURL === '' && child.routeConfig?.path) {
+        const configPath = child.routeConfig.path;
+        // Handle parameterized paths by substituting actual param values
+        if (configPath.includes(':')) {
+          routeURL = configPath
+            .split('/')
+            .map(segment => {
+              if (segment.startsWith(':')) {
+                const paramName = segment.slice(1);
+                return child.snapshot.params[paramName] ?? segment;
+              }
+              return segment;
+            })
+            .join('/');
+        } else {
+          routeURL = configPath;
+        }
+      }
 
       if (routeURL !== '') {
         url += `/${routeURL}`;

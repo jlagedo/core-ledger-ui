@@ -46,7 +46,7 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 160, 40, 0.2),
+      var(--amber-20),
       transparent
     );
   }
@@ -68,12 +68,12 @@
   gap: 0.5rem;
 
   &:hover {
-    border-color: rgba(255, 160, 40, 0.3);
+    border-color: var(--amber-30);
     background: var(--sidenav-link-hover-bg);
 
     .user-profile__avatar {
       border-color: var(--terminal-glow);
-      box-shadow: 0 0 8px rgba(255, 160, 40, 0.4);
+      box-shadow: 0 0 8px var(--amber-40);
     }
 
     .user-profile__icon {
@@ -97,7 +97,7 @@
   width: 32px;
   height: 32px;
   border-radius: 2px;
-  border: 1px solid rgba(255, 160, 40, 0.3);
+  border: 1px solid var(--amber-30);
   transition: all 0.2s ease;
   object-fit: cover;
 }
@@ -116,10 +116,10 @@
   border-radius: 2px;
   background: linear-gradient(
     135deg,
-    rgba(255, 160, 40, 0.2) 0%,
-    rgba(255, 160, 40, 0.1) 100%
+    var(--amber-20) 0%,
+    var(--amber-10) 100%
   );
-  border: 1px solid rgba(255, 160, 40, 0.3);
+  border: 1px solid var(--amber-30);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,7 +148,7 @@
   }
 
   &:hover {
-    border-color: rgba(255, 160, 40, 0.3);
+    border-color: var(--amber-30);
     background: var(--sidenav-link-hover-bg);
 
     i {
@@ -179,7 +179,7 @@
 
 .user-profile__dropdown {
   background: var(--dropdown-bg, rgba(26, 26, 26, 0.98));
-  border: 1px solid var(--dropdown-border, rgba(255, 160, 40, 0.2));
+  border: 1px solid var(--dropdown-border, var(--amber-20));
   border-radius: 2px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
@@ -189,7 +189,7 @@
   // User info header
   .user-profile__info {
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--sidenav-divider, rgba(255, 160, 40, 0.15));
+    border-bottom: 1px solid var(--sidenav-divider, var(--amber-15));
     background: rgba(0, 0, 0, 0.3);
   }
 
@@ -208,15 +208,15 @@
   .user-profile__meta {
     margin-top: 0.5rem;
     padding-top: 0.5rem;
-    border-top: 1px solid var(--sidenav-divider, rgba(255, 160, 40, 0.1));
+    border-top: 1px solid var(--sidenav-divider, var(--amber-10));
   }
 
   .user-profile__id {
     font-size: 0.625rem;
     font-weight: 600;
     padding: 0.125rem 0.375rem;
-    background: rgba(255, 160, 40, 0.15);
-    border: 1px solid rgba(255, 160, 40, 0.3);
+    background: var(--amber-15);
+    border: 1px solid var(--amber-30);
     border-radius: 2px;
     color: var(--terminal-glow);
   }
@@ -244,7 +244,7 @@
     }
 
     &:hover {
-      background: var(--sidenav-link-hover-bg, rgba(255, 160, 40, 0.08));
+      background: var(--sidenav-link-hover-bg, var(--amber-8));
       color: var(--bs-emphasis-color, #fff);
 
       i {
@@ -254,13 +254,13 @@
     }
 
     &:focus {
-      background: var(--sidenav-link-hover-bg, rgba(255, 160, 40, 0.08));
+      background: var(--sidenav-link-hover-bg, var(--amber-8));
       outline: none;
     }
   }
 
   .dropdown-divider {
-    border-color: var(--sidenav-divider, rgba(255, 160, 40, 0.15));
+    border-color: var(--sidenav-divider, var(--amber-15));
     margin: 0.25rem 0;
   }
 }
@@ -288,7 +288,7 @@
 
 [data-bs-theme="dark"] {
   .user-profile__avatar-btn:hover .user-profile__avatar {
-    box-shadow: 0 0 12px rgba(255, 160, 40, 0.5);
+    box-shadow: 0 0 12px var(--amber-50);
   }
 
   .user-profile__theme-toggle:hover i {
@@ -370,18 +370,3 @@
   }
 }
 
-// ============================================================
-// LEGACY SUPPORT (glass-round compatibility)
-// ============================================================
-
-.glass-round {
-  // Deprecated: use .user-profile instead
-  // Keeping for backwards compatibility
-  padding: 0.75rem;
-  border-radius: 2px;
-}
-
-// Hide dropdown caret (legacy support)
-.no-caret::after {
-  display: none !important;
-}

@@ -160,7 +160,7 @@
 
   &--warning {
     --toast-accent: var(--accent-amber, #FFA028);
-    --toast-icon-bg: rgba(255, 160, 40, 0.12);
+    --toast-icon-bg: var(--amber-12);
     --toast-icon-color: var(--accent-amber, #FFA028);
   }
 

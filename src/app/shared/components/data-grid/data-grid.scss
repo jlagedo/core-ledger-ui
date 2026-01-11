@@ -11,7 +11,7 @@
 
 :host {
   --terminal-glow: var(--accent-amber, #FFA028);
-  --terminal-border: var(--table-border-color, rgba(255, 160, 40, 0.25));
+  --terminal-border: var(--table-border-color, var(--amber-25));
   --grid-texture: repeating-linear-gradient(
     0deg,
     transparent,
@@ -36,7 +36,7 @@
 
     &:focus-within {
       box-shadow: 0 0 0 1px var(--terminal-glow),
-                  0 0 12px rgba(255, 160, 40, 0.2);
+                  0 0 12px var(--amber-20);
     }
 
     .input-group-text {
@@ -74,7 +74,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     padding: 0.25rem 0.625rem;
-    background: rgba(255, 160, 40, 0.08);
+    background: var(--amber-8);
     border: 1px solid var(--terminal-border);
     border-radius: 2px;
     color: var(--terminal-glow);
@@ -178,7 +178,7 @@
     // Hover state - subtle amber glow
     &:hover {
       background-color: var(--table-hover-bg);
-      box-shadow: inset 0 0 30px rgba(255, 160, 40, 0.04);
+      box-shadow: inset 0 0 30px var(--amber-4);
     }
   }
 
@@ -186,7 +186,7 @@
   tr.table-primary,
   tr[aria-selected="true"] {
     border-left-color: var(--terminal-glow);
-    box-shadow: inset 0 0 25px rgba(255, 160, 40, 0.08);
+    box-shadow: inset 0 0 25px var(--amber-8);
 
     td {
       background-color: var(--table-active-bg);
@@ -252,7 +252,7 @@ tr.table-primary .table-row-actions {
   }
 
   &:focus {
-    box-shadow: 0 0 0 0.2rem rgba(255, 160, 40, 0.25);
+    box-shadow: 0 0 0 0.2rem var(--amber-25);
     border-color: var(--terminal-glow);
   }
 
@@ -292,7 +292,7 @@ tr.table-primary .table-row-actions {
 
   &:hover:not(.virtual-scroll-header-row) {
     background-color: var(--table-hover-bg);
-    box-shadow: inset 0 0 30px rgba(255, 160, 40, 0.04);
+    box-shadow: inset 0 0 30px var(--amber-4);
   }
 }
 
@@ -326,7 +326,7 @@ tr.table-primary .table-row-actions {
   background-color: var(--table-active-bg) !important;
   color: var(--table-active-color) !important;
   border-left-color: var(--terminal-glow);
-  box-shadow: inset 0 0 25px rgba(255, 160, 40, 0.08);
+  box-shadow: inset 0 0 25px var(--amber-8);
 }
 
 .virtual-scroll-cell {
@@ -375,11 +375,11 @@ ngb-pagination {
   --bs-pagination-bg: transparent;
   --bs-pagination-border-color: var(--terminal-border);
   --bs-pagination-color: var(--bs-secondary-color);
-  --bs-pagination-hover-bg: rgba(255, 160, 40, 0.1);
+  --bs-pagination-hover-bg: var(--amber-10);
   --bs-pagination-hover-border-color: var(--terminal-glow);
   --bs-pagination-hover-color: var(--terminal-glow);
-  --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(255, 160, 40, 0.25);
-  --bs-pagination-active-bg: rgba(255, 160, 40, 0.2);
+  --bs-pagination-focus-box-shadow: 0 0 0 0.2rem var(--amber-25);
+  --bs-pagination-active-bg: var(--amber-20);
   --bs-pagination-active-border-color: var(--terminal-glow);
   --bs-pagination-active-color: var(--terminal-glow);
   --bs-pagination-disabled-bg: transparent;
@@ -398,7 +398,7 @@ ngb-pagination {
 
     &.active .page-link {
       font-weight: 600;
-      text-shadow: 0 0 8px rgba(255, 160, 40, 0.4);
+      text-shadow: 0 0 8px var(--amber-40);
     }
   }
 }

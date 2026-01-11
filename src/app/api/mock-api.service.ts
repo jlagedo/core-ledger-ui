@@ -6,6 +6,8 @@ import {
     MOCK_ACCOUNTS_BY_TYPE_REPORT,
     MOCK_ACCOUNT_TYPES,
     MOCK_FUNDS,
+    MOCK_INDEXADORES,
+    MOCK_HISTORICO_INDEXADORES,
     MOCK_SECURITIES,
     MOCK_SECURITY_TYPES,
     MOCK_TRANSACTIONS,
@@ -29,6 +31,8 @@ export class MockApiService {
     private accounts = new Map(MOCK_ACCOUNTS.map(a => [a.id, { ...a }]));
     private accountTypes = new Map(MOCK_ACCOUNT_TYPES.map(at => [at.id, { ...at }]));
     private funds = new Map(MOCK_FUNDS.map(f => [f.id, { ...f }]));
+    private indexadores = new Map(MOCK_INDEXADORES.map(i => [i.id, { ...i }]));
+    private historicosIndexadores = new Map(MOCK_HISTORICO_INDEXADORES.map(h => [h.id, { ...h }]));
     private securities = new Map(MOCK_SECURITIES.map(s => [s.id, { ...s }]));
     private securityTypes = new Map(MOCK_SECURITY_TYPES.map(st => [st.value, { ...st }]));
     private transactions = new Map(MOCK_TRANSACTIONS.map(t => [t.id, { ...t }]));
@@ -40,6 +44,8 @@ export class MockApiService {
     private nextAccountId = Math.max(...MOCK_ACCOUNTS.map(a => a.id), 0) + 1;
     private nextAccountTypeId = 6; // Account types use string IDs
     private nextFundId = Math.max(...MOCK_FUNDS.map(f => f.id), 0) + 1;
+    private nextIndexadorId = Math.max(...MOCK_INDEXADORES.map(i => i.id), 0) + 1;
+    private nextHistoricoIndexadorId = Math.max(...MOCK_HISTORICO_INDEXADORES.map(h => h.id), 0) + 1;
     private nextSecurityId = Math.max(...MOCK_SECURITIES.map(s => s.id), 0) + 1;
     private nextTransactionId = Math.max(...MOCK_TRANSACTIONS.map(t => t.id), 0) + 1;
     private nextUserId = Math.max(...MOCK_USERS.map(u => u.id), 0) + 1;
@@ -245,6 +251,10 @@ export class MockApiService {
         if (url.includes('/accounts')) return this.accounts;
         if (url.includes('/accounttypes')) return this.accountTypes;
         if (url.includes('/funds')) return this.funds;
+        // Indexadores endpoints - order matters: more specific patterns first
+        if (url.includes('/historicos-indexadores')) return this.historicosIndexadores;
+        if (url.includes('/indexadores') && url.includes('/historico')) return this.historicosIndexadores;
+        if (url.includes('/indexadores')) return this.indexadores;
         if (url.includes('/securities') && !url.includes('/securitytypes')) return this.securities;
         if (url.includes('/securitytypes')) return this.securityTypes;
         // Transaction endpoints - order matters: more specific patterns first
@@ -262,6 +272,8 @@ export class MockApiService {
         if (url.includes('/accounts') && !url.includes('/accounttypes')) return this.nextAccountId++;
         if (url.includes('/accounttypes')) return this.nextAccountTypeId++;
         if (url.includes('/funds')) return this.nextFundId++;
+        if (url.includes('/historicos-indexadores')) return this.nextHistoricoIndexadorId++;
+        if (url.includes('/indexadores')) return this.nextIndexadorId++;
         if (url.includes('/securities')) return this.nextSecurityId++;
         if (url.includes('/transactions')) return this.nextTransactionId++;
         return 1;
@@ -282,12 +294,162 @@ export class MockApiService {
     }
 
     /**
+     * Handle GET requests for indexador history with date filtering
+     */
+    handleHistoricoIndexadorListRequest(
+        indexadorId: number,
+        params: URLSearchParams
+    ): HttpResponse<PaginatedResponse<any>> {
+        let items = Array.from(this.historicosIndexadores.values())
+            .filter(h => h.indexadorId === indexadorId);
+
+        // Apply date range filtering
+        const dataInicio = params.get('dataInicio');
+        const dataFim = params.get('dataFim');
+        if (dataInicio) {
+            items = items.filter(h => h.dataReferencia >= dataInicio);
+        }
+        if (dataFim) {
+            items = items.filter(h => h.dataReferencia <= dataFim);
+        }
+
+        // Apply sorting
+        const sortBy = params.get('sortBy') || 'dataReferencia';
+        const sortDirection = params.get('sortDirection') || 'desc';
+        items.sort((a, b) => {
+            const aVal = a[sortBy as keyof typeof a];
+            const bVal = b[sortBy as keyof typeof b];
+
+            if (aVal === null || aVal === undefined) return 1;
+            if (bVal === null || bVal === undefined) return -1;
+
+            let comparison = 0;
+            if (typeof aVal === 'string' && typeof bVal === 'string') {
+                comparison = aVal.localeCompare(bVal, undefined, { sensitivity: 'base' });
+            } else if (typeof aVal === 'number' && typeof bVal === 'number') {
+                comparison = aVal - bVal;
+            } else {
+                comparison = String(aVal).localeCompare(String(bVal));
+            }
+
+            return sortDirection === 'desc' ? -comparison : comparison;
+        });
+
+        // Apply pagination
+        const limit = parseInt(params.get('limit') || '100', 10);
+        const offset = parseInt(params.get('offset') || '0', 10);
+        const totalCount = items.length;
+        const paginatedItems = items.slice(offset, offset + limit);
+
+        return new HttpResponse({
+            status: 200,
+            statusText: 'OK',
+            body: {
+                items: paginatedItems,
+                totalCount,
+                limit,
+                offset,
+            },
+        });
+    }
+
+    /**
+     * Handle CSV export for indexador history
+     */
+    handleHistoricoExportRequest(
+        indexadorId: number,
+        params: URLSearchParams
+    ): HttpResponse<Blob> {
+        let items = Array.from(this.historicosIndexadores.values())
+            .filter(h => h.indexadorId === indexadorId);
+
+        // Apply date range filtering
+        const dataInicio = params.get('dataInicio');
+        const dataFim = params.get('dataFim');
+        if (dataInicio) {
+            items = items.filter(h => h.dataReferencia >= dataInicio);
+        }
+        if (dataFim) {
+            items = items.filter(h => h.dataReferencia <= dataFim);
+        }
+
+        // Sort by date descending
+        items.sort((a, b) => b.dataReferencia.localeCompare(a.dataReferencia));
+
+        // Generate CSV content
+        const header = 'data_referencia;valor;fator_diario;variacao_percentual;fonte\n';
+        const rows = items.map(h => {
+            const dataRef = h.dataReferencia.split('T')[0];
+            const valor = h.valor.toFixed(8);
+            const fatorDiario = h.fatorDiario?.toFixed(12) || '';
+            const variacao = h.variacaoPercentual?.toFixed(4) || '';
+            const fonte = h.fonte || '';
+            return `${dataRef};${valor};${fatorDiario};${variacao};${fonte}`;
+        }).join('\n');
+
+        const csv = header + rows;
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+
+        return new HttpResponse({
+            status: 200,
+            statusText: 'OK',
+            body: blob,
+        });
+    }
+
+    /**
+     * Handle creation of historico indexador with indexador lookup
+     */
+    handleCreateHistoricoIndexador(
+        body: any
+    ): HttpResponse<any> {
+        const indexador = this.indexadores.get(body.indexadorId);
+        if (!indexador) {
+            return new HttpResponse({
+                status: 404,
+                statusText: 'Not Found',
+                body: { error: `Indexador with ID ${body.indexadorId} not found` },
+            });
+        }
+
+        // Check for duplicate date
+        const existingForDate = Array.from(this.historicosIndexadores.values())
+            .find(h => h.indexadorId === body.indexadorId && h.dataReferencia === body.dataReferencia);
+        if (existingForDate) {
+            return new HttpResponse({
+                status: 409,
+                statusText: 'Conflict',
+                body: { error: 'Value already exists for this date' },
+            });
+        }
+
+        const newId = this.nextHistoricoIndexadorId++;
+        const now = new Date().toISOString();
+        const newItem = {
+            ...body,
+            id: newId,
+            indexadorCodigo: indexador.codigo,
+            createdAt: now,
+        };
+
+        this.historicosIndexadores.set(newId, newItem);
+
+        return new HttpResponse({
+            status: 201,
+            statusText: 'Created',
+            body: { ...newItem },
+        });
+    }
+
+    /**
      * Reset all data to initial mock state (useful for testing)
      */
     reset(): void {
         this.accounts = new Map(MOCK_ACCOUNTS.map(a => [a.id, { ...a }]));
         this.accountTypes = new Map(MOCK_ACCOUNT_TYPES.map(at => [at.id, { ...at }]));
         this.funds = new Map(MOCK_FUNDS.map(f => [f.id, { ...f }]));
+        this.indexadores = new Map(MOCK_INDEXADORES.map(i => [i.id, { ...i }]));
+        this.historicosIndexadores = new Map(MOCK_HISTORICO_INDEXADORES.map(h => [h.id, { ...h }]));
         this.securities = new Map(MOCK_SECURITIES.map(s => [s.id, { ...s }]));
         this.securityTypes = new Map(MOCK_SECURITY_TYPES.map(st => [st.value, { ...st }]));
         this.transactions = new Map(MOCK_TRANSACTIONS.map(t => [t.id, { ...t }]));
@@ -298,6 +460,8 @@ export class MockApiService {
         this.nextAccountId = Math.max(...MOCK_ACCOUNTS.map(a => a.id), 0) + 1;
         this.nextAccountTypeId = 6; // Account types use string IDs
         this.nextFundId = Math.max(...MOCK_FUNDS.map(f => f.id), 0) + 1;
+        this.nextIndexadorId = Math.max(...MOCK_INDEXADORES.map(i => i.id), 0) + 1;
+        this.nextHistoricoIndexadorId = Math.max(...MOCK_HISTORICO_INDEXADORES.map(h => h.id), 0) + 1;
         this.nextSecurityId = Math.max(...MOCK_SECURITIES.map(s => s.id), 0) + 1;
         this.nextTransactionId = Math.max(...MOCK_TRANSACTIONS.map(t => t.id), 0) + 1;
         this.nextUserId = Math.max(...MOCK_USERS.map(u => u.id), 0) + 1;

@@ -66,6 +66,11 @@ export class MenuService {
           icon: '',
           route: '/cadastro/calendario',
         },
+        {
+          label: 'Indexadores',
+          icon: '',
+          route: '/cadastro/indexadores',
+        },
       ],
     },
   ]);

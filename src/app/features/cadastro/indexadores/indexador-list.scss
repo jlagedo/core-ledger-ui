@@ -1,4 +1,4 @@
-// Calendario List — AG Grid Component Styles
+// Indexador List — AG Grid Component Styles
 //
 // This file contains only component-scoped styles that require ::ng-deep.
 // All shared styles (preset-bar, filter-bar, status badges, etc.) are now
@@ -17,6 +17,27 @@ ag-grid-angular {
 // AG Grid refinements (requires ::ng-deep for view encapsulation)
 :host ::ng-deep {
   @include ag-grid-refinements;
+
+  // Type badge for indexador tipo column
+  .tipo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.125rem 0.5rem;
+    background: color-mix(in srgb, var(--tipo-color) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tipo-color) 30%, transparent);
+    border-radius: 3px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--tipo-color);
+    line-height: 1.4;
+
+    i {
+      font-size: 0.75rem;
+    }
+  }
 
   // Status badges inside grid cells
   .status-badge {
@@ -79,6 +100,16 @@ ag-grid-angular {
       transform: translateY(0);
     }
 
+    &--view {
+      color: var(--status-positive);
+
+      &:hover {
+        background: var(--status-positive-bg);
+        border-color: var(--status-positive-border);
+        color: var(--status-positive);
+      }
+    }
+
     &--edit {
       color: var(--status-info);
 
@@ -109,6 +140,11 @@ ag-grid-angular {
 // Light mode AG Grid enhancements
 [data-bs-theme="light"] :host ::ng-deep {
   @include ag-grid-light-mode;
+
+  .tipo-badge {
+    background: color-mix(in srgb, var(--tipo-color) 10%, transparent);
+    border-color: color-mix(in srgb, var(--tipo-color) 25%, transparent);
+  }
 
   .row-action-btn {
     opacity: 0.6;
