@@ -91,14 +91,15 @@ export class IndexadorService {
   ];
 
   /**
-   * Gets paginated list of indexadores with optional filtering and sorting
+   * Gets paginated list of indexadores with optional filtering and sorting.
+   * Supports both search term (filter) and structured filters (tipo, ativo, etc.)
    */
   getIndexadores(
     limit: number = 100,
     offset: number = 0,
     sortBy?: string,
     sortDirection: 'asc' | 'desc' = 'asc',
-    filter?: string
+    filterParams?: Record<string, string>
   ): Observable<PaginatedResponse<Indexador>> {
     const params: Record<string, string> = {
       limit: limit.toString(),
@@ -107,7 +108,15 @@ export class IndexadorService {
     };
 
     if (sortBy) params['sortBy'] = sortBy;
-    if (filter) params['filter'] = filter;
+
+    // Add all filter params (filter, tipo, periodicidade, fonte, ativo, importacaoAutomatica)
+    if (filterParams) {
+      Object.entries(filterParams).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          params[key] = value;
+        }
+      });
+    }
 
     const queryString = new URLSearchParams(params).toString();
     return this.http.get<PaginatedResponse<Indexador>>(`${this.apiUrl}/indexadores?${queryString}`);

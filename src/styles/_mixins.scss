@@ -124,7 +124,20 @@
   --terminal-glow-subtle: #{map.get($t, terminal-glow-subtle)};
   --terminal-glow-bg: #{map.get($t, terminal-glow-bg)};
 
-  // --- Status Indicators ---
+  // --- Amber Opacity Scale ---
+  --amber-4: #{map.get($t, amber-4)};
+  --amber-6: #{map.get($t, amber-6)};
+  --amber-8: #{map.get($t, amber-8)};
+  --amber-10: #{map.get($t, amber-10)};
+  --amber-12: #{map.get($t, amber-12)};
+  --amber-15: #{map.get($t, amber-15)};
+  --amber-20: #{map.get($t, amber-20)};
+  --amber-25: #{map.get($t, amber-25)};
+  --amber-30: #{map.get($t, amber-30)};
+  --amber-40: #{map.get($t, amber-40)};
+  --amber-50: #{map.get($t, amber-50)};
+
+  // --- Status Indicators (Ticker/Alerts) ---
   --status-safe: #{map.get($t, status-safe)};
   --status-safe-muted: #{map.get($t, status-safe-muted)};
   --status-warning: #{map.get($t, status-warning)};
@@ -132,6 +145,30 @@
   --status-critical: #{map.get($t, status-critical)};
   --status-critical-glow: #{map.get($t, status-critical-glow)};
   --status-expired: #{map.get($t, status-expired)};
+
+  // --- Semantic Status Colors (Data Displays) ---
+  --status-positive: #{map.get($t, status-positive)};
+  --status-positive-bg: #{map.get($t, status-positive-bg)};
+  --status-positive-border: #{map.get($t, status-positive-border)};
+  --status-positive-muted: #{map.get($t, status-positive-muted)};
+  --status-negative: #{map.get($t, status-negative)};
+  --status-negative-bg: #{map.get($t, status-negative-bg)};
+  --status-negative-border: #{map.get($t, status-negative-border)};
+  --status-info: #{map.get($t, status-info)};
+  --status-info-bg: #{map.get($t, status-info-bg)};
+  --status-info-border: #{map.get($t, status-info-border)};
+  --status-pending: #{map.get($t, status-pending)};
+  --status-pending-bg: #{map.get($t, status-pending-bg)};
+  --status-pending-border: #{map.get($t, status-pending-border)};
+  --status-neutral: #{map.get($t, status-neutral)};
+  --status-neutral-bg: #{map.get($t, status-neutral-bg)};
+  --status-neutral-border: #{map.get($t, status-neutral-border)};
+
+  // --- Surface Elevation ---
+  --surface-base: #{map.get($t, surface-base)};
+  --surface-elevated: #{map.get($t, surface-elevated)};
+  --surface-subtle: #{map.get($t, surface-subtle)};
+  --surface-muted: #{map.get($t, surface-muted)};
 
   // --- Alerts ---
   @each $type, $config in $alert-tokens {

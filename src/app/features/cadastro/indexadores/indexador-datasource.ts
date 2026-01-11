@@ -45,11 +45,8 @@ export function createIndexadorDatasource(
         sortDirection = sortModel[0].sort as 'asc' | 'desc';
       }
 
-      // Get filter params from store (already built)
+      // Get filter params from store (already built with all structured filters)
       const filterParams = config.getFilterParams();
-
-      // Build filter string for API (uses RFC-8040 format)
-      const filter = filterParams['filter'];
 
       // Notify loading started
       config.onPaginationUpdate?.({
@@ -60,8 +57,8 @@ export function createIndexadorDatasource(
         isLoading: true,
       });
 
-      // Fetch data from API
-      indexadorService.getIndexadores(limit, offset, sortBy, sortDirection, filter).subscribe({
+      // Fetch data from API with all filter params
+      indexadorService.getIndexadores(limit, offset, sortBy, sortDirection, filterParams).subscribe({
         next: (response) => {
           // Calculate lastRow for infinite scroll termination
           const lastRow = response.totalCount <= endRow ? response.totalCount : -1;

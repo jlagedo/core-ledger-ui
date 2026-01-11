@@ -159,14 +159,31 @@ $color-interactive-primary:       $brand-blue-500 !default;
 $color-interactive-primary-hover: $brand-blue-400 !default;
 $color-interactive-focus:         rgba($brand-blue-500, 0.4) !default;
 
-// --- Status Colors (already defined in Bootstrap config) ---
-$color-success-base: #168c80 !default;
-$color-success-dark: $accent-teal !default;
-$color-warning-base: #FFB703 !default;
-$color-warning-dark: $accent-yellow !default;
-$color-danger-base:  $accent-red !default;
-$color-danger-dark:  $accent-red-light !default;
-$color-info-base:    $brand-blue-300 !default;
+// --- Status Colors ---
+// Dark mode variants (Bloomberg Terminal style)
+$color-success-dark: $accent-teal !default;           // #4af6c3
+$color-warning-dark: $accent-yellow !default;         // #fb8b1e
+$color-danger-dark:  $accent-red !default;            // #ff433d
+$color-info-dark:    $accent-blue !default;           // #0068ff
+
+// Light mode variants (High contrast, accessible)
+$color-success-light:    #065F3E !default;            // Text - dark green
+$color-success-light-bg: #0A8754 !default;            // Badge/indicator
+$color-success-light-muted: #059669 !default;         // Alternative green
+$color-warning-light:    #92400E !default;            // Text - dark amber
+$color-warning-light-bg: $daylight-amber !default;    // #B45309
+$color-danger-light:     #B91C1C !default;            // Text - dark red
+$color-danger-light-bg:  #DC2626 !default;            // Badge/indicator
+$color-info-light:       #0369A1 !default;            // Text - dark blue
+$color-info-light-bg:    $brand-blue-500 !default;    // #0077B6
+
+// --- Surface Colors (Elevation hierarchy) ---
+$surface-white:          #FFFFFF !default;            // Pure white - highest elevation
+$surface-light-elevated: #FAF7F2 !default;            // Card headers, elevated
+$surface-light-subtle:   #F5F1E8 !default;            // Subtle backgrounds
+$surface-light-muted:    #F8F5F0 !default;            // Preset bars, status bars
+$surface-dark-elevated:  rgba(26, 26, 26, 0.9) !default;  // Dark mode cards
+$surface-dark-subtle:    rgba(10, 10, 10, 0.95) !default; // Dark mode backgrounds
 
 // ============================================================
 // 4. COMPONENT TOKENS — Shadows & Transitions

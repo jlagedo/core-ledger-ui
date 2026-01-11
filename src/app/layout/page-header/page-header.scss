@@ -57,7 +57,7 @@
   border-image: linear-gradient(
     180deg,
     var(--terminal-glow) 0%,
-    rgba(255, 160, 40, 0.3) 50%,
+    var(--amber-30) 50%,
     transparent 100%
   ) 1;
 
@@ -292,7 +292,7 @@
         background: var(--accent-yellow, #fb8b1e);
         border-color: var(--accent-yellow, #fb8b1e);
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(255, 160, 40, 0.3);
+        box-shadow: 0 4px 12px var(--amber-30);
       }
 
       &:active {
@@ -324,7 +324,7 @@
       color: var(--terminal-glow);
 
       &:hover {
-        background: rgba(255, 160, 40, 0.1);
+        background: var(--amber-10);
         color: var(--terminal-glow);
       }
     }
@@ -415,17 +415,6 @@
 }
 
 // ============================================================
-// DIVIDER (optional visual separator)
-// ============================================================
-
-.terminal-header__divider {
-  width: 1px;
-  height: 1.5rem;
-  background: var(--grid-line);
-  margin: 0 0.25rem;
-}
-
-// ============================================================
 // DARK MODE ENHANCEMENTS
 // ============================================================
 
@@ -449,7 +438,7 @@
 
   :host ::ng-deep {
     .btn-primary:hover {
-      box-shadow: 0 4px 16px rgba(255, 160, 40, 0.4);
+      box-shadow: 0 4px 16px var(--amber-40);
     }
 
     .btn-secondary:hover {

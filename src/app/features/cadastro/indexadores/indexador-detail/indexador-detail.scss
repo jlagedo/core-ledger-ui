@@ -29,7 +29,7 @@
 [data-bs-theme='dark'] {
   .summary-card {
     background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 160, 40, 0.15);
+    border-color: var(--amber-15);
   }
 }
 
@@ -78,8 +78,8 @@
   width: 100%;
 
   --ag-header-background-color: transparent;
-  --ag-row-hover-color: rgba(255, 160, 40, 0.08);
-  --ag-selected-row-background-color: rgba(255, 160, 40, 0.12);
+  --ag-row-hover-color: var(--amber-8);
+  --ag-selected-row-background-color: var(--amber-12);
   --ag-odd-row-background-color: transparent;
   --ag-background-color: transparent;
   --ag-border-color: var(--bs-border-color);

@@ -473,55 +473,55 @@ a:visited:not(.btn):not(.nav-link):not(.dropdown-item) {
 // Light mode dropdown overrides
 [data-bs-theme="light"] {
   .user-profile__dropdown {
-    background: #FFFFFF;
+    background: var(--surface-base);
     border-color: var(--bs-border-color);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 
     .user-profile__info {
-      background: #F5F0E8;
+      background: var(--surface-subtle);
     }
 
     .user-profile__name {
-      color: #2C1810;
+      color: var(--bs-emphasis-color);
     }
 
     .user-profile__email {
-      color: #7A6B5A;
+      color: var(--bs-secondary-color);
     }
 
     .user-profile__id {
-      background: rgba(180, 83, 9, 0.1);
-      border-color: rgba(180, 83, 9, 0.2);
-      color: #B45309;
+      background: var(--status-pending-bg);
+      border-color: var(--status-pending-border);
+      color: var(--status-pending);
     }
 
     .user-profile__login {
-      color: #7A6B5A;
+      color: var(--bs-secondary-color);
 
       .font-monospace {
-        color: #5C4D3D;
+        color: var(--bs-tertiary-color);
       }
     }
 
     .dropdown-item {
-      color: #2C1810 !important;
+      color: var(--bs-emphasis-color) !important;
 
       i {
-        color: #7A6B5A;
+        color: var(--bs-secondary-color);
       }
 
       &:hover {
-        background: #F5F0E8;
-        color: #2C1810 !important;
+        background: var(--surface-subtle);
+        color: var(--bs-emphasis-color) !important;
 
         i {
-          color: #B45309;
+          color: var(--terminal-glow);
         }
       }
 
       &:focus {
-        background: #F5F0E8;
-        color: #2C1810 !important;
+        background: var(--surface-subtle);
+        color: var(--bs-emphasis-color) !important;
       }
     }
   }
@@ -587,7 +587,7 @@ a:visited:not(.btn):not(.nav-link):not(.dropdown-item) {
 
 .card-data {
   background: var(--card-bg);
-  border: 1px solid var(--table-border-color, rgba(255, 160, 40, 0.2));
+  border: 1px solid var(--table-border-color, var(--amber-20));
   border-radius: 2px;
 
   > .card-body {
@@ -635,7 +635,7 @@ a:visited:not(.btn):not(.nav-link):not(.dropdown-item) {
 
 .card-form {
   background: var(--card-bg);
-  border: 1px solid var(--table-border-color, rgba(255, 160, 40, 0.2));
+  border: 1px solid var(--table-border-color, var(--amber-20));
   border-radius: 2px;
 
   > .card-header {
@@ -679,7 +679,7 @@ a:visited:not(.btn):not(.nav-link):not(.dropdown-item) {
 
 // Form field section separator
 .form-section {
-  border-top: 1px solid var(--table-border-color, rgba(255, 160, 40, 0.15));
+  border-top: 1px solid var(--table-border-color, var(--amber-15));
   padding-top: 1.25rem;
   margin-top: 1.25rem;
 }
@@ -700,7 +700,7 @@ a:visited:not(.btn):not(.nav-link):not(.dropdown-item) {
 
   &:focus {
     border-color: var(--accent-amber, #FFA028);
-    box-shadow: 0 0 0 0.25rem rgba(255, 160, 40, 0.25);
+    box-shadow: 0 0 0 0.25rem var(--amber-25);
   }
 }
 
@@ -717,7 +717,7 @@ a:visited:not(.btn):not(.nav-link):not(.dropdown-item) {
   gap: 0.75rem;
   align-items: center;
   padding-top: 1.25rem;
-  border-top: 1px solid var(--table-border-color, rgba(255, 160, 40, 0.15));
+  border-top: 1px solid var(--table-border-color, var(--amber-15));
   margin-top: 1.5rem;
 }
 

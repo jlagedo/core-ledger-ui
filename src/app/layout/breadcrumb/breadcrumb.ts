@@ -8,7 +8,6 @@ import {RouterLink} from '@angular/router';
     RouterLink
   ],
   templateUrl: './breadcrumb.html',
-  styleUrl: './breadcrumb.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BreadcrumbComponent {
