@@ -26,6 +26,13 @@ export interface AuthenticatedResult {
  * 1. Set environment.auth.useMock = true
  * 2. Set environment.auth.mockUser to desired role (admin, trader, analyst)
  * 3. Restart dev server
+ *
+ * @remarks
+ * Intentionally NOT using `providedIn: 'root'` because this service is
+ * conditionally provided based on environment.auth.useMock flag.
+ * See `src/app/app.config.ts` for conditional provider setup.
+ *
+ * @internal This service is replaced with real OidcSecurityService in production.
  */
 @Injectable()
 export class MockAuthService {

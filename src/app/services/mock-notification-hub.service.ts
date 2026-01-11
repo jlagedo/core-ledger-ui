@@ -16,6 +16,13 @@ import { environment } from '../../environments/environment';
  * - "Conecta" automaticamente quando usuário faz login
  * - Fornece métodos para disparar notificações de teste
  * - Simula estados de conexão para testes de UI
+ *
+ * @remarks
+ * Intentionally NOT using `providedIn: 'root'` because this service is
+ * conditionally provided based on environment.signalr.useMock flag.
+ * See `src/app/app.config.ts` for conditional provider setup.
+ *
+ * @internal This service is replaced with real NotificationHubService in production.
  */
 @Injectable()
 export class MockNotificationHubService {

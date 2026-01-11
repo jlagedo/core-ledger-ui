@@ -2,7 +2,30 @@ import { Injectable } from '@angular/core';
 import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 /**
- * NgbDatepicker formatter for Brazilian date format (dd/MM/yyyy)
+ * NgbDatepicker formatter for Brazilian date format (dd/MM/yyyy).
+ *
+ * Converts between string representation (dd/MM/yyyy) and NgbDateStruct
+ * for use with ng-bootstrap datepicker components.
+ *
+ * @example
+ * ```typescript
+ * @Component({
+ *   providers: [
+ *     { provide: NgbDateParserFormatter, useClass: NgbDateBRParserFormatter }
+ *   ]
+ * })
+ * export class MyFormComponent {
+ *   // Datepicker will now use Brazilian format
+ * }
+ * ```
+ *
+ * @remarks
+ * Intentionally NOT using `providedIn: 'root'` because this formatter
+ * is provided at component level to allow different date formats in
+ * different parts of the application. Provided via `providers` array
+ * in components that use NgbDatepicker.
+ *
+ * @see {@link https://ng-bootstrap.github.io/#/components/datepicker/api#NgbDateParserFormatter}
  */
 @Injectable()
 export class NgbDateBRParserFormatter extends NgbDateParserFormatter {
