@@ -169,7 +169,7 @@ export function setupLocalStorageMock(): {
 /**
  * Verify HTTP request was made and return the request for assertions
  * @example
- * const request = expectHttpRequest(httpMock, 'GET', '/api/securities');
+ * const request = expectHttpRequest(httpMock, 'GET', '/api/entities');
  * request.flush(mockResponse);
  */
 export function expectHttpRequest(

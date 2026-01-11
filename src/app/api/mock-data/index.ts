@@ -3,6 +3,4 @@
  * @internal - Mock data should only be used in development/testing
  */
 export * from './indexadores.mock';
-export * from './securities.mock';
-export * from './security-types.mock';
 export * from './users.mock';

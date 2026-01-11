@@ -52,7 +52,21 @@
       "mcp__ag-mcp__list_versions",
       "mcp__ag-mcp__set_versions",
       "Bash(git reset:*)",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(npx knip:*)",
+      "Bash(wc -l:*)",
+      "Bash(do)",
+      "Bash(base=\"$f%.spec.ts\")",
+      "Bash(if [ ! -f \"$base.ts\" ])",
+      "Bash(then)",
+      "Bash(echo:*)",
+      "Bash(fi)",
+      "Bash(npm ls:*)",
+      "Bash(while read dir)",
+      "Bash(for service in KeyboardShortcutsService DeadlineService)",
+      "Bash(do echo \"=== $service ===\")",
+      "Bash(du:*)",
+      "Bash(git checkout:*)"
     ]
   },
   "enabledMcpjsonServers": [

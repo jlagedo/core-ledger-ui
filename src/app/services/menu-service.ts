@@ -13,17 +13,6 @@ export class MenuService {
       exactMatch: true,
     },
     {
-      label: 'Administração',
-      icon: 'bi-gear',
-      children: [
-        {
-          label: 'Títulos',
-          icon: '',
-          route: '/admin/securities',
-        },
-      ],
-    },
-    {
       label: 'Cadastro',
       icon: 'bi-folder-plus',
       children: [

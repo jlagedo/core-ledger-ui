@@ -56,9 +56,6 @@ export const environment = {
   storage: {
     theme: 'core-ledger-theme',
     sidenavState: 'sidenav-state',
-    fundsSearch: 'funds-search-state',
-    accountsSearch: 'chart-of-accounts-search-state',
-    securitiesSearch: 'securities-search-state',
   },
 
   // Feature Flags

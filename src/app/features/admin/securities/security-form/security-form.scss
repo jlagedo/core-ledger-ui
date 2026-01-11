@@ -1,4 +1,0 @@
-// Prevent placeholder text from being uppercased when input has text-uppercase
-.form-control.text-uppercase::placeholder {
-  text-transform: none;
-}

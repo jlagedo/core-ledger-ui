@@ -24,7 +24,7 @@ export interface AuthenticatedResult {
  *
  * Usage:
  * 1. Set environment.auth.useMock = true
- * 2. Set environment.auth.mockUser to desired role (admin, fund-manager, trader, analyst)
+ * 2. Set environment.auth.mockUser to desired role (admin, trader, analyst)
  * 3. Restart dev server
  */
 @Injectable()

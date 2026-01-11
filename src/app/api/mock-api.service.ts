@@ -4,8 +4,6 @@ import { ENVIRONMENT } from '../config/environment.config';
 import {
     MOCK_INDEXADORES,
     MOCK_HISTORICO_INDEXADORES,
-    MOCK_SECURITIES,
-    MOCK_SECURITY_TYPES,
     MOCK_USERS,
 } from './mock-data';
 
@@ -29,14 +27,11 @@ export class MockApiService {
     // In-memory storage with auto-reset on instantiation
     private indexadores = new Map(MOCK_INDEXADORES.map(i => [i.id, { ...i }]));
     private historicosIndexadores = new Map(MOCK_HISTORICO_INDEXADORES.map(h => [h.id, { ...h }]));
-    private securities = new Map(MOCK_SECURITIES.map(s => [s.id, { ...s }]));
-    private securityTypes = new Map(MOCK_SECURITY_TYPES.map(st => [st.value, { ...st }]));
     private users = new Map(MOCK_USERS.map(u => [u.id, { ...u }]));
 
     // Auto-increment ID counters
     private nextIndexadorId = Math.max(...MOCK_INDEXADORES.map(i => i.id), 0) + 1;
     private nextHistoricoIndexadorId = Math.max(...MOCK_HISTORICO_INDEXADORES.map(h => h.id), 0) + 1;
-    private nextSecurityId = Math.max(...MOCK_SECURITIES.map(s => s.id), 0) + 1;
     private nextUserId = Math.max(...MOCK_USERS.map(u => u.id), 0) + 1;
 
     constructor() {
@@ -241,8 +236,6 @@ export class MockApiService {
         if (url.includes('/historicos-indexadores')) return this.historicosIndexadores;
         if (url.includes('/indexadores') && url.includes('/historico')) return this.historicosIndexadores;
         if (url.includes('/indexadores')) return this.indexadores;
-        if (url.includes('/securities') && !url.includes('/securitytypes')) return this.securities;
-        if (url.includes('/securitytypes')) return this.securityTypes;
         if (url.includes('/users')) return this.users;
         return null;
     }
@@ -253,7 +246,6 @@ export class MockApiService {
     private getNextIdForUrl(url: string): string | number {
         if (url.includes('/historicos-indexadores')) return this.nextHistoricoIndexadorId++;
         if (url.includes('/indexadores')) return this.nextIndexadorId++;
-        if (url.includes('/securities')) return this.nextSecurityId++;
         return 1;
     }
 
@@ -411,13 +403,10 @@ export class MockApiService {
     reset(): void {
         this.indexadores = new Map(MOCK_INDEXADORES.map(i => [i.id, { ...i }]));
         this.historicosIndexadores = new Map(MOCK_HISTORICO_INDEXADORES.map(h => [h.id, { ...h }]));
-        this.securities = new Map(MOCK_SECURITIES.map(s => [s.id, { ...s }]));
-        this.securityTypes = new Map(MOCK_SECURITY_TYPES.map(st => [st.value, { ...st }]));
         this.users = new Map(MOCK_USERS.map(u => [u.id, { ...u }]));
 
         this.nextIndexadorId = Math.max(...MOCK_INDEXADORES.map(i => i.id), 0) + 1;
         this.nextHistoricoIndexadorId = Math.max(...MOCK_HISTORICO_INDEXADORES.map(h => h.id), 0) + 1;
-        this.nextSecurityId = Math.max(...MOCK_SECURITIES.map(s => s.id), 0) + 1;
         this.nextUserId = Math.max(...MOCK_USERS.map(u => u.id), 0) + 1;
     }
 }

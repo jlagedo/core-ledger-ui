@@ -42,13 +42,6 @@ interface PostingPeriod {
   status: 'open' | 'closed' | 'current';
 }
 
-interface FundSummary {
-  id: number;
-  name: string;
-  nav: number;
-  change: number;
-}
-
 interface QuickAction {
   key: string;
   label: string;
@@ -69,13 +62,6 @@ const MOCK_HERO_METRICS: HeroMetric[] = [
     format: 'currency',
     isPrimary: true,
     isLive: true,
-  },
-  {
-    label: 'Active Funds',
-    value: 24,
-    change: 2,
-    changePercent: 9.09,
-    format: 'number',
   },
   {
     label: 'Open Positions',
@@ -100,16 +86,7 @@ const MOCK_HERO_METRICS: HeroMetric[] = [
   },
 ];
 
-const MOCK_TICKER_ITEMS: TickerItem[] = [
-  { symbol: 'ALPHA', name: 'Alpha Growth Fund', value: 142.87, change: 1.24 },
-  { symbol: 'BETA', name: 'Beta Income Fund', value: 98.45, change: -0.32 },
-  { symbol: 'GAMMA', name: 'Gamma Balanced', value: 215.63, change: 2.18 },
-  { symbol: 'DELTA', name: 'Delta Equity', value: 178.91, change: -1.05 },
-  { symbol: 'EPSILON', name: 'Epsilon Fixed Income', value: 52.34, change: 0.15 },
-  { symbol: 'ZETA', name: 'Zeta Multi-Asset', value: 324.56, change: 3.42 },
-  { symbol: 'ETA', name: 'Eta Global', value: 89.23, change: -0.67 },
-  { symbol: 'THETA', name: 'Theta Emerging', value: 67.89, change: 1.89 },
-];
+const MOCK_TICKER_ITEMS: TickerItem[] = [];
 
 const MOCK_ACTIVITY: ActivityItem[] = [
   {
@@ -119,14 +96,6 @@ const MOCK_ACTIVITY: ActivityItem[] = [
     entity: 'JE-2025-1247',
     description: 'Monthly accrual adjustment',
     amount: 125000,
-    status: 'posted',
-  },
-  {
-    id: 2,
-    time: new Date(Date.now() - 1000 * 60 * 25),
-    type: 'nav',
-    entity: 'Alpha Fund',
-    description: 'NAV calculation complete',
     status: 'posted',
   },
   {
@@ -188,13 +157,6 @@ const MOCK_PERIODS: PostingPeriod[] = [
   },
 ];
 
-const MOCK_FUNDS: FundSummary[] = [
-  { id: 1, name: 'Alpha Growth Fund', nav: 142876543.21, change: 1.24 },
-  { id: 2, name: 'Beta Income Fund', nav: 98453210.87, change: -0.32 },
-  { id: 3, name: 'Gamma Balanced Portfolio', nav: 215632100.45, change: 2.18 },
-  { id: 4, name: 'Delta Equity Partners', nav: 178912345.67, change: -1.05 },
-  { id: 5, name: 'Epsilon Fixed Income', nav: 52341234.89, change: 0.15 },
-];
 
 const QUICK_ACTIONS: QuickAction[] = [
   { key: 'F1', label: 'Journal Entry', icon: 'bi-journal-plus', route: '/journal-entries' },
@@ -221,7 +183,6 @@ export class Dashboard {
   readonly tickerItems = signal<TickerItem[]>(MOCK_TICKER_ITEMS);
   readonly activityItems = signal<ActivityItem[]>(MOCK_ACTIVITY);
   readonly postingPeriods = signal<PostingPeriod[]>(MOCK_PERIODS);
-  readonly fundSummaries = signal<FundSummary[]>(MOCK_FUNDS);
   readonly quickActions = signal<QuickAction[]>(QUICK_ACTIONS);
 
   // Computed: duplicate ticker items for seamless scroll

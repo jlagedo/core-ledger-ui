@@ -109,7 +109,7 @@ const MOCK_ACTIVITY: ActivityLog[] = [
     id: 6,
     time: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
     action: 'Exported data',
-    entity: 'Fund Holdings CSV',
+    entity: 'Portfolio Report',
     type: 'data',
   },
   {

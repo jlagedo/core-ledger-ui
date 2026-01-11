@@ -116,33 +116,6 @@
       </div>
     </section>
 
-    <!-- DIREITA INFERIOR: Resumo de Fundos -->
-    <section class="terminal-panel" style="animation-delay: 0.3s">
-      <header class="terminal-panel__header">
-        <h2 class="terminal-panel__title">
-          <span class="fn-key">F8</span>
-          Resumo de NAV de Fundos
-        </h2>
-        <a routerLink="/funds" class="btn btn-sm btn-link text-secondary p-1" title="Ver Tudo">
-          <i class="bi bi-arrow-right"></i>
-        </a>
-      </header>
-      <div class="terminal-panel__body p-0">
-        <div class="px-3 py-2">
-          @for (fund of fundSummaries(); track fund.id) {
-            <div class="fund-row">
-              <div class="fund-row__name">{{ fund.name }}</div>
-              <div class="fund-row__nav">{{ fund.nav | number:'1.2-2' }}</div>
-              <div class="fund-row__change"
-                   [class.fund-row__change--up]="fund.change >= 0"
-                   [class.fund-row__change--down]="fund.change < 0">
-                {{ fund.change >= 0 ? '+' : '' }}{{ fund.change | number:'1.2-2' }}%
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    </section>
   </div>
 
   <!-- ============================================================

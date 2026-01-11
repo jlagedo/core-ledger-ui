@@ -36,12 +36,6 @@ export const MOCK_USERS: Record<string, MockUser> = {
       picture: 'https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff',
     },
     permissions: [
-      'admin:securities:manage',
-      'admin:securities:read',
-      'fund:manage',
-      'fund:read',
-      'ledger:account:manage',
-      'ledger:account:read',
       'ledger:transaction:manage',
       'ledger:transaction:read',
       'portfolio:manage',
@@ -62,38 +56,6 @@ export const MOCK_USERS: Record<string, MockUser> = {
       updatedAt: null,
     },
   },
-  'fund-manager': {
-    oidcUserData: {
-      sub: 'mock|fund-manager-002',
-      name: 'Fund Manager',
-      email: 'fundmanager@coreledger.local',
-      nickname: 'fundmanager',
-      picture:
-        'https://ui-avatars.com/api/?name=Fund+Manager&background=6610F2&color=fff',
-    },
-    permissions: [
-      'fund:manage',
-      'fund:read',
-      'ledger:account:manage',
-      'ledger:account:read',
-      'ledger:transaction:manage',
-      'ledger:transaction:read',
-      'nav:manage',
-      'nav:read',
-      'reports:read',
-    ],
-    token: MOCK_TOKENS['fund-manager'],
-    backendUser: {
-      id: 3,
-      authProviderId: 'mock|fund-manager-002',
-      provider: 'mock',
-      email: 'fundmanager@coreledger.local',
-      name: 'Fund Manager',
-      lastLoginAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: null,
-    },
-  },
   trader: {
     oidcUserData: {
       sub: 'mock|trader-003',
@@ -104,13 +66,10 @@ export const MOCK_USERS: Record<string, MockUser> = {
         'https://ui-avatars.com/api/?name=Trader+User&background=FD7E14&color=fff',
     },
     permissions: [
-      'admin:securities:read',
       'ledger:transaction:manage',
       'ledger:transaction:read',
       'portfolio:manage',
       'portfolio:read',
-      'fund:read',
-      'ledger:account:read',
     ],
     token: MOCK_TOKENS['trader'],
     backendUser: {
@@ -134,9 +93,6 @@ export const MOCK_USERS: Record<string, MockUser> = {
         'https://ui-avatars.com/api/?name=Analyst+Viewer&background=198754&color=fff',
     },
     permissions: [
-      'admin:securities:read',
-      'fund:read',
-      'ledger:account:read',
       'ledger:transaction:read',
       'portfolio:read',
       'nav:read',
@@ -160,7 +116,7 @@ export const MOCK_USERS: Record<string, MockUser> = {
  * Helper function to get a mock user by role.
  * Throws an error if the role doesn't exist.
  *
- * @param role - User role key (admin, fund-manager, trader, analyst)
+ * @param role - User role key (admin, trader, analyst)
  * @returns MockUser object with OIDC and backend data
  * @throws Error if role is not found
  */

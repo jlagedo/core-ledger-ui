@@ -44,7 +44,7 @@ export const MOCK_USERS: Record<string, MockUser> = new Proxy(
  * Helper function to get a mock user by role.
  * Throws an error in production builds.
  *
- * @param role - User role key (admin, fund-manager, trader, analyst)
+ * @param role - User role key (admin, trader, analyst)
  * @returns MockUser object with OIDC and backend data
  * @throws Error always in production
  */

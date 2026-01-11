@@ -36,16 +36,14 @@ describe('Production Safety', () => {
             const stub = await import('./mock-data.production');
 
             // Proxy throws when you try to access properties or iterate
-            expect(() => [...stub.MOCK_SECURITIES]).toThrow(/Mock.*data is not available in production/);
-            expect(() => stub.MOCK_SECURITY_TYPES.forEach(() => { })).toThrow(/Mock.*data is not available in production/);
             expect(() => stub.MOCK_USERS.filter(u => u.id === 1)).toThrow(/Mock.*data is not available in production/);
         });
 
         it('should provide descriptive error messages', async () => {
             const stub = await import('./mock-data.production');
 
-            expect(() => stub.MOCK_SECURITIES[0]).toThrow(/angular.json/);
-            expect(() => stub.MOCK_SECURITIES[0]).toThrow(/fileReplacements/);
+            expect(() => stub.MOCK_USERS[0]).toThrow(/angular.json/);
+            expect(() => stub.MOCK_USERS[0]).toThrow(/fileReplacements/);
         });
     });
 

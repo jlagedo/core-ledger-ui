@@ -22,6 +22,4 @@ const createProductionProxy = <T extends object>(entityName: string): T => {
     }) as T;
 };
 
-export const MOCK_SECURITIES = createProductionProxy<any[]>('security');
-export const MOCK_SECURITY_TYPES = createProductionProxy<any[]>('security type');
 export const MOCK_USERS = createProductionProxy<any[]>('user');

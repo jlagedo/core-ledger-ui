@@ -49,7 +49,6 @@ export interface Environment {
   storage: {
     theme: string;
     sidenavState: string;
-    securitiesSearch: string;
   };
 
   // Feature Flags

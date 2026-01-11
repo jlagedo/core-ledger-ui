@@ -18,16 +18,6 @@ export const MOCK_USERS: UserDto[] = [
     },
     {
         id: 2,
-        authProviderId: 'auth0|fundmanager',
-        provider: 'auth0',
-        email: 'fund.manager@coreledger.com',
-        name: 'Fund Manager',
-        lastLoginAt: '2024-12-01T09:30:00Z',
-        createdAt: '2020-01-01T00:00:00Z',
-        updatedAt: '2024-12-01T09:30:00Z',
-    },
-    {
-        id: 3,
         authProviderId: 'auth0|trader',
         provider: 'auth0',
         email: 'trader@coreledger.com',
@@ -37,7 +27,7 @@ export const MOCK_USERS: UserDto[] = [
         updatedAt: '2024-12-01T08:45:00Z',
     },
     {
-        id: 4,
+        id: 3,
         authProviderId: 'auth0|analyst',
         provider: 'auth0',
         email: 'analyst@coreledger.com',
