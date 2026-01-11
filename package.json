@@ -9,7 +9,9 @@
     "watch": "ng build --watch --configuration local-noauth",
     "watch:auth": "ng build --watch --configuration local-auth",
     "test": "ng test",
-    "generate-tokens": "tsx tools/generate-dev-token.ts"
+    "generate-tokens": "tsx tools/generate-dev-token.ts",
+    "knip": "knip",
+    "knip:prod": "knip --production"
   },
   "prettier": {
     "printWidth": 100,
@@ -26,7 +28,6 @@
   "private": true,
   "packageManager": "npm@11.6.2",
   "dependencies": {
-    "@angular/cdk": "^21.0.5",
     "@angular/common": "^21.0.0",
     "@angular/compiler": "^21.0.0",
     "@angular/core": "^21.0.0",

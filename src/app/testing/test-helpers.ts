@@ -112,24 +112,6 @@ export function provideTestDependencies(): (Provider | EnvironmentProviders)[] {
 }
 
 /**
- * Helper to create a clean mock service with all methods as vi.fn()
- * @param serviceMethods - Object with method names as keys and optional implementations
- * @returns Mocked service object
- *
- * @example
- * const mockLogger = createMockService({
- *   debug: vi.fn(),
- *   info: vi.fn(),
- *   error: vi.fn(),
- * });
- */
-export function createMockService<T extends Record<string, any>>(
-  serviceMethods: Partial<Record<keyof T, any>>
-): T {
-  return serviceMethods as T;
-}
-
-/**
  * Setup localStorage mock with proper cleanup
  * Call in beforeEach and use the returned utilities in tests
  *
@@ -163,46 +145,5 @@ export function setupLocalStorageMock(): {
       store.clear();
       vi.unstubAllGlobals();
     },
-  };
-}
-
-/**
- * Verify HTTP request was made and return the request for assertions
- * @example
- * const request = expectHttpRequest(httpMock, 'GET', '/api/entities');
- * request.flush(mockResponse);
- */
-export function expectHttpRequest(
-  httpMock: HttpTestingController,
-  method: string,
-  url: string | RegExp
-): ReturnType<typeof httpMock.expectOne> {
-  if (url instanceof RegExp) {
-    return httpMock.expectOne((req) => url.test(req.url) && req.method === method);
-  }
-  return httpMock.expectOne((req) => req.url === url && req.method === method);
-}
-
-/**
- * Create mock paginated response
- * @example
- * const response = createMockPaginatedResponse(
- *   [{ id: 1, name: 'Item 1' }],
- *   1,
- *   100,
- *   0
- * );
- */
-export function createMockPaginatedResponse<T>(
-  items: T[],
-  totalCount: number,
-  limit: number = 100,
-  offset: number = 0
-) {
-  return {
-    items,
-    totalCount,
-    limit,
-    offset,
   };
 }
