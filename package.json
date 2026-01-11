@@ -11,7 +11,8 @@
     "test": "ng test",
     "generate-tokens": "tsx tools/generate-dev-token.ts",
     "knip": "knip",
-    "knip:prod": "knip --production"
+    "knip:prod": "knip --production",
+    "check:compliance": "bash scripts/check-compliance.sh"
   },
   "prettier": {
     "printWidth": 100,
