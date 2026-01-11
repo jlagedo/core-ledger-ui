@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs/operators';
 import { NgbDatepickerModule, NgbDateStruct, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { CalendarioService } from '../../../../services/calendario';
 import { ToastService } from '../../../../services/toast-service';
@@ -16,8 +18,16 @@ import { NgbDateBRParserFormatter } from '../../../../shared/formatters/ngb-date
   styleUrl: './calendario-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CalendarioForm implements OnInit {
-  calendarioId = signal<number | null>(null);
+export class CalendarioForm {
+  // Signal-based route parameter (replaces ngOnInit snapshot)
+  private readonly route = inject(ActivatedRoute);
+  private readonly paramId = toSignal(this.route.paramMap.pipe(map((params) => params.get('id'))));
+
+  readonly calendarioId = computed(() => {
+    const id = this.paramId();
+    return id ? +id : null;
+  });
+
   isSubmitting = signal(false);
   submitStatus = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
   errorMessage = signal<string>('');
@@ -33,17 +43,18 @@ export class CalendarioForm implements OnInit {
   calendarioService = inject(CalendarioService);
   private toastService = inject(ToastService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
 
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.calendarioId.set(+id);
-      this.loadCalendario(+id);
-      // Disable data and praca for edit mode (per API - UpdateCalendarioDto only has tipoDia and descricao)
-      this.calendarioForm.get('data')?.disable();
-      this.calendarioForm.get('praca')?.disable();
-    }
+  constructor() {
+    // React to route parameter changes
+    effect(() => {
+      const id = this.calendarioId();
+      if (id) {
+        this.loadCalendario(id);
+        // Disable data and praca for edit mode (per API - UpdateCalendarioDto only has tipoDia and descricao)
+        this.calendarioForm.get('data')?.disable();
+        this.calendarioForm.get('praca')?.disable();
+      }
+    });
   }
 
   loadCalendario(id: number): void {

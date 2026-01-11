@@ -2,10 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
 import {
   AbstractControl,
   FormBuilder,
@@ -48,8 +50,16 @@ const TIPO_PERIODICIDADE_MAP: Record<TipoIndexador, Periodicidade[]> = {
   styleUrl: './indexador-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IndexadorForm implements OnInit {
-  indexadorId = signal<number | null>(null);
+export class IndexadorForm {
+  // Signal-based route parameter (replaces ngOnInit snapshot)
+  private readonly route = inject(ActivatedRoute);
+  private readonly paramId = toSignal(this.route.paramMap.pipe(map((params) => params.get('id'))));
+
+  readonly indexadorId = computed(() => {
+    const id = this.paramId();
+    return id ? +id : null;
+  });
+
   isSubmitting = signal(false);
   submitStatus = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
   errorMessage = signal<string>('');
@@ -104,7 +114,6 @@ export class IndexadorForm implements OnInit {
   indexadorService = inject(IndexadorService);
   private toastService = inject(ToastService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
 
   /**
    * Cross-field validator for tipo + periodicidade compatibility (IDX-004)
@@ -125,16 +134,18 @@ export class IndexadorForm implements OnInit {
     return null;
   }
 
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.indexadorId.set(+id);
-      this.loadIndexador(+id);
-      // Disable fields that cannot be changed in edit mode
-      this.indexadorForm.get('codigo')?.disable();
-      this.indexadorForm.get('tipo')?.disable();
-      this.indexadorForm.get('periodicidade')?.disable();
-    }
+  constructor() {
+    // React to route parameter changes
+    effect(() => {
+      const id = this.indexadorId();
+      if (id) {
+        this.loadIndexador(id);
+        // Disable fields that cannot be changed in edit mode
+        this.indexadorForm.get('codigo')?.disable();
+        this.indexadorForm.get('tipo')?.disable();
+        this.indexadorForm.get('periodicidade')?.disable();
+      }
+    });
 
     // Setup tipo change handler for auto-selecting periodicidade (IDX-004)
     this.indexadorForm.get('tipo')?.valueChanges.subscribe((tipo) => {

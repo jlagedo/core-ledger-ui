@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, effect, signal, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { map } from 'rxjs/operators';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbNavModule, NgbModal, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -34,9 +36,17 @@ import { ChartTab } from './chart-tab';
   styleUrl: './indexador-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IndexadorDetail implements OnInit {
+export class IndexadorDetail {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+
+  // Signal-based route parameter (replaces ngOnInit snapshot)
+  private readonly paramId = toSignal(this.route.paramMap.pipe(map((params) => params.get('id'))));
+
+  private readonly indexadorId = computed(() => {
+    const id = this.paramId();
+    return id ? +id : null;
+  });
   private readonly indexadorService = inject(IndexadorService);
   private readonly loggerService = inject(LoggerService);
   private readonly toastService = inject(ToastService);
@@ -190,13 +200,16 @@ export class IndexadorDetail implements OnInit {
     },
   };
 
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.loadIndexador(+id);
-    } else {
-      this.router.navigate(['/cadastro/indexadores']);
-    }
+  constructor() {
+    // React to route parameter changes
+    effect(() => {
+      const id = this.indexadorId();
+      if (id) {
+        this.loadIndexador(id);
+      } else {
+        this.router.navigate(['/cadastro/indexadores']);
+      }
+    });
   }
 
   private loadIndexador(id: number): void {
