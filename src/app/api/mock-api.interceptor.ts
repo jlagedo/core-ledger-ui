@@ -4,6 +4,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { ENVIRONMENT } from '../config/environment.config';
 import { MockApiService } from './mock-api.service';
+import { mockVerificarCnpj } from './mock-data/fundo-cnpj.mock';
 
 /**
  * Mock API Interceptor
@@ -132,6 +133,19 @@ function routeRequest(req: any, mockApiService: MockApiService): HttpResponse<an
         if (req.method === 'DELETE' && id !== null) {
             return mockApiService.handleDeleteRequest(url, id);
         }
+    }
+
+    // Check for CNPJ verification endpoint: /api/fundos/verificar-cnpj/:cnpj
+    // CNPJ can be alphanumeric (A-Z, 0-9) with 14 characters
+    const cnpjVerificationMatch = url.match(/\/api\/fundos\/verificar-cnpj\/([A-Z0-9]{14})/i);
+    if (cnpjVerificationMatch && req.method === 'GET') {
+        const cnpj = cnpjVerificationMatch[1];
+        const response = mockVerificarCnpj(cnpj);
+        return new HttpResponse({
+            status: 200,
+            statusText: 'OK',
+            body: response,
+        });
     }
 
     // Endpoints that return plain arrays instead of paginated responses

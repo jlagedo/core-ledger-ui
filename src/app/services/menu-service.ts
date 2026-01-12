@@ -26,6 +26,11 @@ export class MenuService {
           icon: '',
           route: '/cadastro/indexadores',
         },
+        {
+          label: 'Fundos',
+          icon: '',
+          route: '/cadastro/fundos',
+        },
       ],
     },
   ]);

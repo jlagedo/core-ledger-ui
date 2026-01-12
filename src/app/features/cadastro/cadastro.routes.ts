@@ -18,4 +18,9 @@ export const CADASTRO_ROUTES: Routes = [
     loadChildren: () =>
       import('./indexadores/indexadores.routes').then((m) => m.INDEXADORES_ROUTES),
   },
+  {
+    path: 'fundos',
+    data: { breadcrumb: 'Fundos' },
+    loadChildren: () => import('./fundos/fundos.routes').then((m) => m.FUNDOS_ROUTES),
+  },
 ];
