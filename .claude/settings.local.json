@@ -68,7 +68,10 @@
       "Bash(du:*)",
       "Bash(git checkout:*)",
       "Bash(knip:*)",
-      "Bash(npm run knip:*)"
+      "Bash(npm run knip:*)",
+      "Bash(git restore:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run check:compliance:*)"
     ]
   },
   "enabledMcpjsonServers": [
